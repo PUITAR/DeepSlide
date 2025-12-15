@@ -1,0 +1,108 @@
+%!TeX encoding = UTF-8
+%!TeX program = xelatex
+\documentclass[hyperref={bookmarks=false},aspectratio=43]{beamer} % 169
+\usepackage[utf8]{inputenc}
+
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{color,xcolor}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{amsthm}
+\usepackage{lmodern} % 解决 font warning
+% \usepackage[UTF8]{ctex}
+\usepackage{animate} % insert gif
+
+\usepackage{lipsum} % To generate test text 
+\usepackage{ulem} % 下划线，波浪线
+% \usepackage{subfigure}
+
+\usepackage{listings} % display code on slides; don't forget [fragile] option after \begin{frame}
+
+% ----------------------------------------------
+% tikx
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{pgf}
+
+
+% ---------------  Define theme and color scheme  -----------------
+\usetheme[minimal]{Caltech}  % 3 options: minimal, sidebarleft, sidebarright
+
+% ------------  Custom modifications for unified visual style  --------------------
+% 1. Define a high-contrast non-pure color background theme
+\definecolor{PrimaryBg}{RGB}{40, 44, 52} % Dark slate gray (high contrast, non-pure)
+\definecolor{SecondaryBg}{RGB}{33, 37, 43} % Slightly darker variant
+\definecolor{AccentColor}{RGB}{255, 94, 91} % Highly saturated coral red for data emphasis
+\definecolor{SecondaryAccent}{RGB}{97, 218, 251} % Bright cyan for secondary highlights
+\definecolor{TextColor}{RGB}{248, 248, 242} % Light off-white for text
+
+% Apply colors to the theme
+\setbeamercolor{normal text}{fg=TextColor, bg=PrimaryBg}
+\setbeamercolor{frametitle}{fg=TextColor, bg=SecondaryBg}
+\setbeamercolor{title}{fg=TextColor}
+\setbeamercolor{structure}{fg=AccentColor} % For bullets, blocks, etc.
+\setbeamercolor{alerted text}{fg=AccentColor}
+\setbeamercolor{example text}{fg=SecondaryAccent}
+
+% 2. Increase white space (negative space) strategically
+\setbeamersize{text margin left=1.5em, text margin right=1.5em} % Wider margins
+\setlength{\parskip}{1.2em} % Increased paragraph spacing
+\setlength{\itemsep}{0.8em} % Increased item separation in lists
+
+% 3. Unify visual elements: consistent image styling
+\setkeys{Gin}{width=\textwidth, height=0.7\textheight, keepaspectratio} % Default image scaling
+\graphicspath{{figures/}} % Centralized figure path
+
+% Custom frame environment for additional spacing
+\newenvironment{spacedframe}[1][]{\begin{frame}[environment=spacedframe,#1]}{\end{frame}}
+
+% Unified block styling with increased padding
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\addtobeamertemplate{block begin}{%
+  \setlength{\textwidth}{0.95\textwidth} % Slightly narrower block text
+  \vspace{1.5em} % Extra space before block
+}{}
+\addtobeamertemplate{block end}{\vspace{1.5em}}{} % Extra space after block
+
+% Consistent caption styling for figures/tables
+\setbeamertemplate{caption}[numbered]
+\setbeamerfont{caption}{size=\footnotesize}
+\setbeamercolor{caption}{fg=SecondaryAccent}
+
+% ------------  Information on the title page  --------------------
+\input{title}
+%------------------------------------------------------------
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+    \vspace{2em} % Added vertical space for better separation
+  \end{frame}
+}
+%------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\input{content}
+
+% references
+\begin{frame}
+    \frametitle{References}
+    \vspace{1em} % Added space before references
+    \bibliographystyle{plain}
+    \bibliography{ref}
+\end{frame}
+
+\end{document}

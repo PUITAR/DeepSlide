@@ -1,0 +1,292 @@
+In this section, we construct the estimation algorithm for the cost function and the control policy. 
+This is based on taking the nonlinear optimal control problem and lifing it into a infinite dimensional linear representation. 
+More specifically, we first formulate an infinite dimensional linear programming problem whose optimal solution is a cost function that corresponds to the observed data's occupation measure.
+Next, we formulate an equivalent infinite dimensional linear programming problem which eleviates the problem of infinite time-horizon observations.
+We then approximate the problem of recovering the cost function so that it is numerically tractable, and finally, based on a reconstrction of the cost function, we formulate an estimator for the control policy. Consistency of the estimators are proved in Sec.~\ref{sec:consistency}.
+
+
+\subsection{The infinite dimensional IOC problem}
+First note that if the running cost function $\ell$ and its corresponding value function $V$ satisfy
+\begin{align*}
+  \ell(x,a)-V(x)+\alpha\int_X V(y)Q(\mathrm dy|x,a) = 0,
+\end{align*}
+then any state-action trajectory $\{(\mfx_t,\mfa_t)\}_{t=1}^\infty$ is optimal to $\ell$.
+For example, when the running cost $\ell(x,a)=\xi$ and the value function $V(x) = \frac{\xi}{1-\alpha}$, for some $\xi\geq0$ and all $(x,a)\in\mK$.
+To avoid this trivial and uninformative solution to the IOC problem, we further make the following assumption.
+\begin{assumption}\label{ass:IOC_normalization}
+The ``true" running cost and the ``true'' value function $(\elltrue,\Vtrue)$ satisfy
+\[
+\int_{\mK}\left[\elltrue(x,a)-\Vtrue(x)+\alpha\int_X \Vtrue(y)Q(\mathrm dy|x,a)\right]\mathrm dx \mathrm da\ge 1.
+\]
+\end{assumption}
+The above assumption rules out the case that the running cost is constant since it requires the admissible state-action set $\mK$ to at least contain a non-zero measure set whose components are not optimal.
+
+
+Next, we construct an IOC algorithm that is based on the optimality conditions \eqref{eq:opt_cond_inf_dim} and the adjoint operators \eqref{eq:adjoints}. To this end, we first assume that $\mu^{\pitrue}$ is known (we approximate it with data in Sec.~\ref{sec:finite-dim-ioc}). Now, for every $(x,a)\in\mK$, we define the violation of the complementary slackness condition \eqref{eq:complementary_slackness} as $\psi:\mK\rightarrow\mR$ where
+\begin{equation}
+  \psi(x,a;\theta_\ell,V)\!:=\!\theta_\ell^T\varphi(x,a)\! +\alpha (q^*V)(x,a)\!-\!V(x).
+\label{eq:complementary_slackness_violation}
+\end{equation}
+Then, we construct the IOC algorithm by minimizing the ``violation" of \eqref{eq:complementary_slackness}. Namely,
+\begin{subequations}\label{eq:IOC_origin}
+\begin{align}
+  \min_{\substack{\theta_\ell\in\mR^{n_\ell}, V\in\mathscr{F}(X)\\\psi\in\mathscr{F}(\mK)}} 
+  &\;\langle\psi,\mu^{\pitrue} \rangle\label{eq:violation_of_complementarity_slackness}\\
+  \st  \qquad &\;\psi = \!\theta_\ell^T\varphi\! +\alpha (q^*V)\!-\!\proj^*V\label{eq:psi_def}\\
+  &\;\psi(x,a)\!\ge\! 0,\forall (x,a)\in\mK,\label{eq:bellman_inequality_constraint}\\
+  &\int_{\mK}\psi(x,a)\mathrm{d}x\mathrm{d}a \ge 1.\label{eq:regularization}\\
+  &\|\theta_\ell\|_{1}\!\le\! \beta_\ell,\: \|\psi\|_{\infty,\mK}\!\le\! \beta_\psi,\label{eq:l_psi_norm_bounds}\\
+  &\|V\|_{\infty,X}\!\le\! \beta_V.\label{eq:V_psi_norm_bounds}
+\end{align}
+\end{subequations}
+Note that the norm bounds $\beta_\ell$, $\beta_V$ and $\beta_\psi$ in \eqref{eq:l_psi_norm_bounds} and \eqref{eq:V_psi_norm_bounds} can be chosen to be arbitrarily large. The norm constraint guarantees that the solutions to the optimization problem is always bounded, i.e., that we have a bounded estimator, which is important in the analysis later. Nevertheless, even without the constraint \eqref{eq:l_psi_norm_bounds} and \eqref{eq:V_psi_norm_bounds}, the following Proposition still holds.
+
+\begin{proposition}\label{prop:well_posed_ioc_infinite_dim}
+The problem \eqref{eq:IOC_origin} attains at least one optimal solution, and the optimal value is $0$. Moreover, for any optimal solution $(\theta_\ell^\star, V^\star, \psi^\star)$, $\pitrue$ is an optimal control policy to the optimal control problem \eqref{eq:forward_problem_obj_fun} with the running cost $\ell^\star:=\theta_\ell^{\star T}\varphi$. 
+\end{proposition}
+
+\begin{proof}
+First, $\mu^{\pitrue}\in\mathcal{M}_+(\mK)$ and the constraint \eqref{eq:bellman_inequality_constraint} ensure that the objective function \eqref{eq:violation_of_complementarity_slackness} is bounded below by zero. 
+Moreover, the optimal value zero can be attained since the ``true" $(\elltrue=\thetatrue_\ell^T\varphi, \Vtrue, \elltrue +\alpha (q^*\Vtrue) - \proj^*\Vtrue)$ satisfies the optimality condition \eqref{eq:opt_cond_inf_dim} and thus is both feasible to \eqref{eq:IOC_origin} and have objective function value zero. 
+
+Next, let $(\ell^\star, V^\star, \psi^\star)$ be any optimal solution to \eqref{eq:IOC_origin}. Then $0 = \langle\psi^\star,\mu^{\pitrue} \rangle = \langle \ell^\star +\alpha (q^*V^\star) - \proj^*V^\star, \mu^{\pitrue}\rangle$, and since constraint \eqref{eq:bellman_inequality_constraint} is also satsified, $\pitrue$ satisfies the optimality conditions \eqref{eq:opt_cond_inf_dim}.
+\end{proof}
+
+In addition, for bounded $\elltrue$, its corresponding value function $\Vtrue$ is the limit of the well-known Value Iteration (VI), which is a contraction map on $ \mathscr{F}(X) $ with respect to supremum norm \citep[p. 52]{hernandez2012discrete}. 
+Thus we have $\left\|\Vtrue\right\|_\infty< \infty$. 
+Furthermore, by Assumption \ref{ass:transition_kernel} and \ref{ass:obj_func}, $\Vtrue$ is the fixed point of VI, this implies that for all $\eta_1:=(x_1,a_1),\eta_2:=(x_2,a_2)\in\mathbb{K}$, it holds that
+\begin{align*}
+&\left|\min_{a_1\in A}(\elltrue+\alpha q^* \Vtrue)(x_1,a_1)-\min_{a_2\in A}(\elltrue+\alpha q^* \Vtrue)(x_2,a_2)\right|\\
+&\le \sup_{a\in A}\left|(\elltrue+\alpha q^* \Vtrue)(x_1,a)-(\elltrue+\alpha q^* \Vtrue)(x_2,a)\right|\\
+&\le\sup_{a\in A}\left[\left|\elltrue(x_1,a)-\elltrue(x_2,a)\right|+\alpha\left|q^*\Vtrue(x_1,a)-q^*\Vtrue(x_2,a)\right|\right]\\
+&\le \sup_{a\in A}\left[(L_\ell+\|\Vtrue\|_\infty L_Q)\|[x_1^T,a^T]^T-[x_2^T,a^T]^T\|_2\right]\\
+&=\underbrace{(L_\ell+\|\Vtrue\|_\infty L_Q)}_{\beta_C}\|x_1-x_2\|_2
+\end{align*}
+
+and hence $\Vtrue\in \text{Lip}(\beta_C)$. 
+Thus we can restrict ourselves to the set $V\in \text{Lip}(\beta_C)$ and $\psi\in \contfun(\mK)$, and the ``true" $\Vtrue$ and the corresponding $\bar{\psi}$ are still feasible when solving \eqref{eq:IOC_origin}. That is, we instead consider the problem
+\begin{subequations}\label{eq:IOC_origin_cont_func_set}
+  \begin{align}
+    \min_{\substack{\theta_\ell\in\mR^{n_\ell}, V\in \contfun(X)\\\psi\in \contfun(\mK)}} &\;\;\langle\psi,\mu^{\pitrue} \rangle\\
+    \label{eq:IOC_origin_cont_func_set_obj}
+    \st \qquad &\;\;\eqref{eq:psi_def}-\eqref{eq:V_psi_norm_bounds},\\
+    &V\in \text{Lip}(\beta_C).
+    \label{eq:IOC_origin_V_lip_constraint}
+  \end{align}
+\end{subequations}
+Analogously to the constraints \eqref{eq:l_psi_norm_bounds} and \eqref{eq:V_psi_norm_bounds}, we do not have to know the exact number of $\beta_C$ in practice since such bound on Lipschitz constant can be taken arbitrarily large.
+
+Nevertheless, we do not have access to the measure $\mu^{\pitrue}$ in practice. One reason is that $\mu^{\pitrue}$ is defined as a sum of infinitely many occupation measures $\mu_t^{\pitrue}$ over time, yet we do not have infinite data length in practice. However, we can show that finite-time observations of the agent are sufficient to achieve the same effect as $\mu^{\pitrue}$.
+
+
+\begin{proposition}[Finite-time IOC algorithm]\label{prop:finite_time_horizon_equivalent}
+  Under Assumption \ref{ass:stationary_markov_policy}, for any $\nu\in\mathcal{M}_+(X)$, if $\support(\nu) =  \support(\proj\mu^{\pitrue})$, then solving \eqref{eq:IOC_origin_cont_func_set} is equivalent to solving
+  \begin{subequations}\label{eq:IOC_approx1}
+  \begin{align}
+    \min_{\substack{\theta_\ell\in\mR^{n_\ell}, V\in \contfun(X)\\\psi\in \contfun(\mK)}} &\;\;\langle\psi, \nu \otimes\pitrue  \rangle\label{eq:IOC_approx1_obj_func}\\
+    \st \qquad &\;\;\eqref{eq:psi_def}-\eqref{eq:V_psi_norm_bounds},\eqref{eq:IOC_origin_V_lip_constraint}, \label{eq:IOC_approx1_constraints}
+  \end{align}
+\end{subequations}
+  where 
+  \begin{align*}
+    \langle f, \nu\otimes\pitrue\rangle := \int_X \left[ \int_A f(x,a)\pitrue(\mathrm{d}a|x) \right]\nu(\mathrm{d}x),\quad \forall f.
+  \end{align*}
+More specially, it holds that $\hat{\mu}^{\pitrue,N}:=\sum_{t=1}^N\mu_t^{\pitrue} = \left(\sum_{t=1}^N\proj\mu_t^{\pitrue}\right)\otimes\pitrue$, and under Assumption \ref{ass:init_value}, it holds that $\support\left(\sum_{t=1}^N\proj\mu_t^{\pitrue}\right)=\support( \proj\mu^{\pitrue}).$
+\end{proposition}
+
+\begin{pf}
+  Since $\support(\nu) =\support(\proj\mu^{\pitrue})$, for any $f:X\rightarrow \mR_+$, it holds that
+  \begin{align*}
+    \int_Xf(x)(\proj\mu^{\pitrue})(\mathrm{d}x) = 0
+    \Leftrightarrow\int_Xf(x)\nu(\mathrm{d}x) = 0.
+  \end{align*}
+  By Propostion \ref{prop:well_posed_ioc_infinite_dim}, the optimal value of \eqref{eq:IOC_origin} is zero, and hence the optimal value of \eqref{eq:IOC_origin_cont_func_set} is also zero. By following the same argument as that in the proof of Proposition \ref{prop:well_posed_ioc_infinite_dim}, it follows from $\nu\otimes\pitrue\in\mathcal{M}_+(\mK)$ and the constraint \eqref{eq:bellman_inequality_constraint} that the optimal value \eqref{eq:IOC_approx1} is bounded from below by zero and that the ``true" $(\elltrue, \Vtrue, \elltrue +\alpha (q^*\Vtrue) - \proj^*\Vtrue)$ attains the optimal value zero. Now suppose $(\ell^\star,V^\star, \psi^\star)$ is optimal to \eqref{eq:IOC_origin_cont_func_set}.  Thus we have
+  \begin{align*}
+    &(\ell^\star,V^\star, \psi^\star) \text{ minimizes \eqref{eq:IOC_origin},}\\
+    \Rightarrow&\langle\psi^\star, \mu^{\pitrue}\rangle = \int_X \left[ \int_A \psi^\star(x,a)\pitrue(\mathrm{d}a|x) \right](\proj\mu^{\pitrue})(\mathrm{d}x) = 0, \\
+    \Leftrightarrow&\langle\psi^\star,\nu\otimes\pitrue\rangle = \int_X \left[ \int_A \psi^\star(x,a)\pitrue(\mathrm{d}a|x) \right]\nu(\mathrm{d}x) = 0.
+  \end{align*}
+  Since \eqref{eq:IOC_origin_cont_func_set} and \eqref{eq:IOC_approx1} have the same constraints, $(\ell^\star,V^\star, \psi^\star)$ is also optimal to \eqref{eq:IOC_approx1}. Conversely, the same argument applies.
+\end{pf}
+
+\subsection{The finite dimension approximation of the IOC algorithm}\label{sec:finite-dim-ioc}
+The above proposition implies that, instead of solving \eqref{eq:IOC_origin_cont_func_set}, we can spare ourselves from infinite data length and solve \eqref{eq:IOC_approx1} with $\nu\otimes\pitrue=\hat{\mu}^{\pitrue,N}$. Yet we still do not know the distribution $\hat{\mu}^{\pitrue,N}$ in practice, and hence we need to further approximate \eqref{eq:IOC_approx1} with $M$ I.I.D. samples $\{(x_t^i,a_t^i)\}_{t=1}^N$, $i=1:M$. In particular, we approximate the objective function \eqref{eq:IOC_approx1_obj_func} with empirical average, i.e.,
+\begin{align}
+  \langle\psi,\hat{\mu}^{\pitrue,N} \rangle\approx\frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N\psi(\mfx_t^i,\mfa_t^i).
+  \label{eq:emphirical_average}
+\end{align}
+Nevertheless, the approximated problem still optimizes over $V\in\contfun(X)$ and $\psi\in\contfun(\mathbb{K})$, which is infinite dimensional and thus difficult to solve. Moreover, the inequality constraint \eqref{eq:bellman_inequality_constraint} is challenging to handle since it needs to hold for all $(x,a)\in\mK$.
+To address this issue, we approximate $\psi$ with a polynomial and use Putinar's Positivstellensatz \citep{putinar1993positive}\citep[Thm.~3.20]{laurent2009sums} to make the polynomial nonnegative.
+More precisely, we approximate $\psi$ by a $2d_\psi$-th order polynomial on $\mK$ (without loss of generality, we consider only even-order polynomials to simplify the analysis to come), and represent the polynomial with Lagrange interpolation basis \citep{sauer1995multivariate}. Namely, for all $\eta := (x,a)\in\mK$, we have
+\begin{align}\label{eq:polynomial_approx}
+    \psi(\eta)\approx \hat{\psi}(\eta):= \underbrace{
+    \begin{bmatrix}
+    \hat\psi(\eta_{[1]}) &\cdots &\hat\psi(\eta_{[D_\psi]})
+    \end{bmatrix}
+    }_{\theta_\psi^T}\phi(\eta;\eta_{[\cdot]}),
+\end{align}
+where $D_\psi = C(n_x+n_u+2d_\psi, 2d_\psi)$ is the dimension of $2d_{\psi}$-th order polynomial space, $\eta_{[\cdot]}=\{\eta_{[1]},\ldots,\eta_{[D_\psi]}\}$ are the interpolation nodes, and the Lagrange polynomial basis $\phi(\eta;\eta_{[\cdot]})$ takes the form
+\[
+\phi(\eta;\eta_{[\cdot]}) = 
+\begin{bmatrix}
+\phi_1(\eta;\eta_{[\cdot]}) &\cdots &\phi_{D_\psi}(\eta;\eta_{[\cdot]})
+\end{bmatrix}^T.
+\]
+
+\begin{remark}\label{remark:using-interpolation}
+Note that any polynomial basis would work. Nevertheless, here we choose to work with Lagrange interpolation basis $\phi(\eta;\eta_{[\cdot]})$. The reason is that this leads to computation benefits; more details about this is found in Sec. \ref{sec:practical_implementation}.
+\end{remark}
+
+Next, to enforce the nonnegativity of $\hat{\psi}$, note that by Assumption \ref{ass:compact_support}, $\mK$ can be characterized by the semi-algebraic set $\{(x,a)|g_i(x,a)\ge 0,i=1:n_x+n_a\}$, where $g_i(x,a)= (x_i-x_{i,\min})(x_{i,\max}-x_i)$ and analogously for the bounds on $a$.
+The quadratic module \citep[Eq.~3.13]{laurent2009sums} generated by $g_1,\ldots,g_{n_x+n_a}$ takes the form
+\begin{align*}
+\mathscr{Q}(g_{1:n_x+n_a})\!:=\!\{u_0\!+\!\!\!\sum_{i=1}^{n_x+n_a}\!\!u_i g_i \mid u_0,u_i\!\in\!\Sigma^2\}.
+\end{align*}
+Notably, $\hat{\psi}\in \mathscr{Q}(g_{1:n_x+n_a})$ means that $\hat{\psi}(\eta)\ge 0,\forall \eta\in\mK$.
+Nevertheless, constraining $\hat{\psi}$ to be in $\mathscr{Q}(g_{1:n_x+n_a})$ might, a prior, be too restrictive. To see that it is in fact not the case, we first observe that $\mK$ is also Archimedean \citep[Def.~3.18]{laurent2009sums}. To see this, we consider the function 
+\begin{align*}
+f(\eta) = \sum_{i=1}^{n_x+n_a}g_i(x,a)=-\|\eta-\zeta\|_2^2+\mbox{constant},
+\end{align*}
+where $\zeta = [\zeta_1^x,\ldots,\zeta_{n_x}^x,\zeta_{1}^a,\ldots,\zeta_{n_a}^a]^T$ and $\zeta_i^x = \frac{x_{i,\min}+x_{i,\max}}{2}$,  $\zeta_i^a = \frac{a_{i,\min}+a_{i,\max}}{2}$. It holds that $f\in\mathscr{Q}(h_{1:n_x+n_a},g_{1:m})$. Moreover, the set $\{\eta|f(\eta)\ge 0\}$ is compact. Hence by \citep[Thm.~3.17, Def.~3.18]{laurent2009sums}, $\mK$ is Archimedean. 
+By Putinar's Positivstellensatz \citep{putinar1993positive}\citep[Thm.~3.20]{laurent2009sums}, all polynomials that are positive on $\mK$ must belong to $\mathscr{Q}(g_{1:n_x+n_a})$.
+In particular, this means that 
+\begin{align}
+\hat{\psi}(\eta)> 0, \; \forall \eta\in \mK \quad
+\implies \quad \hat{\psi}\in\mathscr{Q}(g_{1:n_x+n_a}).\label{eq:epsilon_ineq1}
+\end{align}
+Therefore we can approximate \eqref{eq:bellman_inequality_constraint} to abitrary accuracy with \eqref{eq:epsilon_ineq1}. 
+On the other hand, since \eqref{eq:epsilon_ineq1} says that $\hat{\psi}$ should belong to the quadratic module, it implies that the coefficients $\theta_\psi$ must belong to the cone $\left\{\theta\in\mR^{D_\psi}|\theta^T\phi\in \mathscr{Q}(g_{1:n_x+n_a})\right\}$, which, with a slight abuse of notation, we will denote as $\theta_\psi \in \mathscr{Q}(g_{1:n_x+n_a})$.
+
+With the polynomial approximation \eqref{eq:polynomial_approx}, we can re-write the empirical average \eqref{eq:emphirical_average} as
+\begin{align*}
+    &\frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N\hat\psi(\mfx_t^i,\mfa_t^i) = h^T\theta_\psi,
+\end{align*}
+where 
+\begin{align*}
+\bm h = \begin{bmatrix}
+        \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N\phi(\mfx_t^i,\mfa_t^i;\eta_{[\cdot]})
+    \end{bmatrix}.
+\end{align*}
+Similarly, we can further approximate the constraint \eqref{eq:regularization} as
+\begin{align*}
+    \int_\mK \hat\psi(\eta) \mathrm{d}\eta = \theta_\psi^T\underbrace{\begin{bmatrix}
+        \int_\mK\phi(\eta;\eta_{[\cdot]})\mathrm{d}\eta
+    \end{bmatrix}}_{d} \ge 1.
+\end{align*}
+In addition, the structure of the constraint \eqref{eq:psi_def} lends itself to an approximation by linear equations.
+To see this, noticing that $V$ only depends on $x$, we hence approximate $V$ by $2d_V$-th order polynomial on $X$,
+\begin{align*}
+    V(x) \approx \hat{V}(x):=\theta_V^T r(x), \; \theta_V \in \mR^{D_V},
+\end{align*}
+where $D_V = C(n_x+2d_V, 2d_V)$, and $r(x)$ is a basis of $2d_V$-th order polynomials on $\mR^{n_x}$.
+Consequently, the coordinate of $\proj^*V$ and $q^*V$ with respect to basis $\phi(\eta;\eta_{[\cdot]})$ can be calculated by their value at the interpolation points, i.e.,
+\begin{align*}
+    (\proj^*V)(\eta) &= \theta_V^T\underbrace{\begin{bmatrix}
+        (\proj^*r)(\eta_{[1]}) 
+        &\cdots 
+        &(\proj^*r)(\eta_{[D_\psi]})
+    \end{bmatrix}}_{=: G_1^T}\phi(\eta;\eta_{[\cdot]}),\\
+    (q^*V)(\eta) &= \theta_V^T\underbrace{\begin{bmatrix}
+        (q^*r)(\eta_{[1]}) 
+        &\cdots 
+        &(q^*r)(\eta_{[D_\psi]})
+    \end{bmatrix}}_{=: G_2^T}\phi(\eta;\eta_{[\cdot]}).
+\end{align*}
+In a similar manner, we further do a coordinate change on $\ell$ to the same basis $\phi(\eta;\eta_{[\cdot]})$.
+More specifically, by Assumption \ref{ass:obj_func}, 
+\begin{align*}
+\ell = \theta_\ell^T\varphi =\theta_\ell^T
+\begin{bmatrix}
+\varphi_1\\\vdots\\\varphi_{n_\ell}
+\end{bmatrix}
+\approx \theta_\ell^T
+\underbrace{\begin{bmatrix}
+\gamma_{\varphi_1}^T\\\vdots\\\gamma_{\varphi_{n_\ell}}^T
+\end{bmatrix}}_{=: H^T}\phi,
+\end{align*}
+where $\gamma_{\varphi_i}^T\phi(\eta;\eta_{[\cdot]})$ is an approximation of the feature $\varphi_i$ in the Lagrange polynomial basis $\phi(\eta;\eta_{[\cdot]})$.
+Therefore, the constraint \eqref{eq:psi_def} now can be approximated with the following linear constraints on the coefficients of the polynomial approximations
+\begin{align}
+    &\theta_\psi\!=\!\! \underbrace{\begin{bmatrix}H &\alpha G_2\!-\!G_1\end{bmatrix}}_{\Xi_\psi \in \mR^{D_\psi\times (n_\ell + D_V)}}\! \begin{bmatrix}
+        \theta_\ell\\\theta_V
+    \end{bmatrix}\!\!\Rightarrow\!\!
+    \underbrace{\begin{bmatrix}
+    I &-H &G_1\!\!-\!\!\alpha G_2
+    \end{bmatrix}}_{=: G}\!
+    \begin{bmatrix}
+    \theta_\psi \\\theta_\ell \\ \theta_V
+    \end{bmatrix}\!=\!0.\label{eq:psi_ell_V_equality_constraint}
+\end{align}
+
+
+
+As a brief summary, we can approximate \eqref{eq:IOC_origin} with the convex optimization problem
+\begin{subequations}\label{eq:IOC_approx2}
+\begin{align}
+\min_{\theta_\psi\theta_\ell,\theta_V}&\;\;\bm h^T\theta_\psi\\
+&\;\; \eqref{eq:psi_ell_V_equality_constraint}\\
+&\;\; \theta_\psi\in\mathscr{Q}(g_{1:n_x+n_a}),\label{eq:theta_psi_constraint}\\
+&\;\; d^T\theta_\psi\geq 1,\\
+&\;\; \|\theta_\psi\|_{\infty}^2\le \beta_\psi^\prime,\label{eq:theta_psi_bounded}\\
+&\;\;\|\theta_\ell\|_{\infty}^2\le \beta_\ell^\prime,\;\|\theta_V\|_{\infty}^2\le \beta_V^\prime.\label{eq:theta_V_ell_bounded}
+\end{align}
+\end{subequations}
+Moreover, since all norms on finite dimensional vector spaces are equivalent \citep[Theorem~2.4-5]{kreyszig1991introductory}, the constraints \eqref{eq:l_psi_norm_bounds},\eqref{eq:V_psi_norm_bounds} and \eqref{eq:IOC_origin_V_lip_constraint} approximated in finite dimension is relaxed and simplized to \eqref{eq:theta_psi_bounded} and \eqref{eq:theta_V_ell_bounded}, where $\beta_\psi^\prime,\beta_\ell^\prime,\beta_V^\prime$ can be chosen arbitrarily large in practice.
+
+
+\subsection{Expert policy reconstruction}\label{sec:policy-recovery}
+Solving \eqref{eq:IOC_approx2} gives the esimates $(\hat{\ell}_{M,\mathbf{d}},\hat{V}_{M,\mathbf{d}})$ for the ``true" running cost and the value function $(\elltrue,\Vtrue)$, where $\mathbf{d}=(d_\psi,d_V)$. 
+With the identified $\hat{\ell}_{M,\mathbf{d}}$, any off-the-shelf algorithm (e.g., model predictive control) that solves the forward optimal control problem can be used for control policy reconstruction.
+As mentioned previously in Sec.~\ref{sec:problem_formulation}, such control policy reconstruction method should have better generalizability and robustness compared to behaviour cloning.
+Nevertheless, in the worst case scenarios,
+the reconstructed control policy may be different from the expert's policy.
+This is because the ``true" cost function may not be identifiable and the identified cost function does not align with the ``true" one; or because the ``true" cost function may admit multiple optimal control policies.
+Despite this, we can still get a reasonable control policy by taking the prior knowledge of the cost structure and the IOC result into account in the worst case scenarios.
+To this end, note that by Assumption \ref{ass:stationary_markov_policy} and \eqref{eq:opt_cond_inf_dim}, it holds for the ``true" $(\elltrue,\Vtrue)$ and the expert control policy $\pitrue$ that
+\begin{align*}
+0&=\langle \bar{\psi}:=\elltrue+(\alpha q^*-\proj^*)\Vtrue,\mu^{\pitrue}\rangle+ \langle \| a - \pitrue(x) \|_2^2],\mu^{\pitrue}\rangle\\
+&=\langle \bar{\psi},(\proj \mu^{\pitrue})\otimes\pitrue\rangle+\langle \| a - \pitrue(x) \|_2^2],\mu^{\pitrue}\rangle\\
+&=\int_X \bar{\psi}(x, \pitrue(x)) (\proj\mu^{\pitrue})(\mathrm{d}x) + \langle\| a - \pitrue(x) \|_2^2,\mu^{\pitrue}\rangle.
+\end{align*}
+On the other hand, due to \eqref{eq:bellman_inequality_constraint}, for expert policy $\pitrue(x)$ and all deterministic stationary policies $\pi$ it holds that
+\[
+\int_X \bar{\psi}(x, \pi(x)) (\proj\mu^{\pitrue})(\mathrm{d}x) +\langle\| \pitrue(x) - \pi(x) \|_2^2,\mu^{\pitrue}\rangle\ge 0.
+\]
+Hence we parameterize $\pi$ by $\theta_\pi\in\Theta$, where $\Theta\subset\mR$ is compact and $\pi(x;\cdot):\Theta\rightarrow A$ is continuous for any $x$, for instance, a neural network $\pi(x;\theta_\pi)$ whose weights are $\theta_\pi$. And then we estimate $\pitrue$ by solving
+\[
+\min_{\theta_\pi\in\Theta} \; \langle\bar{\psi}(x, \pi(x;\theta_\pi)) +\| \pitrue(x) - \pi(x;\theta_\pi) \|_2^2,\proj\mu^{\pitrue}\rangle.
+\]
+Notably, by following an argument similar to the proof of Proposition \ref{prop:finite_time_horizon_equivalent}, it is equivalent to solving
+\begin{align}
+\min_{\theta_\pi} \; & \langle\bar{\psi}(x, \pi(x;\theta_\pi))+\| \pitrue(x) - \pi(x;\theta_\pi) \|_2^2,\proj\hat{\mu}_t^{\pitrue,N}\rangle
+\label{eq:policy-approx-reconstruction-infinite}
+\end{align}
+Though we do not have access to neither the actual distribution $\hat{\mu}_t^{\pitrue,N}$, nor $\bar{\psi}$, we can still approximate the above problem. First, the integral can be approximated with the empirical mean of the I.I.D. observations of the optimal ``state-action pair" trajectories $\{(x_t^i,a_t^i)\}_{t=1}^N$, $i=1:M$. Next, we approximate $\bar{\psi}$ with the approximation $\hat{\psi}_{M,\mathbf{d}}$ that solves \eqref{eq:IOC_approx2}. Together, this gives the finite-dimensional optimization problem
+\begin{align}
+\min_{\theta_\pi\in \Theta} \! \frac{1}{M}\!\sum_{t=1}^N\!\sum_{i=1}^M\! \hat{\psi}_{M,\mathbf{d}}(\mfx_t^i, \pi(\mfx_t^i;\theta_\pi)) \!+\! \| \mfa_t^i \!-\! \pi(\mfx_t^i;\theta_\pi) \|_2^2.
+\label{eq:policy_approx_reconstruction}
+\end{align}
+
+As a summary, we have constructed the infinite dimensional IOC algorithm \eqref{eq:IOC_approx1} and
+
+a finite dimensional approximation \eqref{eq:IOC_approx2} that
+
+can be solved numerically. 
+More specifically, solving \eqref{eq:IOC_approx2} yields an approximation of the cost function as well as the value function that can lead to the ``true" policy.
+As mentioned previously, with the identified cost function, one may apply any standard optimal control method to obtain a policy with good generalization capability.
+In addition, solving \eqref{eq:policy_approx_reconstruction} provides another way of estimating the optimal control policy. The complete estimation procedure is described in Algorithm~\ref{alg:estimator}. 
+
+\begin{algorithm}[!htpb]
+    \caption{Estimation procedure for cost and policy}
+    \label{alg:estimator}
+    \begin{algorithmic}[1]
+        \Require Data $\{(x_t^i,a_t^i)\}_{t=1}^N$, $i=1:M$, system dynamics $Q(\cdot|x,a)$, state and action space $\mK = X\times A$, polynomial degrees $(d_\psi,d_V)$, parametrization $\pi(\cdot;\theta_\pi)$.
+        \Ensure $(\hat{\ell}_{M,\mathbf{d}},\hat{V}_{M,\mathbf{d}})$ and $\pi(\cdot;\hat{\theta}_\pi)$.
+        \State Design interpolation the points $\eta_{[\cdot]}$ and the polynomial bases $r(x)$.
+        \State Calculate the matrix $G$, defined in \eqref{eq:psi_ell_V_equality_constraint}, from system dynamics and sample moments vector $h$ from data.
+        \State Obtain the estimate $(\hat{\ell}_{M,\mathbf{d}},\hat{V}_{M,\mathbf{d}})$ by solving \eqref{eq:IOC_approx2}.
+        \State Obtain the estimate $\pi(\cdot;\hat{\theta}_\pi)$: either by solving \eqref{eq:policy_approx_reconstruction} to estimate the expert policy, or by applying any standard optimal control algorithm.
+    \end{algorithmic}
+\end{algorithm} 
+
+

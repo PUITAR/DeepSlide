@@ -1,0 +1,1 @@
+A configurable deck combining the Darmstadt theme with the miniframes outer theme and an author–title footline. Style overrides are centralized in a separate format file, and a section-level table of contents improves navigation. This template is ideal when you want a tailored yet consistent academic look with light customization.

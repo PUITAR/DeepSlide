@@ -1,0 +1,186 @@
+\section{Critic and Generator Prompts}
+\label{supp:prompts}
+\tinytit{Critic Prompt Design}
+The prompt illustrates the instruction used to query the critic model. For each image-question pair $(I_q, q)$ and a candidate passage $p$, the critic is explicitly asked to determine whether $p$ contains any information that could help answer the question. The formulation uses a minimal, binary response space (\ie, ``Yes''/``No''), which simplifies supervision and ensures consistent outputs across diverse samples. This concise design encourages the model to focus on relevance estimation rather than generative reasoning, enabling more stable fine-tuning and robust filtering of noisy passages during retrieval.
+
+\begin{promptbox2}[title={Critic System Prompt}]
+\footnotesize
+You are a multimodal reasoning assistant specialized in Knowledge-Based Visual Question Answering (KB-VQA).
+
+Your task is to evaluate whether a given text passage provides useful and relevant information for answering a question about an image.
+
+You will be given:
+
+- \textbf{Image}: a visual scene containing entities, actions, and context.
+
+- \textbf{Question}: a natural-language question that refers to the image.
+
+- \textbf{Text Passage}: an external knowledge snippet retrieved from a database.
+
+You must analyze the semantic alignment between the text, the image, and the question.
+Follow these steps carefully before giving your final decision:
+
+1. Understand the visual scene: Identify the key objects, people, actions, and context visible in the image.
+
+2. Interpret the question: Determine what information the question seeks (e.g., factual, reasoning, counting, attribute-based).
+
+3. Analyze the text passage: Extract the main claims, facts, and entities mentioned in the text.
+
+Compare for relevance: Assess whether the information in the text:
+
+- Contains at least one sentence that supports answering the question about the image, OR
+
+- Provides background knowledge needed to interpret or reason about the image-question pair.
+
+Important:
+
+- If even a single sentence in the passage is relevant or useful, consider the entire passage as relevant and answer "Yes”.
+
+- If no part of the passage contributes meaningfully to answering the question, answer "No”.
+
+Output only one word:
+
+"\textbf{Yes}" -> if the text provides relevant or useful information for answering the question.
+
+"\textbf{No}" -> if the text is irrelevant or unhelpful.
+\end{promptbox2}
+
+\begin{promptbox2}[title={Critic User Prompt}]
+\footnotesize
+Here is the question on the image above: 
+
+\placeholder{Question}
+
+Here is the text passage to analyze:
+\placeholder{Passage}
+
+Does the text passage contain at least one sentence that may have some information useful to answer the user question? 
+"\textbf{Yes}"/"\textbf{No}" answer:
+\end{promptbox2}
+
+\tit{Generator Prompt Design}
+This prompt defines the instruction for the generator model, which receives the image, question, and textual context. During training, the model is provided with only the single passage associated with the current example from the ReflectiVA dataset~\cite{cocchi2025augmenting}, whereas at inference it takes the subset of passages selected by the critic model. The generator is prompted to synthesize a final answer grounded in both visual and textual evidence. At inference, providing critic-filtered passages as input encourages concise, evidence-based reasoning, reduces the impact of irrelevant or noisy information, and improves factual grounding in multimodal responses. The generator system prompt is adapted from Dr. GRPO~\cite{liu2025understanding}.
+Notably, when the critic model filters all retrieved passages (\ie, when $j=0$) the user prompt is changed and only the question with the image is fed to the generator.
+
+\begin{promptbox1}[title={Generator System Prompt}]
+\footnotesize
+\texttt{A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think>reasoning process here</think><answer>short answer here</answer>.}
+\end{promptbox1}
+
+
+\begin{promptbox1}[title={Generator User Prompt}]
+\footnotesize
+\placeholder{Question} 
+
+The following paragraphs may contain useful information to help answer the question correctly:
+
+<paragraph>\placeholder{$\text{Passage}_1$}</paragraph>
+
+...
+
+<paragraph>\placeholder{$\text{Passage}_j$}</paragraph>.
+\end{promptbox1}
+
+\tit{Reasoning-Trace Prompt Design}
+To extract reasoning traces used during the SFT training stage (cf. Sec.~\ref{sec:cold_start} of the main paper), we employ a structured prompting strategy that elicits explicit, step-by-step inference from a teacher MLLM. The system prompt instructs the model to analyze the image, the question, and one retrieved passage, then produce a hidden reasoning trace ($\texttt{<think>} \dots \texttt{</think>}$) that (i) grounds its steps in visual evidence (\eg, objects, attributes, spatial relations), (ii) evaluates the content of the passage and explicitly states whether it is relevant or irrelevant, and (iii) connects visual and textual cues via a logical chain. The user prompt supplies the question, the retrieved passage with its relevance tag, and the correct answer; the model must output the trace plus the final answer in a strict schema.
+Collected reasoning traces are used to initialize the generator with explicit reasoning trajectories that link the image, retrieved evidence, and the question, thereby strengthening its reasoning capabilities before the RL stage.
+
+\begin{promptbox3}[title={Reasoning Traces Generation System Prompt}]
+\footnotesize
+You are a multimodal reasoning assistant.
+
+Your goal is to analyze the image, the question, and the retrieved passage, and then produce a hidden reasoning trace that logically leads to the given answer.
+
+The reasoning must be step-by-step, plausible, and based on both the visual evidence and the retrieved text passage.
+
+You MUST explicitly state, within your reasoning trace, whether the passage is relevant or not according to the information provided (i.e., if it is labeled as "irrelevant", your reasoning must clearly and logically explain why it is not relevant, and if it is labeled as "relevant", your reasoning must logically support its relevance).
+
+Do not mention, restate, or hint at the correct answer in the reasoning trace.
+
+Your reasoning trace should include:
+
+- Description of relevant visual evidence (objects, spatial relations, attributes).
+
+- Analysis of the retrieved passage (what it states, whether it supports or contradicts the image/question, and its relevance).
+
+- Logical deduction that connects the visual and textual evidence to reach a conclusion.
+
+Here you have two good examples of reasoning traces:
+\newline
+
+EXAMPLE 1 with Relevant passage:
+
+Question: \placeholder{Example 1 Question}
+
+Retrieved \textbf{Relevant} Passage: 
+
+\placeholder{Example 1 Relevant Passage}
+
+Correct answer: \placeholder{Example 1 Answer}
+
+Output:
+
+<think> \placeholder{Example 1 Reasoning Trace} </think>
+
+<answer> \placeholder{Example 1 Answer} </answer>
+\newline
+
+EXAMPLE 2 with Irrelevant passage:
+
+Question: \placeholder{Example 2 Question}
+
+Retrieved \textbf{Irrelevant} Passage: 
+
+\placeholder{Example 2 Irrelevant Passage}
+
+Correct answer: \placeholder{Example 2 Answer}
+
+
+Output:
+
+<think> \placeholder{Example 2 Reasoning Trace} </think>
+
+<answer> \placeholder{Example 2 Answer} </answer>
+\newline
+
+Output your reasoning and the correct answer using the exact format below:
+
+<think> [your reasoning trace here] </think>
+
+<answer> [the provided answer] </answer>
+\end{promptbox3}
+
+
+\begin{promptbox3}[title={Reasoning Traces Generation User Prompt}]
+\footnotesize
+Question: \placeholder{Question}
+
+Retrieved \textbf{\placeholder{Relevant}} Passage: \placeholder{Passage}
+
+Correct Answer: \placeholder{Answer}
+
+Please produce a reasoning trace that could logically lead to this answer, based on both the image and the retrieved passage if relevant. 
+
+Do not mention or hint at the answer explicitly in your reasoning.
+
+Concentrate on providing a coherent explanation that supports the indicated relevance or irrelevance of the passage in the reasoning trace, integrating both textual and visual evidence.
+
+Make sure to insert the correct answer between the answer tags.
+\end{promptbox3}
+
+
+\section{Additional Qualitative Results}
+\label{supp:qualitatives}
+
+
+\tinytit{Reasoning Traces}
+To further interpret the behavior of our model, we visualize qualitative examples of the reasoning traces generated by \ours in Fig.~\ref{fig:qualitatives_suppl_reasoning}. The zero-shot baseline produces partial reasoning but lacks a consistent structure and does not adhere to the output format defined by the evaluation datasets. In contrast, ReflectiVA follows the correct answer format but fails to generate explicit reasoning traces, limiting interpretability. In contrast, \ours generates coherent, well-structured traces that reveal the step-by-step logic behind its predictions. These examples highlight the ability of the proposed solution to integrate visual and textual cues, assess the relevance of retrieved passages, and maintain consistent reasoning even under noisy or irrelevant evidence, where baselines often over-rely on passages or hallucinate unsupported details.
+
+\tit{KB-VQA Qualitative Results}
+Fig.~\ref{fig:qualitatives_suppl} presents additional qualitative examples from the InfoSeek and Encyclopedic-VQA benchmarks, comparing the responses of \ours, ReflectiVA~\cite{cocchi2025augmenting}. As shown, \ours produces answers that remain aligned with both the visual content and the retrieved evidence, benefiting from its critic-guided filtering and structured reasoning. These examples further highlight the robustness of \ours in handling complex, knowledge-driven VQA scenarios.
+
+\section{Limitations and Impact} 
+\label{supp:limitations}
+While \ours demonstrates strong performance across standard benchmarks, it still faces some limitations. First, the generator produces a detailed reasoning trace, which improves the explainability of the final answer but may also increase latency, as more tokens must be generated before producing the answer. Second, the quality of \ours depends on the reliability of the retrieved evidence. Although the critic effectively filters irrelevant passages, retrieval failures or missing knowledge can still lead to incomplete or incorrect reasoning. Moreover, the model may occasionally over-structure its explanations, producing reasoning that is correct in format but not perfectly aligned with human logic. 
+
+Despite these limitations, the explicit separation of evidence filtering from reasoning and answer generation enables \ours to achieve strong performance while promoting greater transparency and explainability, potentially inspiring future research on modular and trustworthy multimodal reasoning frameworks.

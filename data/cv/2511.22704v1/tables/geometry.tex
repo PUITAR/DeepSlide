@@ -1,0 +1,26 @@
+
+
+\begin{table}[t!]
+\small
+\centering
+\begin{tabular}{l|cc}
+\toprule
+
+\multicolumn{1}{c}{\multirow{1}[0]{*}{Method}} & Pred $\rightarrow$ GT $\downarrow$ & GT $\rightarrow$ Pred $\downarrow$ \\ \midrule
+
+DUSt3R         & 0.305 & 0.160 \\
+VGGT           & 0.288 & 0.129 \\
+Pow3R          & 0.281 & 0.134 \\
+MASt3R         & 0.212 & 0.069 \\
+Prompt-DA      & 0.205 & 0.063 \\
+\hline 
+Ours \textit{w/o} Translation   & 0.191 &  0.046 \\
+Our Full Model   & \textbf{0.172}  & \textbf{0.027}  \\
+
+\bottomrule
+\end{tabular}
+\vspace{-2mm}
+\caption{\textbf{Quantitative comparison of geometry.} For scale-invariant methods, we compute the rescale factor by comparing their bounding box with that of the ground truth.}
+\vspace{-4mm}
+\label{tab:geometry}
+\end{table}

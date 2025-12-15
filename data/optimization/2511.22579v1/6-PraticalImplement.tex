@@ -1,0 +1,67 @@
+
+As demonstrated in Theorem \ref{thm: MAIN-CONSISTENCY-THEOREM}, the IOC problem can be solved numerically by solving \eqref{eq:IOC_approx2}, where $\hat{\psi} = \theta_\psi^T\phi\in \mathscr{Q}(g_{1:n_x+n_a})$. 
+This constraint corresponds to a Weighted Sum-of-Squares (WSOS) polynomial condition.
+Consequently, we solve such problem by following the pipeline proposed in \citep{Papp2019sum}, which treats the problem as a non-symmetric conic optimization problem. In particular, it constructs a logarithmically homogeneous self-concordant barrier (LHSCB) function, and applies a primal-dual interior point method. 
+This framework is significantly more efficient and numerically stable than classical semidefinite-programming-based approaches.
+Next, we will explain the procedure briefly for self-containment.
+
+As mentioned in Sec.~\ref{sec:finite-dim-ioc}, we represent the polynomials by linear combination of Lagrange interpolation basis. This turns the WSOS polynomial constraints to conic constraints on polynomial coefficients.  
+Next, we reformulate \eqref{eq:IOC_approx2} to the following form
+\begin{equation}\label{eq:dual-standform}
+    \begin{aligned}
+    \max_{\theta_\psi, \theta_\ell, \theta_V} &(-\Xi_\psi^Th)^T\begin{bmatrix}\theta_\ell\\\theta_V\end{bmatrix},\\
+    \text{s.t. }& \begin{bmatrix}d^T(-\Xi_\psi)\\ -\Xi_\psi  \end{bmatrix}\begin{bmatrix}\theta_\ell\\\theta_V\end{bmatrix}
+    + \begin{bmatrix} s_1\\\theta_\psi\end{bmatrix}
+    = \begin{bmatrix}-1\\0\end{bmatrix},\\
+    & \begin{bmatrix}s_1\\\theta_\psi\end{bmatrix} \in\mR_+\times\mathcal{K},
+\end{aligned}
+\end{equation}
+where $\Xi_\psi$ is defined in \eqref{eq:psi_ell_V_equality_constraint}, $\mathcal{K} := \left\{\theta\in\mR^{D_\psi} \mid \theta^T\phi\in \right.$ $\left.\mathscr{Q}(g_{1:n_x+n_a})\right\}$ is the conic constraints on the polynomial coefficients, and $s_1\in\mR_+$ is a slack variable. 
+Moreover, as also mentioned in Sec.~\ref{sec:finite-dim-ioc}, in practice, we can choose the norm bounds $\beta_\psi^\prime$, $\beta_\ell^\prime$, $\beta_V^\prime$ in \eqref{eq:IOC_approx2} to be arbitrarily large to include the ``true" cost function $\bar{\ell}$ and the ``true'' value function $\bar{V}$ as an interior point of the norm constraints \eqref{eq:theta_psi_bounded}, \eqref{eq:theta_V_ell_bounded}.
+This means that any ``reasonable" estimator should make the norm bound constraints \eqref{eq:theta_psi_bounded} and \eqref{eq:theta_V_ell_bounded} inactive, otherwise it means that the orders of the polynomials or the amount of the data are just not sufficient.
+Therefore, in practice, we can safely ignore \eqref{eq:theta_psi_bounded} and \eqref{eq:theta_V_ell_bounded} and if the numerical solver fails to solve \eqref{eq:dual-standform}, it implies that we need to add more data or increase the orders of the polynomials.
+
+Next, we view \eqref{eq:dual-standform} as the dual problem of a non-symmetric conic optimization problem, which takes the form
+\begin{equation}
+\begin{aligned}
+    \min_{y\in \mR^{D_\psi+1}} &-y_1,\\
+    \mathrm{s.t. }&\begin{bmatrix}\Xi_\psi^Td &\Xi_\psi^T  \end{bmatrix}y =\Xi_\psi^Th,\\
+    & y\in \mR_+\times\mathcal{K}^*,
+\end{aligned}
+\label{eq:final_primal_problem}
+\end{equation}
+where $\mathcal{K}^*$ is the dual cone of $\mathcal{K}$.
+To handle the cone $\mathcal{K}^*$, we adopt the LHSCB function $F:(\mathcal{K}^*)^\circ\rightarrow\mR$ given by \citep[Sec.~6]{Papp2019sum}, where $(\mathcal{K}^*)^\circ$ is the interior of $\mathcal{K}^*$. 
+More specifically, let $q$ and $p$ denote the polynomial bases of degree $2d_\psi$ and $(d_\psi-1)$, respectively. The barrier function $F$ shall take the form
+\begin{align*}
+    F(y) = -\sum_{i=1}^{n_x+n_a}\mathrm{ln}\left(\mathrm{det}\left(\Lambda_i(y)\right)\right),
+\end{align*}
+where $\Lambda_i$ is the linear operator uniquely defined by $\Lambda_i(q)=g_i pp^T$.
+Note that the operator $\Lambda_i$ depends explicitly on the choice of the polynomial basis, and, as mentioned in Remark~\ref{remark:using-interpolation}, we employ the Lagrange interpolation basis rather than the monomial basis since the latter often yields ill-conditioned $\Lambda_i(y)$ and degrades numerical performance. 
+Moreover, we also use the approximated Fekete points \citep{Sommariva2009FeketePoints} as the Lagrange interpolation nodes to avoid making the resulting polynomial sensitive to the interpolation values.
+
+Finally, we solve \eqref{eq:final_primal_problem} with the primal-dual interior-point method proposed in \citep{Skajaa2015pdinterior}. All subsequent numerical experiments are conducted based on this implementation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

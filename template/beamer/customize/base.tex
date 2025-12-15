@@ -1,0 +1,58 @@
+%!TeX encoding = UTF-8
+%!TeX program = xelatex
+\documentclass[xcolor=x11names,compress]{beamer}
+
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{color,xcolor}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{amsthm}
+\usepackage{lmodern} % 解决 font warning
+% \usepackage[UTF8]{ctex}
+\usepackage{animate} % insert gif
+
+\usepackage{lipsum} % To generate test text 
+\usepackage{ulem} % 下划线，波浪线
+% \usepackage{subfigure}
+
+\usepackage{listings} % display code on slides; don't forget [fragile] option after \begin{frame}
+
+% ----------------------------------------------
+% tikx
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{pgf}
+
+\usetheme{Darmstadt} 
+\useoutertheme[subsection=false,footline=authortitle]{miniframes}
+\setbeamertemplate{navigation symbols}{} 
+
+\input{format}
+
+\input{title}
+
+
+\begin{document}
+
+\maketitle
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection,hideallsubsections]
+  \end{frame}
+}
+
+\input{content}
+
+% references
+\begin{frame}
+    \frametitle{References}
+    \bibliographystyle{plain}
+    \bibliography{ref}
+\end{frame}
+
+\end{document}

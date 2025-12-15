@@ -1,0 +1,101 @@
+# VCS
+.DS_Store
+.env
+.env.*
+*.pem
+
+# Generic caches
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.python-version
+.ruff_cache/
+.pytest_cache/
+coverage.xml
+htmlcov/
+.mypy_cache/
+ .ipynb_checkpoints/
+ .coverage
+ coverage/
+ *.egg-info/
+ .eggs/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+
+# Trae / IDE
+.trae/
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Build outputs
+dist/
+build/
+out/
+
+# LaTeX artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.nav
+*.snm
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.vrb
+*.lof
+*.lot
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.pdf
+*.dvi
+*.ps
+
+# 压缩包
+*.zip
+*.tar.gz
+
+# Images generated
+deepslide/template/base/picture/*.pdf
+deepslide/template/base/picture/*.png
+
+all-MiniLM-L6-v2/
+
+# Uploads
+tmp_uploads/
+# workspace
+workspace/
+
+# Vercel cache
+.vercel/cache/
+
+# Test artifacts
+test/**/base.aux
+test/**/base.log
+test/**/base.nav
+test/**/base.out
+test/**/base.pdf
+test/**/base.snm
+test/**/base.toc
+
+# Generated results
+deepslide/agents/divider/result/*.json
+
+# index-tts
+index-tts/

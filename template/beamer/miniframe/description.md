@@ -1,0 +1,1 @@
+This template uses the miniframes outer theme to provide compact navigation tabs and clear section progression. With the Boadilla base theme, custom color palette, numbered captions, and hyperref integration, it supports structured technical talks that present many sections or subsections. It concludes with a references frame for academic completeness.

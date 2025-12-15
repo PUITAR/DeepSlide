@@ -1,0 +1,114 @@
+
+
+Suppose that an agent's behaviour is governed by a Markov control model $(X,A,\{A(x) \mid x\in X\},Q,\elltrue)$ \citep[Def.~2.2.1]{savorgnan2009discrete}, where
+\begin{itemize}
+\item $X\subset\mR^{n_x}$, $A\subset\mR^{n_a}$ are the Borel space for state and action, respectively;
+\item $\{A(x) \mid x\in X\}\subset A$ is the set of feasible control. Further, let $\mK:=\{(x,a) \mid x\in X,a\in A(x)\}\subset X\times A$ be the set of feasible state-action pairs;
+\item $Q:(\mathcal{B}(X)\times \mK)\rightarrow [0,1]$ is the transition kernel;
+\item $\elltrue:\mK\rightarrow\mR$ is the running cost.
+\end{itemize}
+Further, let $(\Omega,\mathcal{F},\mP)$ be the probability space that carries the state-action sequence $\{(\mfx_t,\mfa_t)\}_{t=1}^\infty$.
+We assume that the agent make its decision by seeking to optimize the following infinite-horizon expected total discounted cost
+\begin{align}
+\min_{\pi}J(\pi;\mu_1)=\mE\left[\sum_{t=1}^\infty\alpha^{t-1}\elltrue(\mfx_t,\mfa_t)\right],\label{eq:forward_problem_obj_fun}
+\end{align}
+where $\alpha\in(0,1)$ is the decay constant, and the initial value $x_1$ is distributed according to $\mu_1$ on $X$.
+In particular, the optimal policy $\bm{\pi}=\{\pi_t\}$ is a sequence of stochastic kernels $\pi_t:A\times (\mK^{t-1}\times X)\rightarrow [0,1]$, and the action $a_t$ that the agent taken at each time step $t$ is sampled from the distribution $\pi_t(a|x_1,a_1,\cdots,x_{t-1},a_{t-1},x_t)$.
+
+To proceed, we make the following assumptions.
+\begin{assumption}[Markov transition kernel]\label{ass:transition_kernel}
+ The Markov transition kernel is a priori known. In addition, the Markov transition kernel $Q(\cdot|x,a)$ is Lipschitz continuous in total-variation distance, i.e., there exists $L_Q\ge 0$ such that for all $\eta_1:=(x_1,a_1)\in\mathbb{K},\eta_2:=(x_2,a_2)\in\mathbb{K}$, 
+\begin{align*}
+\|Q(\cdot|\eta_1)-Q(\cdot|\eta_2)\|_{\tv}\le L_Q\|\eta_1-\eta_2\|_2.
+\end{align*}
+\end{assumption}
+\begin{assumption}[State-action set hyper-cube]\label{ass:compact_support}
+The state-action set $X\times A$ is a hyper cube, namely, $X=\times_{i=1}^{n_x}[x_{i,\min},x_{i,\max}]$ and $A = \times_{i=1}^{n_a}[a_{i,\min},a_{i,\max}]$. Moreover, for all $x\in X$, it hold for the feasible action set $A(x)$ that $A(x)=A$. Consequently, $\mK = X\times A$.
+\end{assumption}
+\begin{assumption}[Cost function]\label{ass:obj_func}
+  The cost function $\elltrue$ has prior structures in the sense that it belongs to a function class that can be parameterized linearly by $\thetatrue_\ell\in\mR^{n_\ell}$, i.e., $\elltrue(\cdot,\cdot) = \thetatrue_\ell^T\varphi(\cdot,\cdot)$, where $\varphi(\cdot,\cdot) = [\varphi_1(\cdot,\cdot),\ldots,\varphi_{n_\ell}(\cdot,\cdot)]^T$ is the vector of (known) $L_\varphi$-Lipschitz continuous feature functions, $\elltrue \in \lip(L_\ell)$ where $L_\ell = \|\thetatrue\|_1 L_\varphi$.
+\end{assumption}
+Moreover, under the Assumptions \ref{ass:transition_kernel}, \ref{ass:compact_support}, \ref{ass:obj_func}, we can further reformulate the problem of optimizing \eqref{eq:forward_problem_obj_fun} as a linear optimization problem in the infinite-dimensional space of measures \citep[Chap.~6]{hernandez2012discrete}.
+In particular, given a policy $\bm{\pi}$ and the initial value's distribution $\mu_1$, the state-control occupation measure at time step $t$ is defined as
+\begin{align*}
+  \mu_t^\pi(\Gamma_x\times \Gamma_a) :=\mE[\indicator_{\Gamma_x\times \Gamma_a}(\mfx_t,\mfa_t)],\quad \forall (\Gamma_x\times\Gamma_a)\subset\mK.
+\end{align*}
+In addition, let $\proj:\mathcal{M}_+(\mK)\rightarrow\mathcal{M}_+(X)$ be the linear projection operator that transform any probability measure $\mu\in\mathcal{M}_+(\mK)$ to its marginal distribution $\tilde{\mu}\in\mathcal{M}_+(X)$ on the state. 
+Moreover, for all $\Gamma_x\subset X$, let $q:\mathcal{M}_+(\mK)\rightarrow\mathcal{M}_+(X)$ be the linear forward time shift operator defined by
+\begin{align*}
+  (q\mu_t^\pi)(\Gamma_x) = \int_{\mK} Q(\Gamma_x|x,a)\mu_t^\pi(\mathrm d x,\mathrm d a).
+\end{align*}
+Therefore, in view of the definition of the transition kernel $Q$ and the state-control occupation measure, it is clear that $\proj\mu_{t+1}^\pi = q\mu_t^\pi$. Let us further define the following occupation measure
+\begin{align}\label{eq:mu^pi_def}
+  \mu^\pi:=\sum_{t=1}^\infty \alpha^{t-1} \mu_t^\pi.
+\end{align}
+Equipped with the set-up above, we can reformulate the the problem of optimizing \eqref{eq:forward_problem_obj_fun} as
+\begin{subequations}\label{eq:forward_problem_measure_form}
+\begin{align}
+  \min_{\mu^\pi\in\mathcal{M}_+(\mK)} &\;\;\langle \elltrue,\mu^\pi\rangle \label{eq:forward_problem_measure_form_obj}\\
+  \st &\;\;(\proj-\alpha q)\mu^\pi = \mu_1.\label{eq:forward_problem_measure_form_dynamics}
+\end{align}
+\end{subequations}
+In fact, the Assumptions \ref{ass:transition_kernel}, \ref{ass:compact_support}, \ref{ass:obj_func} guarantees that \eqref{eq:forward_problem_measure_form} is equivalent to optimizing \eqref{eq:forward_problem_obj_fun} \citep[Thm.~6.3.7]{hernandez2012discrete} in the sense that there is an equivalence between the feasible points of the two problems and that they both attains the same optimal value.
+\footnote{More specifically, Assumption \ref{ass:transition_kernel}, \ref{ass:compact_support} and \ref{ass:obj_func} together imply \citep[Ass.~4.2.1]{hernandez2012discrete}.}
+The equivalence between \eqref{eq:forward_problem_obj_fun} and \eqref{eq:forward_problem_measure_form} means that we can consider the latter formulation when we consider the IOC problem to come. 
+
+To this end, the optimality conditions for the above problem are given in \eqref{eq:opt_cond_inf_dim}, and they can derived as follows. We first relax the constraint \eqref{eq:forward_problem_measure_form_dynamics} with a multiplier $\Vtrue \in \mathscr{F}(X)$, and get the Lagrangian $\mathcal{L} : \mathcal{M}_+(\mK) \times \mathscr{F}(X) \rightarrow \mR$
+\begin{align*}
+\mathcal{L}(\mu^\pi, \Vtrue) & = \langle \elltrue,\mu^\pi\rangle - \langle \Vtrue, (\proj-\alpha q)\mu^\pi -\mu_1 \rangle \\
+& =  \langle \elltrue + (\alpha q^*-\proj^*)\Vtrue,\mu^\pi\rangle + \langle \Vtrue, \mu_1 \rangle.
+\end{align*}
+Considering the first term in the above equation, we note that $\inf_{\mu^\pi\in\mathcal{M}_+(\mK)}  \mathcal{L}(\mu^\pi, \Vtrue) > -\infty$ only if 
+\begin{subequations}\label{eq:opt_cond_inf_dim}
+\begin{equation}
+\elltrue+(\alpha q^*-\proj^*)\Vtrue\ge 0. \label{eq:bellman_inequality}
+\end{equation}
+On the other hand, since the above equation holds, the infimum of the Lagrangian is attained for any $\mu^\pi$ such that
+\begin{equation}\label{eq:complementary_slackness}
+  \langle \elltrue + (\alpha q^*-\proj^*)\Vtrue,\mu^\pi\rangle = 0,
+\end{equation}
+for example $\mu^\pi = 0$. However, the latter is not primaly feasible, which gives us the last optimality condition, namely
+\begin{align}
+  \eqref{eq:forward_problem_measure_form_dynamics},\quad \mu^\pi\in\mathcal{M}_+(\mK).\label{eq:primal_feasible}
+\end{align}
+\end{subequations}
+In these equations, the adjoint operators are defined by $q^*\Vtrue:\mK\mapsto\mR$ and $\proj^* \Vtrue:\mK\mapsto\mR$ via
+\begin{subequations}  \label{eq:adjoints}
+  \begin{align}
+    (q^*\Vtrue)(x,a) &=\int_X \Vtrue(\chi)Q(d\chi|x,a)\label{eq:cost_to_go}\\
+    (\proj^*\Vtrue)(\mfx,\mfu) &= \Vtrue(\mfx)\indicator_{\mK}(\mfx,\mfa)=\Vtrue(\mfx).\label{eq:value_func}
+  \end{align}
+\end{subequations}
+We further assume that as an observer, we can observe $M$ trials of the agent.  More precisely, let the trajectories $(\mfx_t^i, \mfa_t^i)_{t=1}^{N}$  be Independently Identically Distributed (I.I.D) over $i=1:M$. The observed trials $\{(x_t^i,a_t^i)\}_{i=1}^M$ are the realizations of the I.I.D state-action pairs $\{(\mfx_t^i,\mfa_t^i)\}_{i=1}^M$.
+Moreover, we make the following assumptions on the initial value distribution $\mu_1$ and the observed agent's optimal actions.
+
+\begin{assumption}[Initial value distribution]\label{ass:init_value}
+The support of the initial value distribution $\mu_1$ is $X$.
+\end{assumption}
+
+\begin{assumption}[Deterministic stationary policy]\label{ass:stationary_markov_policy}
+The observed agent's optimal actions $\{a_t^i\}_{i=1}^M$ for all $t=1:N$ are generated from a deterministic stationary policy \citep[Def.~2.3.2]{hernandez2012discrete}. Namely, it holds for the optimal policy $\bm{\pitrue}=\{\pitrue_t\}$ that $\pitrue_t(a|x_1,a_1,\cdots,x_{t-1},a_{t-1},x_t) = \delta(\pitrue(x_t))$, which is the Dirac measure concentrated at the measurable function $\pitrue:X\rightarrow A$.
+\end{assumption}
+
+With the above set-up, we are ready to present the problem that is considered in this paper. 
+
+\begin{problem}\label{pro:ioc}
+  Given the $M$ observations of the optimal ``state-action pair" trajectories $\{(x_t^i,a_t^i)\}_{t=1}^N$ that are generated by \eqref{eq:forward_problem_obj_fun}, construct a consistent estimator of $\pitrue:X\rightarrow A$ that takes the structure of $\elltrue$ into account.
+\end{problem}
+
+
+
+Note that different cost functions may lead to identical optimal policies.
+For instance, $\pi(x)=0$ is optimal to both $\ell_1(x,a)=a^2$ and $\ell_2(x,a)=a^4$.
+Hence, $\thetatrue_\ell$ is in general not identifiable unless the feature functions vector $\varphi$ is carefully chosen.
+Nevertheless, motivated by the practical need of ``learning from demonstration", in this paper we choose to not focus on the identifiability of IOC. Instead, the question of identifiability of the cost function is left for future research.
+Despite this, we can still do consistency analysis in the sense that the collected state-action pairs $(x_t^i, a_t^i)$ are indeed optimal to the reconstructed cost function as the data amount tends to infinity. 
+Moreover, we can also get an estimate $\hat{\pi}$ of the underlying optimal policy $\pitrue$ that corresponds to the estimated cost $\hat{\theta}_\ell^T\varphi$ (cf.~\citep{zhang2024inverse}).
+Such policy estimation intrinsically takes the prior knowledge of the structures in $\elltrue$ into account, in contrast to ``behaviour cloning" \citep{sammut2017behavioral, codevilla2019exploring, torabi2018behavioralcloningobservation}. More precisely, behaviour cloning parameterizes a family of deterministic stationary policies $\pi(\cdot;\theta)$ (typically a neural network) and solves the following optimization problem
+\begin{align}
+\min_{\theta}\frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N\|\mfa_t^i-\pi(\mfx_t^i;\theta)\|_2^2.
+\label{eq:behaviour_cloning}
+\end{align}
+Indeed, it also offers a consistent estimator of $\pitrue$, yet such control policy reconstruction is vulnerable to out-of-distribution data samples.
+Such samples can occur, e.g., due to compounding errors when using the control policy \citep{ross2011reduction}, due to distribution shifts in the noise \citep{pmlr-v70-pinto17a}, or when trying to generalize the behaviour to new environments \citep{pmlr-v48-finn16, fu2017learning}. 
+In contrast, by taking the structures in $\elltrue$ into account, we obtain a more robust control policy estimate.

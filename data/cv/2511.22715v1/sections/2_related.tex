@@ -1,0 +1,32 @@
+\section{Related Work}
+\label{sec:related}
+
+\tinytit{Knowledge-based VQA}
+The task requires models to answer questions that depend on external or specialized knowledge beyond the visual content of an image. Early datasets~\cite{marino2019ok,schwenk2022okvqa,shah2019kvqa}
+targeted specialized reasoning. However, with the advent of more powerful MLLMs, these datasets have become insufficient for evaluating performance in realistic and knowledge-intensive settings.
+To address this, benchmarks such as Encyclopedic-VQA~\cite{mensink2023encyclopedic} and InfoSeek~\cite{chen2023can} introduce more challenging, Wikipedia-scale scenarios requiring fine-grained and entity-specific 
+reasoning over external knowledge, making retrieval essential.
+
+
+\begin{figure*}[t]
+    \centering    \includegraphics[width=0.98\linewidth]{images/model.pdf}
+    \vspace{-0.15cm}
+    \caption{Overview of the proposed \ours model. A multi-level retriever module extracts noisy passages, which are refined by a critic model. The resulting relevant passages are fed to a generator trained via SFT and a reinforcement learning stage designed for the KB-VQA task.
+    }
+    \vspace{-0.3cm}
+    \label{fig:model}
+\end{figure*}
+ 
+The RAG framework has become the standard approach for this task, retrieving relevant content from sources such as Wikipedia. 
+One line of work focuses on enhancing the retrieval itself to obtain more accurate and less noisy results, as in WikiLLaVA~\cite{caffagni2024wiki}, which integrates external multimodal knowledge through a hierarchical retrieval framework. Other focuses on handling noisy retrieval, refining visual tokens~\cite{qi2024rora} or re-ranking retrieved textual passages before processing by the LLM~\cite{yan2024echosight}. 
+A third direction strengthens model-level control: VLM-PRF~\cite{hong2025knowledge} employs external tools for knowledge filtering, while ReflectiVA~\cite{cocchi2025augmenting} uses control tokens to guide retrieval and knowledge assessment.
+
+In this work, we first aim to reduce retrieval noise through effective filtering mechanisms and then empower the model with reasoning capabilities to critically evaluate retrieved knowledge before generating the final answer.
+
+\tit{RL-based Strategies for LLMs and MLLMs}
+As frontier LLMs advance, RL has emerged as a key paradigm for aligning model outputs with human values and desired behaviors~\cite{ouyang2022training,lee2023rlaif,rafailov2023direct}. Concurrently, the quality and diversity of training data remain crucial for robust alignment and generalization~\cite{zhou2023lima}.
+Recently, GRPO~\cite{shao2024deepseekmath} has emerged as a promising approach to improve sample efficiency and training stability at scale. Several variants~\cite{yu2025dapo,liu2025understanding} revisit the underlying loss formulation to mitigate bias and enhance token-level optimization efficiency.
+
+Inspired by the performance improvements achieved through GRPO-based methods, similar strategies have been extended to MLLMs~\cite{li2025self,wei2025unsupervised}. In particular, GRPO-CARE~\cite{chen2025grpo} enhances the coherence between intermediate reasoning traces and final outputs, leading to more reliable reasoning-grounded responses. Advanced LLM reasoning has also been explored in knowledge-intensive tasks. For example, Search-R1~\cite{jin2025search} integrates retrieval and reasoning for complex queries, while subsequent approaches extend this paradigm to multimodal search~\cite{jiang2024mmsearch,narayan2025deepmmsearch,wu2025mmsearch}.
+
+In this work, we build upon these foundations by introducing a multi-stage reinforcement learning framework that operates on top of a supervised fine-tuned MLLM, enhancing its ability to reason effectively over retrieved evidence.

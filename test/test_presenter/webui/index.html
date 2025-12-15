@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeepSlide Viewer</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- pdf.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+  <header class="toolbar container-narrow">
+    <div class="brand">DeepSlide Viewer</div>
+    <div class="spacer"></div>
+    <!-- <span class="muted">支持：?pdf=sample.pdf&text=sample.txt</span> -->
+  </header>
+
+  <main class="container">
+    <!-- 演讲稿面板 -->
+    <section class="script-panel card">
+      <h2>Speech</h2>
+
+      <div id="scriptSinglePage" class="prose"></div>
+
+      <div class="script-controls">
+        <button id="prevBtn">Previous</button>
+        <span id="scriptPageInfo" class="muted"></span>
+        <button id="nextBtn">Next</button>
+      </div>
+    </section>
+
+    <!-- PDF 面板 -->
+    <section class="pdf-panel card">
+      <div id="pdfContainer">
+        <canvas id="pdfCanvas"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer class="controls container-narrow">
+    <span id="pageInfo" class="muted"></span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

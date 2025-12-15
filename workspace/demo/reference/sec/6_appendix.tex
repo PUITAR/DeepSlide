@@ -1,0 +1,92 @@
+
+\section{Appendix}
+
+In the supplement, we present more results on geometry, ablation study on rendering, time analysis of our pipeline and data explanation in the following.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1.\linewidth]{figs/x_comp_geo.pdf}
+  \vspace{-6mm}
+  \caption{\textbf{Qualitative comparison on geometry.} From left to right, we show (a) source view images, the reconstruction point maps with corresponding pixels of (b) DUSt3R, (c) Pow3R, (d) VGGT, (e) MASt3R+Prompt-DA, and (f) Ours.}
+  \label{fig:x_geo}
+  %\vspace{-3mm}
+\end{figure}
+
+\section{More Results on Geometry}
+
+Our geometry module in stage 1 is able to generalize to different camera types, although our model is trained in a self-supervised manner without 3D loss.
+%
+In addition to the qualitative results on Mobile data in Fig.~\ref{fig:geo_ablation}, we illustrate the robustness of our geometry module in Fig.~\ref{fig:x_geo} on Industry Camera data.
+%
+DUSt3R~\cite{wang2024dust3r} and Pow3R~\cite{jang2025pow3r} struggle with large misalignment between two point maps on the foreground in Fig.~\ref{fig:x_geo}(b,c), even if Pow3R requires camera calibration.
+%
+Under only 2 sparse input views, VGGT~\cite{wang2025vggt} also badly aligns the foreground part of the point map, see face, ball and trousers in Fig.~\ref{fig:x_geo}(d).
+%
+By feeding MASt3R~\cite{leroy2024grounding} geometry as input, Prompt-DA~\cite{lin2025prompting} manages to refine the geometry of MASt3R but in a view-independent manner.
+%
+Thus the global alignment of two source views is not held.
+%
+Our affine transform module preserves the consistency of the overlapped part of two source views by using rendering loss and geometry regularization. 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\linewidth]{figs/train_stage1_aaai65.pdf}
+  \caption{\textbf{Self-supervised training of stage 1.} We train the affine transform module and auxiliary layers by using Chamfer distance and rendering loss.}
+  \label{fig:stage1}
+\end{figure}
+
+\input{tables/render}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=1.\linewidth]{figs/render_abla4.pdf}
+  \vspace{-6mm}
+  \caption{\textbf{Qualitative ablation results.} We show novel view synthesis results of (a) stage 1, (b) initial warping color of stage 2, (c) final splatting of stage 2, and (d) ground truth.}
+  \label{fig:render_ablation}
+  %\vspace{-3mm}
+\end{figure}
+
+
+
+\section{Ablation Study on Rendering}
+As mentioned in the Method section, our stage 1 network is associated with some auxiliary layers to generate two Gaussian planes, in order to supervise the geometry with rendering loss in a self-supervised manner, see Fig.~\ref{fig:stage1}.
+%
+However, such rendering typically struggles with some missing parts, Fig.~\ref{fig:render_ablation}(a) and obtains a low numeric result in Tab.~\ref{tab:render}, because the coarse registration in stage 1 can not totally handle the large sparsity of input views. 
+%
+After geometry refinement in stage 2, we can render the target view by warping the color from source views as in Eq.~\ref{eq:color_stage2}.  
+%
+However, the floating points between foreground and background would make noisy results, Fig.~\ref{fig:render_ablation}(b). 
+%
+Therefore, we use the color residual map in Eq.~\ref{eq:color} and Splatting mechanism to correct the artifacts in Fig~\ref{fig:render_ablation}(c), and to improve the quantitative result in Tab.~\ref{tab:render}. 
+
+\input{tables/time_analysis}
+
+\section{Time Analysis}
+We conduct experiments on a machine equipped with an RTX 3090 GPU with 24GB memory for our method and provide a time analysis of our pipeline in Tab.~\ref{tab:time_analysis}.
+%
+In stage 1, point map reconstruction takes a lot of time by using original MASt3R~\cite{leroy2024grounding}, due to the complex structure of ViT, while our iterative affine transform is very efficient.  
+%
+In addition, the depth initialization is achieved by using $\alpha$-blending~\cite{kerbl2023_3dgs} with a fixed radius and diagonal rotation matrix.
+%
+Due to the fine resolution input in stage 2, the majority of time is used for depth refinement by using the costly 3D convolution.
+%
+The time analysis is done by using PyTorch and we believe that the full pipeline can be largely accelerated with a C++ implementation of TensorRT.
+
+\section{Data} 
+
+As mentioned in the Experiment section, we train and evaluate our method on 3 types of camera data, including industry camera (THumanMV~\cite{zhou2024gps}), GoPro, and mobile phone (4K4D~\cite{xu20244k4d} and SelfCap~\cite{xu2024representing}). 
+%
+For industry camera, we take 15/11 training/validation sequences in different scenes.
+The validation data is, in general, unseen character or unseen motion.
+For mobile stage data, we take around 3000 frames from 4K4D dance sequence and SelfCap yoga sequence for training and validate on the rest of the frames.
+Since the industry camera and the mobile phone stage are typically complex capture systems with relatively large focal lengths, they can only capture small amplitude movement.
+%
+Therefore, we capture multi-person movement of sport in large scale scenes with a portable GoPro system in the mode of 1080P 30FPS.
+%
+For GoPro data, we take 6/4 sequences as training/validation data.
+%
+All aforementioned datasets provide camera calibration.
+%
+The majority of the data we used has been already publicly available for research purposes, while a part of the data is not available due to a confidential issue.
+
+

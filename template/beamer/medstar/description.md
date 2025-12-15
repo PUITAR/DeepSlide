@@ -1,0 +1,1 @@
+A corporate-styled template based on the custom medstarbeamer class. It integrates standard math and graphics packages and produces a branded title page. The template supports adjustable content overview via outline/current size commands and finishes with a references frame, making it suitable for institutional presentations that require a consistent look.

@@ -1,0 +1,1 @@
+An ornate template built on the Seahorse color theme, rounded inner theme with shadows, and smoothbars outer theme. It includes numbered captions, semi-transparent uncovering, tightened margins, an outline frame at each subsection, and a table-of-contents slide. This structured style works well for formal talks and longer seminars.

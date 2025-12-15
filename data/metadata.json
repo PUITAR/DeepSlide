@@ -1,0 +1,340 @@
+[
+  {
+    "id": "2511.22715v1",
+    "title": "ReAG: Reasoning-Augmented Generation for Knowledge-based Visual Question Answering",
+    "authors": [
+      "Alberto Compagnoni",
+      "Marco Morini",
+      "Sara Sarto",
+      "Federico Cocchi",
+      "Davide Caffagni",
+      "Marcella Cornia",
+      "Lorenzo Baraldi",
+      "Rita Cucchiara"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22715v1?mod=src&download=1",
+    "tar_path": "data/cv/2511.22715v1.tar.gz",
+    "dir": "data/cv/2511.22715v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22704v1",
+    "title": "Splat-SAP: Feed-Forward Gaussian Splatting for Human-Centered Scene with Scale-Aware Point Map Reconstruction",
+    "authors": [
+      "Boyao Zhou",
+      "Shunyuan Zheng",
+      "Zhanfeng Liao",
+      "Zihan Ma",
+      "Hanzhang Tu",
+      "Boning Liu",
+      "Yebin Liu"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/e-print/2511.22704v1",
+    "dir": "data/cv/2511.22704v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22699v1",
+    "title": "Z-Image: An Efficient Image Generation Foundation Model with Single-Stream Diffusion Transformer",
+    "authors": [
+      "Z-Image Team",
+      "Huanqia Cai",
+      "Sihan Cao",
+      "Ruoyi Du",
+      "Peng Gao",
+      "Steven Hoi",
+      "Shijie Huang",
+      "Zhaohui Hou",
+      "Dengyang Jiang",
+      "Xin Jin",
+      "Liangchen Li",
+      "Zhen Li",
+      "Zhong-Yu Li",
+      "David Liu",
+      "Dongyang Liu",
+      "Junhan Shi",
+      "Qilong Wu",
+      "Feng Yu",
+      "Chi Zhang",
+      "Shifeng Zhang",
+      "Shilin Zhou"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22699v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22697v1",
+    "title": "Mechanistic Finetuning of Vision-Language-Action Models via Few-Shot Demonstrations",
+    "authors": [
+      "Chancharik Mitra",
+      "Yusen Luo",
+      "Raj Saravanan",
+      "Dantong Niu",
+      "Anirudh Pai",
+      "Jesse Thomason",
+      "Trevor Darrell",
+      "Abrar Anwar",
+      "Deva Ramanan",
+      "Roei Herzig"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22697v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22690v1",
+    "title": "Ar2Can: An Architect and an Artist Leveraging a Canvas for Multi-Human Generation",
+    "authors": [
+      "Shubhankar Borse",
+      "Phuc Pham",
+      "Farzad Farhadzadeh",
+      "Seokeon Choi",
+      "Phong Ha Nguyen",
+      "Anh Tuan Tran",
+      "Sungrack Yun",
+      "Munawar Hayat",
+      "Fatih Porikli"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22690v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22686v1",
+    "title": "Emergent Extreme-View Geometry in 3D Foundation Models",
+    "authors": [
+      "Yiwen Zhang",
+      "Joseph Tung",
+      "Ruojin Cai",
+      "David Fouhey",
+      "Hadar Averbuch-Elor"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22686v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22677v1",
+    "title": "Decoupled DMD: CFG Augmentation as the Spear, Distribution Matching as the Shield",
+    "authors": [
+      "Dongyang Liu",
+      "Peng Gao",
+      "David Liu",
+      "Ruoyi Du",
+      "Zhen Li",
+      "Qilong Wu",
+      "Xin Jin",
+      "Sihan Cao",
+      "Shifeng Zhang",
+      "Hongsheng Li",
+      "Steven Hoi"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22677v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22668v1",
+    "title": "Structure-Preserving Unpaired Image Translation to Photometrically Calibrate JunoCam with Hubble Data",
+    "authors": [
+      "Aditya Pratap Singh",
+      "Shrey Shah",
+      "Ramanakumar Sankar",
+      "Emma Dahl",
+      "Gerald Eichstädt",
+      "Georgios Georgakis",
+      "Bernadette Bucher"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22668v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/cv",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22667v1",
+    "title": "A deep learning perspective on Rubens' attribution",
+    "authors": [
+      "A. Afifi",
+      "A. Kalimullin",
+      "S. Korchagin",
+      "I. Kudryashov"
+    ],
+    "category": "cv",
+    "source_url": "https://arxiv.org/src/2511.22667v1?mod=src&download=1",
+    "tar_path": "data/cv/2511.22667v1.tar.gz",
+    "dir": "data/cv",
+    "downloaded": true,
+    "extracted": false
+  },
+  {
+    "id": "2511.22715v1",
+    "title": "ReAG: Reasoning-Augmented Generation for Knowledge-based Visual Question Answering",
+    "authors": [
+      "Alberto Compagnoni",
+      "Marco Morini",
+      "Sara Sarto",
+      "Federico Cocchi",
+      "Davide Caffagni",
+      "Marcella Cornia",
+      "Lorenzo Baraldi",
+      "Rita Cucchiara"
+    ],
+    "category": "nlp",
+    "source_url": "https://arxiv.org/src/2511.22715v1?mod=src&download=1",
+    "tar_path": "data/nlp/2511.22715v1.tar.gz",
+    "dir": "data/nlp/2511.22715v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22697v1",
+    "title": "Mechanistic Finetuning of Vision-Language-Action Models via Few-Shot Demonstrations",
+    "authors": [
+      "Chancharik Mitra",
+      "Yusen Luo",
+      "Raj Saravanan",
+      "Dantong Niu",
+      "Anirudh Pai",
+      "Jesse Thomason",
+      "Trevor Darrell",
+      "Abrar Anwar",
+      "Deva Ramanan",
+      "Roei Herzig"
+    ],
+    "category": "nlp",
+    "source_url": "https://arxiv.org/src/2511.22697v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/nlp",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22612v1",
+    "title": "Improving LLM-based Ontology Matching with fine-tuning on synthetic data",
+    "authors": [
+      "Guilherme Sousa",
+      "Rinaldo Lima",
+      "Cassia Trojahn"
+    ],
+    "category": "nlp",
+    "source_url": "https://arxiv.org/src/2511.22612v1?mod=src&download=1",
+    "tar_path": null,
+    "dir": "data/nlp",
+    "downloaded": false,
+    "extracted": false
+  },
+  {
+    "id": "2511.22584v1",
+    "title": "Smarter, not Bigger: Fine-Tuned RAG-Enhanced LLMs for Automotive HIL Testing",
+    "authors": [
+      "Chao Feng",
+      "Zihan Liu",
+      "Siddhant Gupta",
+      "Gongpei Cui",
+      "Jan von der Assen",
+      "Burkhard Stiller"
+    ],
+    "category": "nlp",
+    "source_url": "https://arxiv.org/src/2511.22584v1?mod=src&download=1",
+    "tar_path": "data/nlp/2511.22584v1.tar.gz",
+    "dir": "data/nlp/2511.22584v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22582v1",
+    "title": "Extension Condition \"violations\" and Merge optimality constraints",
+    "authors": [
+      "Matilde Marcolli",
+      "Richard Larson",
+      "Riny Huijbregts"
+    ],
+    "category": "nlp",
+    "source_url": "https://arxiv.org/src/2511.22582v1?mod=src&download=1",
+    "tar_path": "data/nlp/2511.22582v1.tar.gz",
+    "dir": "data/nlp/2511.22582v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22613v1",
+    "title": "Variational analysis of determinantal varieties",
+    "authors": [
+      "Yan Yang",
+      "Bin Gao",
+      "Ya-xiang Yuan"
+    ],
+    "category": "optimization",
+    "source_url": "https://arxiv.org/src/2511.22613v1?mod=src&download=1",
+    "tar_path": "data/optimization/2511.22613v1.tar.gz",
+    "dir": "data/optimization/2511.22613v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22579v1",
+    "title": "Consistent inverse optimal control for discrete-time nonlinear stochastic systems",
+    "authors": [
+      "Ziliang Wang",
+      "Han Zhang",
+      "Axel Ringh"
+    ],
+    "category": "optimization",
+    "source_url": "https://arxiv.org/src/2511.22579v1?mod=src&download=1",
+    "tar_path": "data/optimization/2511.22579v1.tar.gz",
+    "dir": "data/optimization/2511.22579v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22428v1",
+    "title": "A Variational Approach to Mean Field Type Control",
+    "authors": [
+      "Alain Bensoussan",
+      "Ziyu Huang",
+      "Sheung Chi Phillip Yam"
+    ],
+    "category": "optimization",
+    "source_url": "https://arxiv.org/src/2511.22428v1?mod=src&download=1",
+    "tar_path": "data/optimization/2511.22428v1.tar.gz",
+    "dir": "data/optimization/2511.22428v1",
+    "downloaded": true,
+    "extracted": true
+  },
+  {
+    "id": "2511.22331v1",
+    "title": "On the Condition Number Dependency in Bilevel Optimization",
+    "authors": [
+      "Lesi Chen",
+      "Jingzhao Zhang"
+    ],
+    "category": "optimization",
+    "source_url": "https://arxiv.org/src/2511.22331v1?mod=src&download=1",
+    "tar_path": "data/optimization/2511.22331v1.tar.gz",
+    "dir": "data/optimization/2511.22331v1",
+    "downloaded": true,
+    "extracted": true
+  }
+]

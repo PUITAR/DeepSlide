@@ -1,0 +1,31 @@
+%!TeX encoding = UTF-8
+%!TeX program = xelatex
+\documentclass[xcolor=x11names,UTF8]{beamer}
+
+\usepackage{ragged2e}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm} % 对齐
+% \usepackage{calligra} % Thank you
+
+\usepackage{natbib}
+
+
+\input{title}
+
+\begin{document}
+
+\maketitle
+
+
+\input{content}
+
+% references
+\begin{frame}
+    \frametitle{References}
+    \bibliographystyle{plain}
+    \bibliography{ref}
+\end{frame}
+
+
+\end{document} 
+
+

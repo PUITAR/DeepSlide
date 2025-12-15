@@ -1,0 +1,20 @@
+\begin{table}[t!]
+%\setlength\tabcolsep{2.5pt} 
+\small
+\centering
+%\vspace{-2mm}
+\begin{tabular}{l|ccc}
+\toprule
+
+\multicolumn{1}{c}{\multirow{1}[0]{*}{Method}} & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ \\ \midrule
+
+Stage 1 Render          & 24.844 & 0.794 & 0.296 \\
+Stage 2 Initial Color          & 27.308 & 0.856 & 0.169 \\
+Stage 2 Final Splatting         & \textbf{28.703} & \textbf{0.889} & \textbf{0.169} \\
+
+\bottomrule
+\end{tabular}
+\caption{\textbf{Ablation study of rendering module.} We average the metrics across all datasets.}%We report Chamfer distance in centimeter for the direction of prediction to ground truth amd ground truth to prediction.}
+%\vspace{-2mm}
+\label{tab:render}
+\end{table}

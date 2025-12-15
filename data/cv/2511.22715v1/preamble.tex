@@ -1,0 +1,117 @@
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{framed}
+\usepackage{bm}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{xparse}
+\usepackage{algorithm}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{pifont}
+\usepackage{mathtools}
+\usepackage{lipsum}
+\usepackage{adjustbox}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{bbm}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\definecolor{Gray}{gray}{0.2}
+\definecolor{lightgray}{gray}{0.92}
+\definecolor{blond}{rgb}{0.98, 0.94, 0.75}
+\definecolor{TitleColor}{gray}{0.95}
+\definecolor{LightCyan}{rgb}{0.88,0.95,1}
+\definecolor{OurColor}{rgb}{0.855, 0.937, 0.957}
+
+\definecolor{blond}{rgb}{0.98, 0.94, 0.75}
+\def \ie {\emph{i.e.}}
+\def \eg {\emph{e.g.}}
+\def \etal {\emph{et al.}}
+
+\definecolor{customgray}{gray}{0.35}
+\newcommand{\KB}[1]{{\color{customgray}#1}}
+
+\def \argmax {\text{argmax}}
+\newcommand{\tit}[1]{\smallbreak\noindent\textbf{#1.}}
+\newcommand{\tinytit}[1]{\noindent\textbf{#1.}}
+
+\newcommand{\ours}{ReAG\xspace}
+
+\newcommand{\inc}[1]{\textcolor{blue!60!black}{\textbf{\small$\Delta$+#1}}}
+
+\definecolor{pastelblue}{rgb}{0.85, 0.95, 0.98}
+\definecolor{pastelpink}{rgb}{1.0,0.82,0.86}
+\definecolor{pastelgreen}{rgb}{0.47,0.87,0.47}
+\definecolor{pastelyellow}{rgb}{0.99,0.99,0.59}
+
+\newtcolorbox{promptbox1}[1][]{
+  enhanced,
+  breakable,
+  colback=pastelblue!20,
+  colframe=pastelblue!20!black,
+  leftrule=1.5mm,
+  arc=1mm,
+  boxrule=0.6pt,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  fonttitle=\bfseries,
+  title=Prompt,
+  fontupper=\ttfamily,
+  #1,
+  before upper={\color{black}},
+}
+
+\definecolor{promptbox2bg}{HTML}{EEF6E9}
+
+\newtcolorbox{promptbox2}[1][]{
+  enhanced,
+  breakable,
+  colback=promptbox2bg,
+  colframe=promptbox2bg!20!black,
+  leftrule=1.5mm,
+  arc=1mm,
+  boxrule=0.6pt,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  fonttitle=\bfseries,
+  title=Prompt,
+  fontupper=\ttfamily,
+  #1,
+  before upper={\color{black}},
+}
+
+\definecolor{promptbox3bg}{rgb}{0.992, 0.945, 0.965}
+\definecolor{text3}{rgb}{0.15,0.15,0.15}
+
+\newtcolorbox{promptbox3}[1][]{
+  enhanced,
+  breakable,
+  colback=promptbox3bg,
+  colframe=promptbox3bg!20!black,
+  leftrule=1.5mm,
+  arc=1mm,
+  boxrule=0.6pt,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  fonttitle=\bfseries,
+  title=Prompt,
+  fontupper=\ttfamily,
+  #1,
+  before upper={\color{text3}},
+}
+
+
+\definecolor{placeholdercolor}{rgb}{0.1,0.3,0.6}
+
+\newcommand{\placeholder}[1]{\textcolor{placeholdercolor}{\texttt{\{#1\}}}}

@@ -1,0 +1,1 @@
+A minimal Beamer setup focused on content-first slides. It provides a straightforward title page, clean text alignment, and a simple flow from content to bibliography with natbib support. This template is well-suited for quick decks, lecture notes, and presentations where clarity and brevity are preferred.

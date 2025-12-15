@@ -1,0 +1,8 @@
+\begin{itemize}
+    \item Value-based: $\pi is optimized by maximizing $v(s)$ or $q(s,a)$. 
+        e.g., Sarsa, Q-learning.
+    \item Policy-based: $\pi$ is optimized by certain scalar metrics $J(\theta)$.
+        e.g., Policy Gradient.
+\end{itemize}
+
+数学公式$\pi右边界没有写完整

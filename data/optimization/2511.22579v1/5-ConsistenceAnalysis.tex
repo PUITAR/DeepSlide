@@ -1,0 +1,340 @@
+
+
+We now analyze the consistency of the proposed algorithm. 
+By Proposition \ref{prop:finite_time_horizon_equivalent}, in theory, the underlying cost function can be estimated by solving \eqref{eq:IOC_approx1}. Yet such infinite dimensional optimization problem is not numerically tractable and hence the decision variables $\psi$ and $V$ in \eqref{eq:IOC_approx1}
+
+are approximated by finite-order polynomials so as to yield problem \eqref{eq:IOC_approx2}. In addition, the integrals are approximated via the empirical averages defined in \eqref{eq:emphirical_average} and \eqref{eq:policy_approx_reconstruction}. To justify these approximations, we present the following theorem, which states that as the data amount $M$ and the polynomial orders $\mathbf{d}=(d_\psi, d_V)$ tend to infinity, the estimate $(\hat{\ell}_{M,\mathbf{d}}, \hat{V}_{M,\mathbf{d}})$ converges to a running cost and a value function that corresponds to the ``true'' expert policy $\pitrue$. Such convergence constitutes the key consistency property.
+
+
+
+\begin{remark}
+Note that in \eqref{eq:IOC_origin_cont_func_set}, we optimize $(\theta_\ell, V, \psi)$.
+To simplify the analysis, in view of \eqref{eq:psi_def}, we substitute $\psi$ with the expression of $\theta_\ell$ and $V$ in the remainder of this section. 
+\end{remark}
+
+
+\begin{theorem}\label{thm: MAIN-CONSISTENCY-THEOREM}
+    Under Assumptions~\ref{ass:transition_kernel}-\ref{ass:stationary_markov_policy} and \ref{ass:IOC_normalization}, as the polynomial degrees $d_\psi, d_V$ and the data sample size $M$ approach infinity, the solution of \eqref{eq:IOC_approx2} achieves the optimal value of \eqref{eq:IOC_approx1} almost surely. Formally, the following equation holds a.s. 
+    \begin{equation*}
+        \begin{aligned}
+            \lim_{M\rightarrow\infty}\lim_{d_V\rightarrow\infty}\lim_{d_\psi\rightarrow\infty} \langle\theta_{\ell, M}^{\mathbf{d},T}\varphi\!+\!(\alpha q^*\!-\!\proj^*)(\theta_{V, M}^{\mathbf{d},T}r),\hat{\mu}^{\pitrue, N} \rangle\!=\!0,
+        \end{aligned}
+    \end{equation*}
+    where $(\theta_{\ell, M}^{\mathbf{d}}, \theta_{V, M}^{\mathbf{d}})$ is an optimal solution of \eqref{eq:IOC_approx2}. 
+\end{theorem}
+
+\begin{remark}
+The above theorem states the fact that, 
+the occupation measure $\hat{\mu}^{\pitrue, N}$ that corresponds to the observed optimal state-action pairs $\{(x_t^i,a_t^i)\}_{t=1}^N$, $i=1,\ldots,M$ is ``nearly" optimal to the approximated cost function $\theta_{\ell, M}^{\mathbf{d},T}\;\varphi$ and the approximated value function $\theta_{V, M}^{\mathbf{d},T}\;r$. This is because the optimality conditions \eqref{eq:opt_cond_inf_dim} are ``nearly" satisfied.
+\end{remark}
+
+\begin{remark}
+The convergence order in the above theorem: ``first increase the polynomial orders, then increase the data sample volume", actually coincide with the practical engineering practice. In particular, since data collection is typically expensive, if we get a bad estimate of the cost function, we would first increase the polynomial order to sufficiently high before we decide to collect more data.
+
+
+\end{remark}
+
+To prove Theorem \ref{thm: MAIN-CONSISTENCY-THEOREM}, we decompose the overall analysis into Lemma \ref{lem: stochastic-consistency-for-infinite-dim}, \ref{lem: Approximating V by polynomials} and \ref{lem: Approximating phi by polynomials}. 
+First, the following lemma shows that the ``uniform law of large numbers" still holds in this infinite dimension function space.
+
+\begin{lemma}\label{lem: stochastic-consistency-for-infinite-dim}
+    Let $\left\{\eta_i\right\}_{i=1}^M$ be independent samples drawn from probability distribution $\nu$. Consider the stochastic optimization problem $\min_{\substack{f\in\mathcal{D}}} \mathbb{E}_{\bm{\eta} \sim \nu}[f(\bm{\eta})]$ and its corresponding empirical approximation problem $\min_{\substack{f\in\mathcal{D}}} \frac{1}{M}\sum_{i=1}^{M} f(\bm\eta_i)$, where $\mathcal{D}\subset \mathcal C(\mathbb{K})$ is equicontinuous \citep[Def~11.27]{rudin1987real}, pointwise bounded and closed.
+    Then it holds that 
+    \begin{equation*}
+        \lim_{M\rightarrow\infty}\sup_{f\in\mathcal{D}}\left|\frac{1}{M}\sum_{i=1}^{M} f(\bm\eta_i)-\mathbb{E}[f]\right|=0, \text{a.s.}
+    \end{equation*}
+    Furthermore, let $f^\star$ and $f^\star_M$ denote the optimal solution of the original problem and the approximation problem, respectively. Then it holds that $\mathbb{E}_{\bm{\eta}\sim \nu}[f^\star_M(\bm{\eta})] \xrightarrow{a.s.}\mathbb{E}_{\bm{\eta}\sim \nu}[f^\star(\bm{\eta})]$. 
+\end{lemma}
+\begin{pf}
+    By Arzela-Ascoli Theorem \citep[Thm~11.28]{rudin1987real}, every sequence in $\mathcal{D}$ has a uniform convergent subsequence on $\mK$, and hence $\mathcal{D}$ is compact. Thus $\mathcal{D}$ admits a finite cover number \citep[Def~2.1.5]{wellner2013weak} $N(\epsilon, \mathcal{D}, \|\cdot\|_\infty)$ for any $\epsilon > 0$. 
+    Next, pick the centers $\left\{f_j\right\}_{j=1}^N$, it holds that $\forall f\in \mathcal{D}$, there is $f_j$, such that $\|f-f_j\|_\infty\leq\epsilon$. Let $E_M[f]:=\frac{1}{M}\sum_{i=1}^{M} f(\bm\eta_i)$, it holds that
+    \begin{align*}
+        &|E_M[f]\!-\!\mathbb{E}[f]|\\
+        &=|E_M[f]\!-\!\mE[f_j]\!+\!\mE[f_j]\!-\!E_M[f_j]\!+\!E_M[f_j]\!-\!\mE[f_j]|\\
+        &\le \left|E_M[f_j]\!-\!\mathbb{E}[f_j]\right|\!+\!|\mE[f_j]\!-\!\mE[f]]|\!+\!|E_M[f]\!-\!E_M[f_j]|\\
+        &\le \left|E_M[f_j]\!-\!\mathbb{E}[f_j]\right|\!+\!\!\int\underbrace{|f_j-f|}_{\le \epsilon}d\nu\!+\!\frac{1}{M}\sum_{i=1}^M\underbrace{|f(\bm\eta_i)-f_j(\bm\eta_i)|}_{\le \epsilon}\\
+        &\leq \left|E_M[f_j]-\mathbb{E}[f_j]\right|+2\epsilon.
+    \end{align*}
+    Therefore, it holds that $\sup_{f\in\mathcal D}|E_M[f]-\mE[f]|\le \max_{j=1:N}|E_M[f_j]\!-\!\mE[f_j]|+2\epsilon$.
+    By strong laws of large numbers \citep[Thm~5.23]{kallenberg1997foundations}, as $M\rightarrow\infty$, it holds that $|E_M[f_j]-\mE[f_j]|\rightarrow 0$ a.s. for all $j=1:N$. And hence $\max_{j=1:N} |E_M[f_j]-\mE[f_j]|\rightarrow 0$ a.s..
+    Thus $\limsup_{M\rightarrow\infty}\sup_{f\in\mathcal{D}}\left|E_M[f]-\mathbb{E}[f]\right|\leq 2\epsilon, \text{a.s.}$. Let $\epsilon\downarrow0$, then we have $\sup_{f\in\mathcal{D}}\left|E_M[f]-\mathbb{E}[f]\right|\xrightarrow{a.s.} 0$ as $M\rightarrow \infty$.
+
+    Furthermore, note that the original and the approximated problems share the same feasible domain $\mathcal D$. And consequently, by the optimality of $f^\star$ and $f^\star_M$, respectively, it holds that $\mE[f^\star] \leq \mE[f^\star_M],E_M[f^\star_M] \leq E_M[f^\star]$. Therefore, it follows that
+    \begin{align*}
+        &\mathbb{E}[f^\star] \leq \mathbb{E}[f^\star_M] \leq E_M[f^\star_M] + \left|E_M[f^\star_M]-\mathbb{E}[f^\star_M]\right|\\
+        &\leq E_M[f^\star] + \left|E_M[f^\star_M]-\mathbb{E}[f^\star_M]\right|\\
+        &\leq \mathbb{E}[f^\star] + \underbrace{\left|E_M[f^\star]-\mathbb{E}[f^\star]\right|}_{\xrightarrow{a.s.}0}+\underbrace{\left|E_M[f^\star_M]-\mathbb{E}[f^\star_M]\right|}_{\xrightarrow{a.s.}0}.
+    \end{align*}
+    Thus we have $\mathbb{E}_{\bm{\eta}\sim \mu}[f^\star_M(\bm{\eta})] \xrightarrow{a.s.}\mathbb{E}_{\bm{\eta}\sim \mu}[f^\star(\bm{\eta})]$.
+\end{pf}
+
+The following Lemma \ref{lem: Approximating V by polynomials} shows that we can approximate $V$ with polynomials, reducing the problem to finite dimensions.
+
+\begin{lemma}\label{lem: Approximating V by polynomials}
+    Consider the optimization problem
+    \begin{subequations}\label{eq:consistencyOriginal}
+    \begin{align}
+    \min_{\substack{\theta_\ell\in\mR^{n_\ell}\\ V\in \mathcal C(X)}} 
+    &\;\langle\theta_\ell^T\varphi + T(V),\mu \rangle\\
+    \st \quad &\;\theta_\ell^T\varphi + T(V)\!\ge\! 0,\forall (x,a)\in\mK,\label{eq:consistencyOriginal:cstr1}\\
+    &\;\left\|\theta_\ell^T\varphi + T(V)\right\|_1 \geq 1,\label{eq:consistencyOriginal:cstr2}\\
+    &\;\left\|\theta_\ell\right\|_1\leq \beta_\ell',\\
+    &\;\left\|V\right\|_\infty\leq \beta_V',\label{eq:consistencyOriginal:cstr4}\\
+    &\;V\in \lip(\beta_C)\label{eq:consistencyOriginal:cstr5},
+    \end{align}
+    \end{subequations}
+    where $\mu\in \mathcal{M}_+$, $T:\mathcal C(X)\rightarrow \mathcal C(\mathbb{K})$ is a bounded linear operator.
+On the other hand, its approximated problem takes the form
+\begin{subequations}\label{eq:consistencyApproxStep2}
+\begin{align}
+    \min_{\substack{\theta_\ell\in\mR^{n_\ell}\\ V\in P_d(X)}} 
+    &\;\langle\theta_\ell^T\varphi + T(V),\mu \rangle\\
+    \st \quad &\;\eqref{eq:consistencyOriginal:cstr1}-\eqref{eq:consistencyOriginal:cstr5},\label{eq:consistencyApprox_cstr}
+\end{align}
+\end{subequations}
+where $\left\{P_d\subset \mathcal C(X)\right\}_d^\infty$ is the set of $d$-order polynomials.
+Let $(\theta_\ell^\star, V^\star)$ and $(\theta_{\ell, d}^\star , V_d^\star)$ be the optimal solution of \eqref{eq:consistencyOriginal} and \eqref{eq:consistencyApproxStep2}, respectively. If the feasible set of \eqref{eq:consistencyOriginal} has a strictly feasible solution, then it holds that
+\begin{equation*}
+    \lim_{d\rightarrow\infty}\langle\theta_{\ell, d}^{\star T}\varphi \!+\! T(V_d^\star),\mu \rangle = \langle\theta_\ell^{\star T}{\varphi} \!+\! T(V^\star),\mu \rangle.
+\end{equation*}
+\end{lemma}
+\begin{pf}
+    
+    Since \eqref{eq:consistencyOriginal} is convex and its feasible set has a non-empty interior, for all $\epsilon$, there must exist a strictly feasible solution $(\theta_0,V_0)$ and $\epsilon_1$ such that $\forall (\theta,V)\in \{(\theta,V)\in\mR^{n_\ell}\times \mathcal{C}(X)\;|\; \|\theta - \theta_0\|_2+\|V-V_0\|_{\infty,\mK}< \epsilon_1\}$ is still feasible
+    and $\langle (\theta_0 - \theta_\ell^\star)^T\varphi + T(V_0-V^\star), \mu \rangle \leq \epsilon/2$.
+    Moreover, it also holds that $V_0\in\lip(\beta_C-\epsilon_C)$ for some $\epsilon_C>0$.
+    Next, we first extend $V_0$ from domain $\mK$ to $\mR^n$ by Mcshane's theorem \citep{mcshane1934extension}, namely,
+    \begin{align*}
+    \tilde{V}_0(x) = \min_{x\in\mK} \{V_0(y)+(\beta_C-\epsilon_C)\|x-y\|\},
+    \end{align*}
+    and notably, $\tilde{V}_0=V_0$, $\forall x\in\mK$, and $\tilde{V}_0\in\lip(\beta_C-\epsilon_C)$.
+    Next, let $\rho_\delta(x)$ be a mollifier and we mollify $\tilde{V}_0$ by $V_\delta(x) = (\tilde V_0\circledast \rho_\delta)(x)$, where $\circledast$ denotes the convolution.
+    Hence 
+    there exists a $\delta_\epsilon$, such that $\|V_{\delta_\epsilon}-\tilde V_0\|_{\infty,\mK}\le\min\{\epsilon/(4\|T^*\|\|\mu\|_{\tv}),\epsilon_1/2\}$, where $\|T^*\|$ is the operator norm of the dual $T^*$.
+    
+    Furthermore, it also preserves the Lipschitz constant, namely,
+    \begin{align*}
+    &\left|V_{\delta_\epsilon}(x)-V_{\delta_\epsilon}(y)\right| = \left|\int_{\mR^n}[\tilde{V}_0(x-z)-\tilde V_0(y-z)]\rho_{\delta_\epsilon}(z)\mathrm dz\right|\\
+    &\le\int_{\mR^n}\left|\tilde{V}_0(x-z)-V_0(y-z)\right|\rho_{\delta_\epsilon}(z)\mathrm dz\\
+    &\le\int_{\mR^n}(\beta_C-\epsilon_C)\|x-y\|_2\rho_{\delta_\epsilon}(z)\mathrm dz\\
+    &=(\beta_C-\epsilon_C)\|x-y\|_2\underbrace{\int_{\mR^n}\rho_{\delta_\epsilon}(z)\mathrm dz}_{=1}.
+    \end{align*}
+    Moreover,
+    it follows from Stone-Weierstrass theorem that there exists a $d_\epsilon$, such that for all $d>d_\epsilon$, $\|\nabla V_d-\nabla V_{\delta_\epsilon}\|_{\infty,X}\le\min\{\epsilon/(4\|T^*\|\|\mu\|_{\tv}\cdot\diam(X)),\epsilon_C,$ $\epsilon_1/(2\cdot\diam(X))\}$, where $V_d\in P_d$. 
+And hence $\|V_d-V_{\delta_\epsilon}\|_{\infty,X}<\min\{\epsilon/(4\|T^*\|\|\mu\|_{\tv}),\epsilon_1/2\}$.     
+    Therefore, it holds that $\|V_d- V_{0}\|_{\infty,X}\le\|V_d-V_{\delta_\epsilon}\|_{\infty,X}+\|V_{\delta_\epsilon}-\tilde V_{0}\|_{\infty,X} \le\min\{\epsilon/(2\|T^*\|\|\mu\|_{\tv}),\epsilon_1\}$ and $\|\nabla V_d\|_{\infty,X}\le \|\nabla V_{\delta_\epsilon}\|_{\infty,X}+\|\nabla V_d-\nabla V_{\delta_\epsilon}\|_{\infty,X}\le \beta_C-\epsilon_C+\min\{\epsilon,\epsilon_C\}\le\beta_C$.
+    This implies that $(\theta_0,V_d)$ is also feasible to both \eqref{eq:consistencyOriginal} and \eqref{eq:consistencyApproxStep2}.
+    Therefore, it holds that
+    \begin{equation*}
+        \begin{aligned}
+            &\langle\theta_{\ell, d}^{\star T}\varphi \!+\! T(V_d^\star),\mu \rangle \leq \langle\theta_0^{T}\varphi \!+\! T(V_d),\mu \rangle\\
+            &= \langle\theta_0^{T}\varphi \!+\! T(V_0),\mu \rangle + \langle V_d-V_0, T^*\mu\rangle\\
+            &\le  \langle\theta_0^{T}\varphi \!+\! T(V_0),\mu \rangle + \underbrace{\|V_d-V_0\|_\infty}_{\le \epsilon/(2\|T^*\|\|\mu\|_{\tv})}\|T^*\|\|\mu\|_{\tv}\\
+            &\leq\! \langle\theta_{\ell}^{\star T}\varphi \!+\! T(V^\star),\mu \rangle \!+\! \underbrace{\langle (\theta_0 \!-\! \theta_\ell^\star)^T\varphi \!+\! T(V_0\!-\!V^\star), \mu \rangle}_{\le \epsilon/2} \!+\! \epsilon/2\\
+            &\leq \langle\theta_{\ell}^{\star T}\varphi \!+\! T(V^\star),\mu \rangle + \epsilon.
+        \end{aligned}
+     \end{equation*}
+    
+
+    This implies that for any $\epsilon>0$, a sufficiently high approximation order $d_\epsilon$ guarantees an $\epsilon$-close optimal solution. Consequently, the optimal value to the approximated problem converges to the optimal value of the original problem as the polynomial approximation order tends to infinity.
+\end{pf}
+
+Next, Lemma \ref{lem: Approximating phi by polynomials} shows that approximating the basis functions by polynomials also makes sense.
+
+\begin{lemma}\label{lem: Approximating phi by polynomials}
+    For $\phi:\mK\rightarrow R^n$ that is continuous and $\mu\in\mathcal{M}_+$, consider the optimization problem
+    \begin{subequations}\label{eq:consistencyOriginalFiniteDim1}
+    \begin{align}
+    \min_{\substack{\theta\in\mR^n}} 
+    &\;\langle\theta^T\phi,\mu \rangle\\
+    \st &\;\theta^T\phi\!\ge\! 0,\forall \eta\in\mK,\\
+    &\;\left\|\theta^T\phi\right\|_1 \geq 1,\\
+    &\;\left\|\theta\right\|_1\leq \beta,
+    \end{align}
+    \end{subequations}
+    as well as the optimization problem obtained by replacing the basis functions $\phi$ by a polynomial approximation $\tilde{{\phi}}_d$ of order $d$, that is, the approximated problem
+    \begin{subequations}\label{eq:consistencyApproxStep1}
+    \begin{align}
+    \min_{\substack{\theta\in\mR^n}} 
+    &\;\langle\theta^T\tilde{{\phi}}_d,\mu \rangle\\
+    \st &\;\theta^T\tilde{{\phi}}_d\!\ge\! 0,\forall \eta\in\mK,\label{eq:nonnegative_cstr}\\
+    &\;\left\|\theta^T\tilde{{\phi}}_d\right\|_1 \geq 1,\label{eq:1-norm_regularity_cstr}\\
+    &\;\left\|\theta\right\|_1\leq \beta/2.\label{eq:theta_norm_cstr}
+    \end{align}
+    \end{subequations}
+    Let $\theta^\star$ and $\theta_{d}^\star $ be the optimal solution to \eqref{eq:consistencyOriginalFiniteDim1} and \eqref{eq:consistencyApproxStep1} respectively. Suppose $\left\|\theta^\star\right\|_1 \leq \beta/4$ and the first elements in $\phi$ and $\tilde{\phi}_d$ are both $1$. 
+    If $\lim_{d\rightarrow\infty}\left\|\phi - \tilde{\phi}_d\right\|_\infty = 0$, then there exists $\theta_{d}^\star +a_d$ that is feasible for \eqref{eq:consistencyOriginalFiniteDim1} with $\lim_{d\rightarrow\infty}\left\|a_d\right\|_1 = 0$ and $\lim_{d\rightarrow\infty}\langle\theta_{d}^{\star T}\phi,\mu \rangle = \langle\theta^{\star T}{\phi} ,\mu \rangle$.
+\end{lemma}
+\begin{pf}  
+Since $\lim_{d \to \infty} \|\phi - \tilde{\phi}_d\|_\infty = 0$, for any small enough $\epsilon<1$, there exists a $d_\epsilon$ such that $\|\phi - \tilde{\phi}_d\|_\infty \leq \epsilon$ for every $d \geq d_\epsilon$.
+This further implies that for all $\eta \in \mathbb{K}$,
+\begin{align}
+&| \theta^T \phi(\eta)\! -\! \theta^T \tilde{\phi}_d(\eta)|\! \le\!\! \sum_{i=1}^n\!|\theta_i|\underbrace{|\phi_i(\eta)\!-\!\tilde\phi_{d,i}(\eta)|}_{\le \epsilon}\!\le\! \|\theta\|_1 \epsilon,
+\label{eq:abs_value_ineq}
+\end{align}
+where $\theta_i$, $\phi_i$ and $\tilde{\phi}_{d,i}$ are the $i$-th element of the corresponding vectors, respectively. 
+Moreover, let $a_d= [\|\theta_{d}^\star \|_1 \epsilon, 0, \ldots, 0]^T$. Since $\theta_{d}^\star $ minimizes the approximated problem \eqref{eq:consistencyApproxStep1}, it must satisfy the constraints \eqref{eq:nonnegative_cstr}, \eqref{eq:1-norm_regularity_cstr} and \eqref{eq:theta_norm_cstr}; and since we assume the first elements of both $\phi$ and $\tilde \phi_d$ are both 1, 
+it follows from \eqref{eq:abs_value_ineq} that
+$(\theta_{d}^\star  + a_d)^T \phi(\eta) = \theta_{d}^{\star T} \phi(\eta)+\|\theta_{d}^\star  \|_1\epsilon\ge \theta_{d}^{\star T}\tilde{\phi}_d>0$.
+
+Hence it further holds that
+\begin{equation*}
+    \begin{aligned}
+     & \|(\theta_{d}^\star  \!+\! a_d)^T \phi\|_1\! =\!\! \int_{\mathbb{K}} (\theta_{d}^\star  \!+\! a_d)^T \phi(\eta) \mathrm d\eta
+       \! \geq \!\! \int_{\mathbb{K}} \theta_{d}^{\star T} \tilde{\phi}_d(\eta) \mathrm d\eta\\
+      &=\|\theta_d^\star\tilde\phi_d\|_1 \geq 1.
+    \end{aligned}
+\end{equation*}
+Furthermore, $\theta_{d}^\star $ also must satisfy \eqref{eq:theta_norm_cstr} and hence
+$ \| \theta_{d}^\star  + a_d \|_1 \le \| \theta_{d}^\star  \|_1 +\|a_d\|_1= \| \theta_{d}^\star  \|_1 +  \|\theta_d^\star\|_1 \epsilon \leq \beta$.
+Thus $\theta_{d}^\star  + a_d$ is also feasible to the original problem \eqref{eq:consistencyOriginalFiniteDim1}, and hence it holds that $\langle \theta^{\star T} \phi, \mu \rangle\leq \langle (\theta_{d}^\star +a_d)^T \phi, \mu \rangle$ by optimality.
+
+Similarly, let $b = [ \|\theta^\star\|_1 \epsilon, 0, \ldots, 0]^T$ and in view of we assume $\|\theta^\star\|_1\le \beta/4$, it follows that $\theta^\star + b$ is also feasible to the approximated problem \eqref{eq:consistencyApproxStep1} and it holds that $\langle \theta_{d}^{\star T} \tilde{\phi}_d, \mu \rangle  \leq \langle (\theta^\star+b)^T \tilde{\phi}_d, \mu \rangle$ by optimality.
+Notably, since $\mu$ is a positive measure and in view of \eqref{eq:abs_value_ineq}, 
+we can bound the objective function values by
+\begin{equation*}
+    \begin{aligned}
+        &\langle (\theta_{d}^\star  + a_d)^T \phi, \mu \rangle = \langle \theta_{d}^{\star T} \phi, \mu \rangle + \langle \left\|\theta_{d}^\star \right\|_1\epsilon, \mu \rangle \\
+        &\le \langle \theta_{d}^{\star T} \phi, \mu \rangle \!+\! 2\langle \underbrace{\left\|\theta_{d}^\star \right\|_1}_{\le \beta/2}\epsilon, \mu \rangle\leq \langle \theta_{d}^{\star T} \tilde{\phi}_d, \mu \rangle \!+\! \epsilon\langle \beta, \mu \rangle,
+    \end{aligned}
+\end{equation*}
+and similarly, it holds that $\langle (\theta^\star + b)^T \tilde{\phi}_d, \mu \rangle \leq \langle \theta^{\star T} \phi, \mu \rangle + \epsilon\langle \beta/2, \mu \rangle$.
+Therefore, it follows that
+\begin{align*}
+    &\langle\theta_{d}^{\star T}\phi,\mu \rangle = \langle (\theta_{d}^\star  + a_d)^T \phi, \mu \rangle - \langle \|\theta_{d}^\star \|_1 \epsilon, \mu \rangle\\
+    &\;\geq \langle \theta^{\star T} \phi, \mu \rangle - \langle \|\theta_{d}^\star \|_1 \epsilon, \mu \rangle
+    \geq \langle \theta^{\star T} \phi, \mu \rangle - \epsilon\langle \beta/2, \mu \rangle,\\
+    &\langle\theta_{d}^{\star T}\phi,\mu \rangle\!\le\!\langle (\theta_{d}^\star  + a_d)^T \phi, \mu \rangle\!\leq\!\langle \theta_{d}^{\star T} \tilde{\phi}_d, \mu \rangle + \epsilon\langle \beta, \mu \rangle\\
+    &\;\leq \langle (\theta^\star\! +\! b)^T \tilde{\phi}_d, \mu \rangle \!+\! \epsilon\langle \beta, \mu \rangle\!\leq\! \langle \theta^{\star T} \phi, \mu \rangle \!+\! \epsilon\langle 3 \beta/2, \mu \rangle.
+\end{align*}
+Since $\epsilon$ can be made arbitrarily small, the claim follows.
+\end{pf}
+Now that we are ready to prove Theorem \ref{thm: MAIN-CONSISTENCY-THEOREM}.
+\begin{proof}[Proof of Theorem~4.2]
+Let $(\theta_\ell,V,\psi)$ be any feasible solution to \eqref{eq:IOC_approx1}. 
+By Assumption~\ref{ass:transition_kernel} and \ref{ass:obj_func}, and since constraints \eqref{eq:IOC_approx1_constraints} holds, it holds that for any $\eta_1,\eta_2$
+\begin{align*}
+&|\ell(\eta_1)\!+\!\int V(\cdot) Q(\cdot|\eta_1)\!-\!\ell(\eta_2)\!-\!\int V(\cdot) Q(\cdot|\eta_2)|\\
+&\le|\ell(\eta_1)-\ell(\eta_2)|+|\int V(\cdot) Q(\cdot|\eta_1)-\int V(\cdot) Q(\cdot|\eta_2)|\\
+&\le \left(\|\theta_\ell\|_1 L_\varphi+\|V\|_\infty L_Q\right)\|\eta_1-\eta_2\|_2,\\
+&\le \left(\beta_\ell L_\varphi+\beta_V L_Q\right)\|\eta_1-\eta_2\|_2.
+\end{align*}
+Hence $\psi\in\lip(\beta_\ell L_\varphi+\beta_V L_Q)$, therefore $\psi$ lives in an equicontinuous set and Lemma~\ref{lem: stochastic-consistency-for-infinite-dim} applies. 
+Therefore there exists $M_1'(\epsilon)$, such that for all $M\geq M_1'(\epsilon)$ and every feasible $\psi$,
+\begin{align}
+    \left|\langle \psi, \hat{\mu}^{\pitrue,N} \rangle- \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N \psi(\bm\eta_t^i) \right| \leq \epsilon,\quad\text{a.s.},
+    \label{eq:psi_ulln}
+\end{align}
+where $\bm\eta_t^i:=(\mfx_t^i,\mfa_t^i)$.
+Moreover, let $(\theta_{\ell,M}, V_M)$ be optimal to the finite-sample problem
+\begin{equation}
+\begin{aligned}
+\min_{\theta_{\ell},V\in\mathcal{C}(X)} &\;\;\frac{1}{M}\sum_{i=1}^M\!\sum_{t=1}^N\psi(\bm\eta_t^i;\theta_\ell,V)\\
+\st &\;\; \eqref{eq:IOC_approx1_constraints}.
+\end{aligned}
+\label{eq:data_psi_ioc_approx}
+\end{equation}
+By the second conclusion in Lemma~\ref{lem: stochastic-consistency-for-infinite-dim}, 
+since the optimal value of \eqref{eq:IOC_approx1} is zero (cf. Proposition~\ref{prop:finite_time_horizon_equivalent}), we have
+\begin{align}
+    \langle \psi(\cdot;\theta_{\ell,M}, V_M),\!\hat\mu^{\pitrue,N} \rangle\leq \epsilon, \; \text{a.s.}\label{eq: M approx}
+\end{align}
+
+Next, recall that $(\thetatrue, \Vtrue)$ (and the corresponding $\bar\psi$) is an optimal solution of \eqref{eq:IOC_approx1}, and is therefore feasible for \eqref{eq:data_psi_ioc_approx}.
+Since the bounds $\beta_\ell$, $\beta_V$ ($\beta_\psi$) can be chosen aribrarily large, we can construct a strictly feasible point by adding a positive constant to $\Vtrue$. 
+Then by Lemma~\ref{lem: Approximating V by polynomials}, there exists $d_V'(\epsilon,M)$, such that for any $d_V\geq d_V'(\epsilon,M)$,
+\begin{align}
+    \left| \!\frac{1}{M}\sum_{i=1}^M\!\sum_{t=1}^N\left(\psi(\bm\eta_t^i;\theta_{\ell,M}^{d_V},\theta_{V,M}^{d_V,T}r)\!-\!\psi(\bm\eta_t^i;\theta_{\ell,M},V_M)\right)\!\right|\!\leq\!\epsilon,\label{eq: dv approx}
+\end{align}
+where $ \theta_{\ell,M}^{d_V},\theta_{V,M}^{d_V} $ is optimal to
+\begin{equation}
+\begin{aligned}
+\min_{\theta_{\ell},\theta_V} &\;\;\frac{1}{M}\sum_{i=1}^M\!\sum_{t=1}^N\psi(\bm\eta_t^i;\theta_\ell,\theta_V^Tr)\\
+\st &\;\; \psi(x,a;\theta_\ell,\theta_V^Tr)\!\ge\! 0,\forall (x,a)\!\in\!\mK,\\
+&\;\;\int \psi(x,a;\theta_\ell,\theta_V^Tr) \mathrm dx\mathrm da\ge 1,\quad \eqref{eq:theta_V_ell_bounded}.
+\end{aligned}
+\label{eq:data_psi_f_ioc_approx}
+\end{equation}
+
+Finally, note that the continuous feature function vector $\varphi$ and cost-to-go $q^*V$ \eqref{eq:cost_to_go} can be uniformly approximated to arbitrary accuracy by polynomials on $\mathbb{K}$. 
+Moreover, also note that we may, without loss of generality, assume the first element in $\varphi$ is one (this is the same as adding a constant in the cost function and does not change the optimal control policy), thus Lemma.\ref{lem: Approximating phi by polynomials} applies. 
+Therefore, there exists $d_\psi'(\epsilon,M,d_V)$ such that for all $d_\psi\ge d_\psi'(\epsilon,M,d_V)$ and the optimal solution $(\theta_{\ell, M}^{\mathbf{d}}, \theta_{V, M}^{\mathbf{d}})$ of \eqref{eq:IOC_approx2}, it holds that
+\begin{align}
+    \left| \frac{1}{M}\!\sum_{i=1}^M\!\sum_{t=1}^N\!\!\left(\!\psi(\bm\eta_t^i;\theta_{\ell,M}^{\mathbf{d}},\theta_{V,M}^{\mathbf{d},T}r)\!-\!\psi(\bm\eta_t^i;\theta_{\ell,M}^{d_V},\theta_{V,M}^{d_V,T}r)\!\right)\!\right| \leq \epsilon.\label{eq: dpsi approx}
+\end{align}
+On the other hand, there also exists $a_{d_\psi}$ with $ \|a_{d_\psi}\|_1\leq \epsilon/\|\varphi\|_\infty $ such that
+$\psi(\cdot;\theta_{\ell,M}^{\mathbf{d}}+a_{d_\psi},\theta_{V,M}^{\mathbf{d},T}r)$
+is feasible for \eqref{eq:data_psi_f_ioc_approx}.
+Thus $\psi(\eta;\theta_{\ell,M}^{\mathbf{d}}+a_{d_\psi},\theta_{V,M}^{\mathbf{d},T}r) \geq 0,\forall \eta\in\mK$, and hence
+\begin{align*}
+    &\langle \psi(\bm\eta_t^i;\theta_{\ell,M}^{\mathbf{d}},\theta_{V,M}^{\mathbf{d},T}r), \hat{\mu}^{\pitrue,N} \rangle \\
+    &= \langle \psi(\bm\eta_t^i;\theta_{\ell,M}^{\mathbf{d}}+a_{d_\psi},\theta_{V,M}^{\mathbf{d},T}r), \hat{\mu}^{\pitrue,N} \rangle - \langle a_{d_\psi}^T\varphi, \hat{\mu}^{\pitrue,N} \rangle \\
+    &\ge -\langle a_{d_\psi}^T\varphi, \hat{\mu}^{\pitrue,N} \rangle \ge -\|a_{d_\psi}\|_1\|\varphi\|_\infty\underbrace{\|\hat{\mu}^{\pitrue,N}\|_{\tv}}_{=N} \geq -N\epsilon.
+\end{align*}
+
+
+Now, for all $ M\geq M_1'(\epsilon), d_V\geq d_V'(\epsilon, M), d_\psi\geq d_\psi'(\epsilon,M,d_V)$, the following holds a.s. 
+\begin{align*}
+    &\langle \psi(\bm\eta_t^i;\theta_{\ell,M}^{\mathbf{d}},\theta_{V,M}^{\mathbf{d},T}r), \hat{\mu}^{\pitrue,N} \rangle \\
+    &\overset{\eqref{eq:psi_ulln}}{\le} \frac{1}{M}\!\sum_{i=1}^M\!\sum_{t=1}^N\!\psi(\bm\eta_t^i;\theta_{\ell,M}^{\mathbf{d}},\theta_{V,M}^{\mathbf{d},T}r) + \epsilon \\
+    &\overset{\eqref{eq: dpsi approx}}{\le} \frac{1}{M}\!\sum_{i=1}^M\!\sum_{t=1}^N\!\psi(\bm\eta_t^i;\theta_{\ell,M}^{d_V},\theta_{V,M}^{d_V,T}r) +2\epsilon \\
+    &\overset{\eqref{eq: dv approx}}{\le} \frac{1}{M}\!\sum_{i=1}^M\!\sum_{t=1}^N\!\psi(\bm\eta_t^i;\theta_{\ell,M},V_M) + 3\epsilon\\
+    &\overset{\eqref{eq:psi_ulln}}{\le} \langle \psi(\cdot;\theta_{\ell,M}, V_M),\!\hat\mu^{\pitrue,N} \rangle + 4\epsilon\overset{\eqref{eq: M approx}}{\le} 5\epsilon.
+\end{align*}
+and the claim follows.
+\end{proof}
+Furthermore, if the optimal solution $\theta_\ell^\star = \thetatrue$ is unique up to scalar normalization, namely, all optimal solutions differ only by a positive scaling factor, then the normalized approximated solution also converges to the normalized true optimum.
+Otherwise, the true cost function parameters $\thetatrue$ is not identifiable under the current IOC problem structure. 
+Nevertheless, the expert control policy can still be reconstructed by solving \eqref{eq:policy_approx_reconstruction}. The subsequent corollary establishes that such reconstruction error is also bounded.
+
+\begin{corollary}
+Suppose $\pi(x;\cdot):\Theta\rightarrow A$ is continuous for any $x$, and $\Theta$ is compact. 
+    Let $\hat\pi_{M,\mathbf{d}}$ be the solution of \eqref{eq:policy_approx_reconstruction}, and suppose that there exists a $\theta_{\pitrue}$ such that $\pitrue=\pi(x;\theta_{\pitrue})$. It holds that
+    \begin{align*}
+        \lim_{M\rightarrow\infty}\lim_{d_V\rightarrow\infty}\lim_{d_\psi\rightarrow\infty}\langle \|\hat\pi_{M,\mathbf{d}}-\pitrue\|_2^2, \proj\hat\mu^{\pitrue,N} \rangle = 0,\;\text{a.s.}
+    \end{align*}
+\end{corollary}
+\begin{pf}
+    Since $\pi(\cdot;\theta_\pi)$ is continuous with respect to $\theta_\pi$ and $\theta_\pi$ belongs to a compact set, $\|\pi(x;\theta_\pi)-\pitrue(x)\|_2^2$ is continuous with respect to $\theta_\pi$ for each $x$. 
+    Furthermore, since $\|\pi(\cdot;\theta_\pi)-\pitrue(\cdot)\|_2^2\leq\diam(A)^2$, the function class $\{\|\pi(\cdot;\theta_\pi)-\pitrue(\cdot)\|_2^2 \mid \theta_\pi\in \Theta\}$ is Glivenko-Cantelli \citep[E.g.~19.8, p.~272]{van1998asymptotic}. Thus, there exists $M_2'(\epsilon)$, such that $\forall M\geq M_2'(\epsilon)$ and $\pi\in\{\pi(\cdot;\theta_\pi)|\theta_\pi\in \Theta\}$, the following inequality holds
+    \begin{align}
+       & |\langle (\|\pi(\cdot)\!-\!\pitrue(\cdot)\|_2^2, \proj\hat\mu^{\pitrue,N} \rangle\! -\! \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N \|\pi(\mfx_{t}^i)\!-\!\pitrue(\mfx_{t}^i)\|_2^2|\nonumber\\
+       & \quad \leq \epsilon/4,\;  \mbox{a.s.}
+        \label{eq:pi_ulln}
+    \end{align}
+
+    On the other hand, let $(\theta_{\ell, M}^{\mathbf{d}}, \theta_{V, M}^{\mathbf{d}})$ be optimal to \eqref{eq:IOC_approx2}. 
+    As shown in Theorem~\ref{thm: MAIN-CONSISTENCY-THEOREM}, for any $\epsilon >0$, there exists $M_3'(\epsilon), d_V'(\epsilon, M), d_{\psi,1}'(\epsilon, M, d_V)$, such that for all $M\geq M_3'(\epsilon), d_V\geq d_V'(\epsilon, M), d_\psi \geq d_{\psi,1}'(\epsilon, M, d_V)$, it holds $\langle\hat\psi_{M,\mathbf{d}}, \hat{\mu}^{\pitrue,N} \rangle \leq \epsilon/4$ a.s, 
+    where $\hat\psi_{M,\mathbf{d}}:=\theta_{\ell, M}^{\mathbf{d},T}\varphi\!+\!(\alpha q^*\!-\!\proj^*)(\theta_{V, M}^{\mathbf{d},T}r)$.
+
+    And applying Lemma~\ref{lem: Approximating phi by polynomials}, there also exists $d_{\psi,2}'(\epsilon, M, d_V)$ such that for all $d_\psi \geq d_{\psi,2}'(\epsilon, M, d_V)$, $\tilde{\psi}_{M,\mathbf{d}}:=(\theta_{\ell, M}^{\mathbf{d}}+a_{d_\psi})^T\varphi\!+\!(\alpha q^*\!-\!\proj^*)(\theta_{V, M}^{\mathbf{d},T}r)$ is feasible for \eqref{eq:bellman_inequality_constraint} with $\|a_{d_\psi}\|_1\leq \epsilon/( 4N\| \varphi \|_\infty)$.
+    Thus we have $ \hat\psi_{M,\mathbf{d}} (x,a)\geq \tilde{\psi}_{M,\mathbf{d}}(x,a) - \|a_{d_\psi}\|_1\| \varphi \|_\infty \geq -\epsilon/(4N), \forall (x,a)\in\mK$. 
+    Therefore, since $\hat\pi_{M,\mathbf{d}}$ is optimal to \eqref{eq:policy_approx_reconstruction}, and in view of \eqref{eq:psi_ulln}, it follows that
+    \begin{align*}
+        &\frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N \left(-\epsilon/(4N) + \|\hat\pi_{M,\mathbf{d}}(\mfx_{t}^i)-\pitrue(\mfx_{t}^i)\|_2^2\right)  \\
+        &\leq \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N \hat\psi_{M,\mathbf{d}}(\mfx_{t}^i, \hat\pi_{M,\mathbf{d}}(\mfx_{t}^i)) + \|\hat\pi_{M,\mathbf{d}}(\mfx_{t}^i)-\pitrue(\mfx_{t}^i)\|_2^2\\
+        &\leq \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N \hat\psi_{M,\mathbf{d}}(\mfx_{t}^i, \pitrue(\mfx_{t}^i)) + \|\pitrue(\mfx_{t}^i)-\pitrue(\mfx_{t}^i)\|_2^2 \\
+        &=\! \frac{1}{M}\sum_{i=1}^M\!\!\sum_{t=1}^N\hat\psi_{M,\mathbf{d}}(\mfx_{t}^i, \mfa_{t}^i)\!\leq\! \underbrace{\langle \hat\psi_{M,\mathbf{d}}, \hat{\mu}^{\pitrue,N} \rangle}_{\le \epsilon/4}\! +\! \epsilon/4 \!\leq\!  \epsilon/2,\;\mbox{a.s.}.
+    \end{align*}
+    Thus, it follows from \eqref{eq:pi_ulln} that $\forall M\!\ge\!\max\{M_1'(\epsilon),\!M_2'(\epsilon),\!$ $M_3'(\epsilon)\}$, $d_V\geq d_V'(\epsilon, M), d_\psi \geq \max\{d_{\psi,1}'(\epsilon, M, d_V),$ $d_{\psi,2}'(\epsilon, M, d_V)\}$, 
+    it holds that $\langle \|\hat\pi_{M,\mathbf{d}}(\cdot)-\pitrue(\cdot)\|_2^2, \proj\hat\mu^{\pitrue,N} \rangle \leq \frac{1}{M}\sum_{i=1}^M\sum_{t=1}^N $ 
+    $\|\hat\pi_{M,\mathbf{d}}(\mfx_{t}^i)-\pitrue(\mfx_{t}^i)\|_2^2 + \epsilon/4 \leq \epsilon$ a.s.
+    And hence the statement follows.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+
+\end{pf}
+
+

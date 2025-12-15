@@ -1,0 +1,576 @@
+\newpage 
+% \section{Missing Proofs in Section \ref{sec:lb}}
+
+% % \subsection{Proof of Lemma \ref{lem:property}}
+
+% % \lempro*
+
+% \subsection{Proof of Lemma \ref{lem:hyperfunc}} \label{apx:proof-hyperfunc}
+
+% \lemhyperfunc*
+
+% \begin{proof}
+
+% % Note that $g(\vx,\vy,\vz)$ is separable in each block variable $\vy^{(i)}$ and $\vz^{(i)}$. Therefore, we can calculate the optimal lower-level solution $(\vy^*(\vx),\vz^*(\vx))$ by setting
+% % \begin{align*}
+% %     \vy^{(i)}&= \arg \min_{\vy \in \sR^{2T+1}} h^{\rm scale}(\vx,\vy) , \quad i = 1,2; \\
+% %     \vz^{(i)} &= , \quad i = 1,\cdots,K.
+% % \end{align*}
+% From 
+% The solution to the above equations $\vz = K^2 \vx$ and
+% \begin{align} \label{eq:close-yz-star}
+% \begin{split}
+%     \vy^{(i)} &= \arg \min_{\vz \in \sR^K} h^{\rm sc}(x_{2i},x_{2i+1}, \vz) =  \left( \frac{1}{K^2} \mI_K + \mA_K \right)^{-1} \vb^{(i)}, \quad \forall i = 1,\cdots,K.
+% \end{split}
+% \end{align}
+% where $\vb^{(i)} = x_{2i} \ve_1 - x_{2i+1} \ve_K$. For $\vy^{(i)}$ satisfying Eq. (\ref{eq:close-yz-star}), we have
+% \begin{align*}
+%     \Vert \vz^{(i)} \Vert^2 =  \Vert \mB \vb^{(i)} \Vert^2,
+% \end{align*}
+% where $\mB = (\alpha \mI_K + \mA_K)^{-1}$ and $\alpha = 1/K^2$. Let $\mD = \mB^2$, then
+% \begin{align*}
+%     \Vert \vz^{(i)} \Vert^2  = \left \langle \vb^{(i)}, \mD \vb^{(i)} \right \rangle = D_{1,1} x_{2i}^2 - 2 D_{1,K} x_{2i} x_{2i+1} + D_{K,K} x_{2i+1}^2.
+% \end{align*}
+% Therefore, plugging in $\vy^*(\vx)$ and $\vz^*(\vx)$ given by Eq. (\ref{eq:close-yz-star}) to $h^{\rm reg}$ in Eq. (\ref{eq:our-f}) yields 
+% \begin{align*}
+%        % \varphi(\vx) &= \frac{\sqrt{\nu}}{2} ( \bar x_1 - 1)^2 +  \frac{1}{2}\sum_{i=1}^T  (\bar x_{2i-1} - \bar x_{2i})^2 + \nu \sum_{i=1}^{2T} \Upsilon_r (\bar x_i) \\
+% h^{\rm reg}(y_{2i},y_{2i+1}, \vz^{(i)}) = (c_1 K^3 + c_2 D_{1,1} x_{2i}^2) - 2 c_2 D_{1,K} x_{2i} x_{2i+1} + (c_1 K^3 + c_2 D_{K,K}) x_{2i+1}^2,
+% \end{align*}
+% From Lemma \ref{lem:li} we know 
+% \begin{align*}
+%     D_{K,K} = D_{1,1} = \sum_{i=1}^K B_{1,i} B_{i,1} = \sum_{i=1}^K B_{i,1}^2 \in [0.01 K^3, 400 K^3] 
+% \end{align*}
+% and
+% \begin{align*}
+%     D_{1,K} = D_{K,1} = \sum_{i=1}^K B_{K,i} B_{i,1} =  \sum_{i=1}^K B_{1,K+-i} B_{i,1} \in [0.01K^3, 400K^3],
+% \end{align*}
+% where the fact $B_{K,i} = B_{1,K+1-i}$ can be verified by $\mB = \mM^\top / \det ( \alpha \mI_K + \mA_K )$ with $\mM$ is the cofactor matrix of $  \alpha \mI_K + \mA_K $. Now, Lemma \ref{lem:hyperfunc} is proved by letting 
+% \begin{align} \label{eq:setting-c}
+%     c_2 = \frac{K^3}{D_{1,K}}, \quad c_1 = 1 - \frac{D_{1,1}}{D_{1,K}}.
+% \end{align}
+% Finally,
+% from the range of $D_{1,1}$ and $D_{1,K}$ it is easy to check that
+% \begin{align*}
+%     |c_2| \le 100, \quad \vert c_1 \vert < 4 \times 10^4,
+% \end{align*}
+% which means both $c_1$ and $c_2$ are (almost) numerical constants. This completes the proof.
+% \end{proof}
+
+
+\section{Examples with Lower-Level Quadratics} \label{apx:example-Q}
+
+This section provides a collection of (S)C-SC and NC-SC bilevel optimization applications in which the lower-level function is quadratic. 
+
+\subsection{Convex-Strongly-Convex Examples} \label{apx:exmple-C-SC}
+The (S)C-SC setting is often assumed without any examples in the literature \citep{ghadimi2018approximation,hong2023two}. To the best of our knowledge, the only example is a fair resource allocation problem~\citep{srikant2014communication} given by \citet{ji2023lower}. In the following, we provide several machine learning problems that provably satisfy the assumptions, which verify the rationality of assuming the (strong) convexity of the hyper-objective in previous work \citep{ghadimi2018approximation,hong2023two}.
+
+Let $(\mA,\vb)$ denote a dataset with $n$ samples, where each row of $\mA \in \sR^{n \times d}$ represents a $d$-dimensional feature of a sample, and the corresponding element in $\vb \in \sR^n$ represents the corresponding label. We consider the following examples.
+
+\begin{exmp}
+Given $T$ different tasks, with each task $i$ corresponds to a training set $(\mA_i^{\rm tr}, \vb_i^{\rm tr})$ and  a testing set $(\mA_i^{\rm test}, \vb_i^{\rm  test})$. Define the covariance matrices of each task as $\mG_i^{\rm test}  =\left(\mA_i^{\rm test}  \right)^\top \mA_i^{\rm test} $ and $\mG_i^{\rm tr}  =\left(\mA_i^{\rm tr}  \right)^\top \mA_i^{\rm tr}$. 
+We consider the meta-learning for linear regression~\citep{rajeswaran2019meta}:
+    \begin{align*}
+        &\quad \min_{\vx \in \sR^d} \frac{1}{T} \sum_{i=1}^T \frac{1}{2} \Vert \mA_i^{\rm tr} \vy_i^*(\vx) - \vb_i^{\rm tr} \Vert^2, \\
+        &{\rm s.t.} \quad \vy_i^*(\vx) = \arg \min_{\vy' \in \sR^d} \frac{1}{2} \Vert \mA_i^{\rm test} \vy' - \vb_i^{\rm test} \Vert^2 + \frac{\lambda}{2} \Vert \vy' - \vx \Vert^2.
+    \end{align*}
+In this example, the hyper-objective $\varphi(\vx) = f(\vx,\vy^*(\vx))$ is (strongly) convex.
+\end{exmp}
+
+\begin{proof}
+The lower-level solution has a closed form
+\begin{align*}
+    &\quad \vy_i^*(\vx) = (\mG_i^{\rm test} + \lambda \mI_d)^{-1} \left(\lambda \vx + \left(\mA_i^{\rm test} \right)^\top \vb_i^{\rm test} \right).
+\end{align*}
+Plugging the above equation into the upper-level function gives the closed form of $\varphi(\vx)$, which is a convex quadratic function because since its Hessian matrix is positive (semi)definite:
+\begin{align*}
+    &\quad \mH = \frac{1}{T} \sum_{i=1}^T \lambda^2 (\mG_i^{\rm test} + \lambda \mI_d)^{-1} \mG_i^{\rm tr} (\mG_i^{\rm test} + \lambda \mI)^{-1} \succeq \mO_d.
+\end{align*}.
+\end{proof}
+
+\begin{exmp}
+Given a dataset $(\mA,\vb)$ with $n$ samples, we  
+consider the Stackelberg game \citep{bruckner2011stackelberg} for robust linear regression. In this model, the learner's goal is to learn to good linear predictor $\vx$ with small error, but the label $\vy$ is modified by an adversarial data provider, whose goal is to make the loss (per sample weighted by $w_i^2$) high, with a cost to modify the original label $\vb$. 
+Let $\mD = {\rm diag}(w_1,\cdots, w_n)$.
+It can be formulated as the following bilevel problem
+\begin{align*}
+    &\quad \min_{\vx \in \sR^d} \frac{1}{2} \Vert \mA \vx - \vy^*(\vx) \Vert^2 \\
+    &{\rm s.t.} \quad \vy^*(\vx) = \arg \min_{\vy' \in \sR^n} - \frac{1}{2} \Vert \mD (\mA \vx - \vy') \Vert^2 + \frac{\lambda}{2} \Vert \mD(\vy'  -\vb) \Vert^2.
+\end{align*}
+In this example, the hyper-objective $\varphi(\vx) = f(\vx,\vy^*(\vx))$ is (strongly) convex if $\lambda >1$.
+\end{exmp}
+
+\begin{proof}
+When $\lambda >1$, the lower-level solution has a closed form
+\begin{align*}
+    \vy^*(\vx) = \frac{\mD  (\lambda \vb - \mA  \vx)}{\lambda -1}.
+\end{align*}
+Plugging the above equation into the upper-level function gives the closed form of $\varphi(\vx)$, which is a convex quadratic function because since its Hessian matrix is positive (semi)definite:
+\begin{align*}
+    \mH = \frac{1}{(\lambda-1)^2}  \mA^\top ( (\lambda -1)^2 \mI_n + \mD_n^2 ) \mA \succeq \mO_d.
+\end{align*}
+\end{proof}
+
+\begin{exmp}
+    \citet{yang2021graph} reformulates graph convolution network (GCN) training~\citep{kipf2016semi} into a bilevel optimization problem, where the lower-level problem is to find the optimal node embeddings that minimize a graph energy function, and the upper-level problem is the loss of the embedding. For the node regression problem, we have the dataset $(\mA,\vb)$ with $n$ nodes. The bilevel problem is:
+    \begin{align*}
+        &\quad \min_{\vx \in \sR^d} \frac{1}{2} \Vert \vy^*(\vx) - \vb \Vert^2 \\
+        &{\rm s.t.} \quad \vy^*(\vx) = \arg \min_{\vy \in \sR^{n}} \frac{1}{2} \Vert \mA \vx - \vy \Vert^2 + \frac{\lambda}{2} \vy^\top \mL \vy,
+    \end{align*}
+where $ \mL$ is the graph Laplacian matrix. In this example, the hyper-objective $\varphi(\vx) = f(\vx,\vy^*(\vx))$ is (strongly) convex if $\lambda>0$.
+% When $A$ is non-singular, by the inequality $\sigma_i(AB) \ge \sigma_i(A) \sigma_n(B)$, we know that $H \succ O$, which implies that $\varphi(\phi)$ is strongly convex.
+\end{exmp}
+
+\begin{proof}
+When $\lambda >0$, the lower-level solution has a closed form 
+\begin{align*}
+    \vy^*(\vx) = (\mI_n + \lambda \mL)^{-1} \mA \vx.
+\end{align*}
+Plugging the above equation into the upper-level function gives the closed form of $\varphi(\vx)$, which is a convex quadratic function because since its Hessian matrix is positive (semi)definite:
+\begin{align*}
+    \mH = \mA^\top (\mI_n + \lambda \mL)^{-1} (\mI_n + \lambda \mL)^{-1} \mA \succeq \mO_d.
+\end{align*}
+\end{proof}
+
+\subsection{Nonconvex-Strongly-Convex Examples} \label{apx:exmple-NC-SC}
+
+The NC-SC bilevel problems have many applications in the actor-critic method \citep{konda1999actor}, which is a class of important algorithms in reinforcement learning.  For this algorithm class, there is an actor in the upper level that optimizes a (typically nonconvex) cost function to select a good policy, and a critic in the lower level that evaluates by estimating the Q-function. The Q-function can be calculated based on the Bellman equation, which corresponds to solving a strongly convex function in the basic linear Markov decision process (MDP) setup.
+
+Formally, we define the MDP as a tuple with five elements $(S,A, \gamma, P, R)$, where $S$ is the state space, $A$ is the action space, $\gamma \in [0,1)$ is the discount factor of the rewards, $P$ defines the transition kernel such that $P(s' \mid s,a)$ denotes the probability of transitioning to state $s'$ after taking action $a$
+in state $s$, and $R$ defines the reward function such that $R(s,a) $ denotes the immediate reward received after taking action $a$ in state $s$. 
+Let $Q^\pi$ denote the Q-function for policy $\pi$. 
+Under the linear setup, $Q^\pi$ is assumed to have a linear representation $Q^\pi(s,a) = \langle \theta^\pi, \phi(s,a) \rangle$, where $ \theta^\pi \in \sR^d$ is the weight vector of parameters and $\phi(s,a) \in \sR^d$ is the 
+feature vector for the state-action pair $(s,a)$. Then we can show that the induced bilevel optimization problem is nonconvex-strongly-convex with a quadratic lower-level problem.
+%For a policy $\pi$ such that $\pi(a \mid s)$ denotes the probability of choosing action $a$ in state $s$, we further define $P^\pi$ as the transition kernel if the agent choose actions following policy $\pi$, \textit{i.e.}, $P^\pi(s' \mid s) = \sum_{a \in A} \pi(a \mid s) P(s' \mid s, a)$.
+
+\begin{exmp}[Actor-critic for linear MDP]
+Let the initial state $s_0$ be drawn from a fixed distribution $\rho_0$, and let $\Pi \subset \sR^{\vert S \vert \times \vert A \vert}$ be the policy space. We consider the following problem:
+\begin{align*}
+    &\quad \max_{\pi \in \Pi} \sum_{a \in A} Q^{\pi}(s_0,a) \pi(a \mid s_0) \rho_0(s_0). \\
+    &{\rm s.t.} \quad Q^\pi(s,a) = R(s,a) + \gamma \sum_{s' \in S}  \sum_{a \in A} Q^\pi(s',a) P(s' \mid s ,a) \pi(a \mid s).
+\end{align*}
+Using linear function approximation to $Q^\pi$, the lower-level function is a linear system in $\theta^\pi$, which can also be reformulated as a equivalent (strongly) convex quadratic optimization.
+\end{exmp}
+
+There are many similar examples in reinforcement learning, 
+where the lower-level problem is exactly a linear system using linear function approximation.
+Interested readers can refer to references \citep{hong2023two,zeng2024two,zeng2024fast}.
+
+\section{Proof of Lemma \ref{lem:hyperfunc}} \label{apx:proof-lem-hyperfunc}
+
+To prove the result, we first recall the following fact about the matrix $\mA_K$.
+\begin{lem}[{\citet[Lemma 7]{li2021complexity}}] \label{lem:li}
+Let $\mB = ( \mI_K / K^2 + \mA_K )^{-1}$. If $K \ge 10$, we have for all $i = 1,\cdots,K$ that
+\begin{align*}
+     0.1K \le B_{1,i} \le 20K.
+\end{align*}
+\end{lem}
+
+Now, we give the proof of Lemma \ref{lem:hyperfunc}.
+
+\begin{proof}[Proof of Lemma \ref{lem:hyperfunc}]
+%[Proof of Lemma \ref{lem:hyperfunc}]
+% Note that $g(\vx,\vy,\vz)$ is separable in each block variable $\vy^{(i)}$ and $\vz^{(i)}$. Therefore, we can calculate the optimal lower-level solution $(\vy^*(\vx),\vz^*(\vx))$ by setting
+% \begin{align*}
+%     \vy^{(i)}&= \arg \min_{\vy \in \sR^{2T+1}} h^{\rm scale}(\vx,\vy) , \quad i = 1,2; \\
+%     \vz^{(i)} &= , \quad i = 1,\cdots,K.
+% \end{align*}
+Because the lower-level function $\bar g^{\rm sc}$ is separable in $\vy$ and $\vz$, it is easy to see that $\vz^*(\vx) = K^2 \vx$, and $\vy^*(\vx) = (\vy^{(1)}_*(\vx),\cdots, \vy^{(T-1)}_*(\vx))$ satisfies 
+\begin{align*} 
+    \vy^{(i)}_*(\vx) =
+    %&=  \left( \frac{1}{K^2} \mI_K + \mA_K \right)^{-1} (x_{i} \ve_1 - x_{i+1} \ve_K) := 
+    \mB (x_{i} \ve_1 - x_{i+1} \ve_K), \quad \forall i = 1,\cdots,T-1.
+\end{align*}
+Note that $B_{1,K} = B_{K,1}$ and $B_{1,1} = B_{K,K}$. We have
+\begin{align} \label{eq:close-Hx}
+    H(\vx) = \sum_{i=1}^{T-1} \frac{a_K}{2} \cdot K^4 (x_i^2 +x_{i+1}^2) + \frac{b_K}{2} \cdot K^2 ( B_{1,1} x_i^2 - 2 B_{1,n} x_i x_{i+1} + B_{1,1} x_{i+1}^2).
+\end{align}
+According to the above equation, we can let $H(\vx)$ be equivalent to Eq. (\ref{eq:Hx-goal}) by setting
+\begin{align} \label{eq:setting-alpha-beta}
+    a_K = \frac{1}{K} \left( 1 - \frac{B_{1,1}}{B_{1,K}} \right) \quad {\rm and} \quad b_K = \frac{K}{B_{1,K}}.
+\end{align}
+Finally, by Lemma \ref{lem:li} it is easy to see that the ranges of $a_K$ and $b_K$ satisfy that
+\begin{align*}
+    \vert a_K \vert \le 20 \quad {\rm and }\quad \vert b_K \vert \le 10.
+\end{align*}
+% We can let 
+% where $\vb^{(i)} = x_{2i} \ve_1 - x_{2i+1} \ve_K$. For $\vy^{(i)}$ satisfying Eq. (\ref{eq:close-yz-star}), we have
+% \begin{align*}
+%     \Vert \vz^{(i)} \Vert^2 =  \Vert \mB \vb^{(i)} \Vert^2,
+% \end{align*}
+% where $\mB = (\alpha \mI_K + \mA_K)^{-1}$ and $\alpha = 1/K^2$. Let $\mD = \mB^2$, then
+% \begin{align*}
+%     \Vert \vz^{(i)} \Vert^2  = \left \langle \vb^{(i)}, \mD \vb^{(i)} \right \rangle = D_{1,1} x_{2i}^2 - 2 D_{1,K} x_{2i} x_{2i+1} + D_{K,K} x_{2i+1}^2.
+% \end{align*}
+% Therefore, plugging in $\vy^*(\vx)$ and $\vz^*(\vx)$ given by Eq. (\ref{eq:close-yz-star}) to $h^{\rm reg}$ in Eq. (\ref{eq:our-f}) yields 
+% \begin{align*}
+%        % \varphi(\vx) &= \frac{\sqrt{\nu}}{2} ( \bar x_1 - 1)^2 +  \frac{1}{2}\sum_{i=1}^T  (\bar x_{2i-1} - \bar x_{2i})^2 + \nu \sum_{i=1}^{2T} \Upsilon_r (\bar x_i) \\
+% h^{\rm reg}(y_{2i},y_{2i+1}, \vz^{(i)}) = (c_1 K^3 + c_2 D_{1,1} x_{2i}^2) - 2 c_2 D_{1,K} x_{2i} x_{2i+1} + (c_1 K^3 + c_2 D_{K,K}) x_{2i+1}^2,
+% \end{align*}
+% From Lemma \ref{lem:li} we know 
+% \begin{align*}
+%     D_{K,K} = D_{1,1} = \sum_{i=1}^K B_{1,i} B_{i,1} = \sum_{i=1}^K B_{i,1}^2 \in [0.01 K^3, 400 K^3] 
+% \end{align*}
+% and
+% \begin{align*}
+%     D_{1,K} = D_{K,1} = \sum_{i=1}^K B_{K,i} B_{i,1} =  \sum_{i=1}^K B_{1,K+-i} B_{i,1} \in [0.01K^3, 400K^3],
+% \end{align*}
+% where the fact $B_{K,i} = B_{1,K+1-i}$ can be verified by $\mB = \mM^\top / \det ( \alpha \mI_K + \mA_K )$ with $\mM$ is the cofactor matrix of $  \alpha \mI_K + \mA_K $. Now, Lemma \ref{lem:hyperfunc} is proved by letting 
+% \begin{align} \label{eq:setting-c}
+%     c_2 = \frac{K^3}{D_{1,K}}, \quad c_1 = 1 - \frac{D_{1,1}}{D_{1,K}}.
+% \end{align}
+% Finally,
+% from the range of $D_{1,1}$ and $D_{1,K}$ it is easy to check that
+% \begin{align*}
+%     |c_2| \le 100, \quad \vert c_1 \vert < 4 \times 10^4,
+% \end{align*}
+% which means both $c_1$ and $c_2$ are (almost) numerical constants. This completes the proof.
+\end{proof}
+
+\section{Proof of Theorem \ref{thm:NC-SC}} \label{apx:proof-thm-SCNC}
+
+\begin{proof}
+From Lemma \ref{lem:property}, we know that the hard instance we construct has $\bar \ell_1$-Lipschitz continuous gradients if we set $\nu r^{3-p} \le 1$, where $\bar \ell_1 :=124 + \nu r^{3-p} \ell_1$. When $T \ge 2$, we let
+$m =  2T+ K(T-1)$ and $n = T(K+1)-K$ be the dimensions of $\bar f^{\text{nc-sc}}, \bar g^{\rm sc}$ and effective lower bound dimension, respectively. We have $n \ge m$. Let $\vw = (\vx,\vy,\vz)$.
+For any given $L_1 \ge \mu_y >0$, we define the following rescaled and rotated functions $f,g: \sR^{6n} \rightarrow \sR$ as
+\begin{align} \label{eq:scaled-fg}
+   f(\vw) = \frac{L_1 \beta^2}{\bar \ell_1} \bar f^{\text{nc-sc}} \left(\frac{\mP^\top \vw}{\beta} \right) \quad {\rm and} \quad g(\vw) = \frac{L_1 \beta^2}{\bar \ell_1} \bar g^{\rm sc} \left( \frac{\mP^\top \vw}{\beta} \right)
+\end{align}
+to ensure that both $f$ and $g$ have $L_1$-Lipschitz continuous gradients for any $\beta>0$, where the matrix $\mP \in \sR^{6 n} \times \sR^{m}$ satisfies $\mP^\top \mP = \mI_{m}$ and is defined as $\mP = \mU \mE$, where
+%composited by three matrices $\mP_x \in \sR^{d \times T}$, $\mP_z \in \sR^{d \times T} $, and $\mP_z \in \sR^{d \times K(T-1)}$ via
+\begin{align} \label{eq:dfn-matrix-P}
+\mP = 
+  \begin{bmatrix}
+        \mP_x & & \\
+        & \mP_z & \\
+        & & \mP_y
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \mU_x \mE_x & & \\
+        & \mU_z \mE_x & \\
+        & & \mU_y \mE_y
+    \end{bmatrix}
+\end{align}
+In the above, we let $\mE_x \in \sR^{n\times T}, \mE_y \in \sR^{n \times K(T-1)}$ be
+\begin{align*}
+ &\mE_x = (\ve_1, \ve_{K+2}, \ve_{2K+3}, \cdots, \ve_{n-(K+1)}, \ve_{n}) \\
+ {\rm and}~~ & \mE_y = (\ve_2, \ve_3, \cdots, \ve_{K+1}, \ve_{K+3}, \ve_{K+4}, \cdots, \ve_{2(K+1)}, \ve_{2K+4}, \ve_{2K+5} \cdots, \ve_{T(K+1)}),
+\end{align*}
+respectively, and adversarially select $\mU_x, \mU_z, \mU_y \in \sR^{2n\times n}$ as three matrices with orthogonal columns $(\vu_x^0,\cdots,\vu_{x}^n)$, $(\vu_z^0,\cdots,\vu_{z}^n)$, and $(\vu_y^0,\cdots,\vu_{y}^n)$ according to the procedure below:
+\begin{enumerate}
+    \item Pick $(\vu_x^0,\vu_z^0,\vu_y^0)$ as three arbitrary unit vectors in $\sR^{2n}$. At the initialization $\vw^0 = (\vx^0,\vz^0,\vy^0) = (\vzero, \vzero, \vzero)$, we know from the zero-chain structure of Eq. (\ref{eq:our-f}) that the oracle response $\sO(\vw^0)$ only depends on $(\vu_x^0,\vu_z^0,\vu_y^0)$, which is already fixed. Since the algorithm is deterministic, we know the next query $\vw^1 = (\vx^1, \vy^1, \vz^1)$ is also fixed.
+    \item For any $t =1, \cdots,n $, we repeat the following process: We compute $\vw^t = (\vx^t, \vz^t, \vy^t)$ from the algorithm, and pick $\vu_x^t, \vu_z^t$ and $ \vu_y^t$ as the unit vectors satisfying 
+    \begin{align*}
+    &\langle \vu_x^t, \vu_x^i \rangle = \langle \vu_z^t, \vu_z^i \rangle = \langle \vu_y^t, \vu_y^i \rangle = 0,\quad \forall i = 1,\cdots,t-1; \\
+    {\rm and} ~~ &\langle \vu_x^t, \vx^i \rangle = \langle \vu_z^t, \vz^i \rangle =  \langle \vu_y^t, \vy^i \rangle = 0,\quad \forall i = 1,\cdots,t; 
+    \end{align*}
+    We know such vectors $\vu_x^t, \vu_z^t,$ and $\vu_y^t$ always exist in the space $\sR^{2n}$ since $ 2t-1 < 2n$.
+    Assuming that the subsequent construction will always ensure that all the vectors $(\vu^{t+1}_x, \cdots, \vu^n_x)$, $(\vu^{t+1}_z, \cdots, \vu^n_z)$, and $(\vu^{t+1}_y, \cdots, \vu^n_y)$  are orthogonal to $\vx^t$, $\vz^t$, and $\vy^t$, respectively. we know from the zero-chain structure of Eq. (\ref{eq:our-f}) that the oracle response $\sO(\vw^t)$ only depends on $(\vu^0_x,\cdots, \vu^t_x)$, $(\vu^0_y,\cdots, \vu^t_y)$, and $(\vu^0_z,\cdots, \vu^t_z)$, which are already fixed. Since the algorithm is deterministic, it means that the next query $\vw^{t+1}$ is also fixed.
+    % \item At the end of the procedure, we pick the remaining $3T$ vectors 
+    % % \begin{align*}
+    % % \end{align*}
+\end{enumerate}
+Let $n' = n - (K+1) = (T-1)(K+1) - K = \Omega(KT )$.
+From the above procedure, any first-order deterministic algorithm with $t \le n'$ must satisfy $\langle \vu_x^n, \vx^t \rangle = \langle \vu_x^{n'}, \vx^{t} \rangle = 0$.
+We also choose  $ K =  \left \lfloor \sqrt{{L_1}/{(\bar \ell_1 \mu_y)}} \right \rfloor$ 
+to ensure that $g(\vx,\vz,\vy)$ is $\mu_y$-strongly convex jointly in $(\vz,\vy)$. If 
+$\mu_y \lesssim L_1$ then we have $K \ge 10$, which satisfies the condition of Lemma \ref{lem:li}. Combining Lemma \ref{lem:hyperfunc}, we know the hyper-objective after our rescaling and rotation is
+\begin{align} \label{eq:varphi-ncsc}
+     F(\vx) &= \frac{L_1 \beta^2}{\bar \ell_1} \bar f^{\rm nc}_{\nu, r}(K^{3/2} \mP_x^\top \vx/ \beta), \quad {\rm where} ~~ \mP_x = \mU_x \mE_x.   %&=  \frac{ L_1 }{\bar \ell_1} \left( \frac{\sqrt{\nu}}{2} ( \hat x_1 - \beta)^2 + \frac{1}{2} \sum_{i=2}^{2T+1} (\hat x_{i} - \hat x_{i-1})^2 +  \nu \beta^2 \sum_{i=1}^{2T} \Upsilon_r (\hat x_i/ \beta) \right) \\
+\end{align}
+% The zero-chain property in Lemma \ref{lem:property} (item~4) together with 
+Since $\langle \vu_x^n, \vx^t \rangle = \langle \vu_x^{n'}, \vx^{t} \rangle = 0$, Lemma~\ref{lem:Car-Upsion} (item 4) means that for any $t \le n'$ we have 
+\begin{align} \label{eq:varphi-grad}
+    \Vert \nabla F(\vx^t) \Vert = \frac{L_1 \beta K^{3/2}}{\bar \ell_1} \Vert \nabla f^{\rm nc}_{\nu, r}(K^{3/2} \mP_x^\top \vx^t / \beta) \Vert >  \frac{L_1 \beta K^{3/2} \nu^{3/4}}{4 \bar \ell_1} \ge \epsilon,
+\end{align}
+where the last inequality holds if we set 
+\begin{align} \label{eq:para-beta}
+     \beta = \frac{4 \bar \ell_1 \epsilon}{K^{3/2} \nu^{3/4} L_1}.
+\end{align}
+It implies an $\Omega(K T)$ lower bound for any first-order zero-respecting algorithm to find an $\epsilon$-stationary point of $F(\vx)$. To make the lower bound as large as possible, we choose $T$ to be the largest possible value that satisfies the constraint $F(\vzero) - \inf_{\vx \in \sR^{2n}} F(\vx) \le \Delta$. By Lemma~\ref{lem:Car-Upsion}, we know that $\Upsilon_r(0) \le 10$ and  $\Upsilon_r(x) > \Upsilon_r(1) =0$. Therefore, the minimizer of $\bar f^{\rm nc}_{\nu, r}(\vx)$ is obtained at $\vx  =\vone$ with $\bar f_{\nu, r}^{\rm nc}(\vone) = 0$, which further leads to
+\begin{align} \label{eq:Delta}
+    F(\vzero) - \inf_{\vx \in \sR^{2n}} F(\vx) = F(\vzero) \le \frac{L_1 \beta^2}{\bar \ell_1} \left( \frac{\sqrt{\nu}}{2} + 10 \nu (T-1) \right).
+\end{align} 
+It means that we can fulfill the constraint $F(\vzero) - \inf_{\vx \in \sR^{T}} F(\vx) \le \Delta$ by setting
+\begin{align} \label{eq:para-T}
+    T = \left \lfloor 
+    \left( \frac{\bar \ell_1 \Delta}{L_1 \beta^2} - \frac{\sqrt{\nu}}{2} \right) \big / (10\nu)
+    \right \rfloor + 1.
+\end{align}
+Now, it remains to determine the setting
+g of $\nu$ and $r$, which we choose to satisfy the smoothness conditions under the following three different cases.
+\begin{enumerate}
+    \item \textbf{The case $p=1$.} We simply set $\nu = r = 1$ to obtain the lower bound 
+\begin{align*}
+    \Omega(K T) =  \Omega \left( \kappa_y^{2} L_1 \Delta \epsilon^{-2} \right).
+\end{align*}
+\item \textbf{The case $p=2$.} We let $r = 1$, then the condition $\nu r^{3-p} \le 1$ still holds if $\nu \le 1$, which means both $f$ and $g$ have $L_1$-Lipschitz continuous gradients. 
+Next, we ensure that  $f$ has $L_2$-Lipschitz continuous Hessians by setting 
+\begin{align} \label{eq:para-nu-p2}
+    \nu = \frac{\beta \bar \ell_1 L_2}{L_1 \ell_2}.
+\end{align}
+Combining with the setting of $\beta$ in Eq. (\ref{eq:para-beta}), we can solve that
+\begin{align*}
+    \nu &= \left( {4 \epsilon}/{K^{3/2}}\right)^{4/7} \left( {\bar \ell_1}/{L_1} \right)^{8/7} \left({L_2}/{\ell_2} \right)^{4/7}, \\
+    \beta &= \left( {4 \epsilon}/{K^{3/2}} \right)^{4/7} \left( {\bar \ell_1}/{L_1}  \right)^{1/7} \left( {\ell_2}/{L_2}  \right)^{3/7}.
+\end{align*}
+Under our parameter settings, and $\nu \le 1$  holds if
+\begin{align*}
+    \epsilon \lesssim \kappa_y^{3/4}\left( {L_1}/{\bar \ell_1} \right)^2 \left({\ell_2}/{L_2} \right).
+\end{align*}
+Finally, we substitute $\beta$ and $\nu$ into Eq. (\ref{eq:para-T}) to calculate $T$. We assume that
+\begin{align} \label{eq:assume}
+     \frac{\bar \ell_1 \Delta}{L_1 \beta^2} \gtrsim  \sqrt{\nu},
+\end{align}
+which implies that $T \ge 2$ and is true under the condition
+\begin{align*}
+    \epsilon \lesssim \kappa_y^{3/4} \Delta^{7/10} (\bar \ell_1/ L_1)^{1/10} (L_2/ \ell_2)^{2/5}. 
+\end{align*}
+Then we have
+\begin{align*}
+    T+1 \ge  
+    \frac{\bar \ell_1 \Delta}{40 \nu L_1 \beta^2} = \frac{\ell_2 \Delta}{40 \beta^3 L_2  }  = \frac{\Delta K^{18/7}}{40 \cdot 4^{12/7}} ( L_1 / \bar \ell_1 )^{3/7} (L_2/ \ell_2)^{2/7} \epsilon^{-12/7},
+\end{align*}
+which indicates the lower bound of
+\begin{align*}
+    \Omega(K T) = \Omega ( \kappa_y^{25/14}  L_1^{3/7} L_2^{2/7} \Delta \epsilon^{-12/7}    ).
+\end{align*}
+\item \textbf{The case $p \ge 3$.} Let $r = \sqrt{1/\nu}$ then the condition $\nu r^{3-p} \le 1$ still holds if $\nu \le 1$, which means both $f$ and $g$ have $L_1$-Lipschitz continuous gradients.
+For $q = 2,\cdots,p$, the $q$th-order derivative of $g$ is zero and 
+the $q$th-order derivatives of $f$ is $ (L_1/\bar \ell_1) \beta^{1-q} \nu^{(q-1)/2} \ell_q$-Lipschitz continuous, where $\ell_q$ is the numerical constant defined in Lemma \ref{lem:Car-Upsion}.
+Hence, we can ensure that the $q$th-order derivative of $f$ is $L_q$-Lipschitz continuous for all $q = 2,\cdots,p$ by setting 
+\begin{align} \label{eq:para-nu-p3}
+    \nu =  \beta^2  \min_{q=2, \cdots, p}  \left( \frac{\bar \ell_1 L_q}{L_1 \ell_q} \right)^{2/(q-1)} := \beta^2 L_*.
+\end{align}
+Combining with the setting of $\beta$ in Eq. (\ref{eq:para-beta}), we can solve that
+\begin{align*}
+    \beta = L_*^{-3/10}\left( \frac{4 \bar \ell_1 \epsilon}{K^{3/2} L_1
+    } \right)^{2/5} \quad {\text{and}} \quad \nu = L_*^{2/5} \left( \frac{4 \bar \ell_1 \epsilon}{K^{3/2} L_1 } \right)^{4/5}.
+\end{align*}
+Under our parameter settings, $\nu \le 1$  holds if
+\begin{align*}
+    \epsilon \lesssim 
+    L_*^{-1/2}\kappa_y^{3/4} ( L_1/{\bar \ell_1}).
+\end{align*}
+Finally, we substitute $\beta$ and $\nu$ into Eq. (\ref{eq:para-nu-p3}) to calculate $T$. As the case $p=2$, we also assume that Eq. (\ref{eq:assume}) holds, 
+which is now true under the condition
+\begin{align*}
+    \epsilon \lesssim \kappa_y^{3/4} \Delta^{5/6} (L_1 / \bar \ell_1)^{1/6} L_*^{1/3}.
+\end{align*}
+Then we have
+\begin{align*}
+    T+1 \ge  
+    \frac{\bar \ell_1 \Delta}{40 \nu L_1 \beta^2} = \frac{\bar \ell_1 \Delta}{40 L_1 \beta^4 L_*} = \frac{\Delta K^{12/5}}{40 \cdot 4^{8/5}} (L_1 / \bar \ell_1 )^{3/5} L_*^{1/5} \epsilon^{-8/5},
+\end{align*}
+which indicates the lower bound of
+\begin{align*}
+    \Omega(K T) = \Omega ( \kappa_y^{17/10} L_1^{3/5} L_*^{1/5} \Delta \epsilon^{-8/5} ).
+\end{align*}
+\end{enumerate}
+
+\end{proof}
+
+\section{Proof of Theorem \ref{thm:C-SC}} \label{apx:proof-thm-CSC}
+
+
+% We set $\lambda = 0 $ in Eq. (\ref{eq:our-f-convex}), then the hyper-objective in Eq. (\ref{eq:varphi-sc}) becomes
+% \begin{align*}
+% F(\vx) =  \frac{L_1 \beta^2}{\bar \ell_1} \bar f^{\rm c}(K^{3/2} \vx / \beta),
+% \end{align*}
+% where $\bar \ell_1 = 124$ and $\bar f^{\rm c}: \sR^T \rightarrow \sR$ is
+% the convex zero-chain in Definition \ref{dfn:finite-Nes-func}.
+
+\begin{proof}
+To give lower bounds for C-SC problems, let us consider the following instance, which modifies the rescaled and rotated NC upper-level function in Eq. (\ref{eq:scaled-fg}) to
+\begin{align} \label{eq:our-f-convex}
+    f(\vx,\vz,\vx) :=  \frac{L_1 \beta^2}{2\bar \ell_1} \left(
+    \left( \frac{\langle \vp_z^1, \vz\rangle}{\beta \sqrt{K}} - 1 \right)^2 + h\left(\frac{\mP_z^\top \vz}{\beta},\frac{\mP_y^\top \vy}{\beta} \right) \right),
+\end{align}
+where $\mP = {\rm diag}(\mP_x, \mP_z, \mP_y)$ be the same column-orthogonal matrix defined in Eq. (\ref{eq:dfn-matrix-P}) and $\vp_z^1$ be the first column of $\mP_z$. Both the component $h: \sR^T \times \sR^{K(T-1)} \rightarrow \sR$ in Eq.~(\ref{eq:our-hard-h}) and the SC lower-level function $g(\vx,\vy,\vz) $ in Eq. (\ref{eq:scaled-fg}) remain unchanged as in the NC-SC case:
+\begin{align*}
+    g(\vx,\vy,\vz) := \frac{L_1 \beta^2}{\bar \ell_1} \bar g^{\rm sc} \left( \frac{\mP_x^\top \vx}{\beta}, \frac{\mP_z^\top \vz}{\beta}, \frac{\mP_y^\top \vy}{\beta} \right).
+\end{align*}
+Note that both
+Lemma \ref{lem:property} and \ref{lem:hyperfunc} still apply to the above instance, indicating that both 
+$f$ and~$g$ have $L_1$-Lipschitz continuous gradients for any $\beta>0$, and the hyper-objective $F$ is 
+% % $\bar f^{\text{sc-sc}}$ has $\bar \ell_1 = 124$-Lipschitz continuous gradients and $\bar g^{\rm sc}$ has $5$-Lipschitz continuous gradients. Therefore, we can follow the proof of NC-SC setting to define the scaled functions $f$ and $g$ according to Eq. (\ref{eq:scaled-fg}), which ensures both $
+% % Since Lemma \ref{}
+% % Since , we can 
+% % . We can still apply Lemma \ref{lem:hyperfunc} to obtain 
+% \begin{align*}
+%     \bar F^{\text{sc}}(\vx) := \bar f^{\text{nc-sc}}(\vx,\vz^*(\vx), \vy^*(\vx)) = 
+% \end{align*}
+\begin{align} \label{eq:varphi-sc}
+      F(\vx) 
+      %&= \frac{L_1}{\bar \ell_1} \left(\frac{\sqrt{\nu}}{2} ( \hat x_1 - \beta)^2 + \frac{1}{2} \sum_{i=2}^{2T+1} (\hat x_{i} - \hat x_{i-1})^2 \right) + \frac{L_1 \sigma }{2 \bar \ell_1} \Vert \vx \Vert^2 \\
+   = \frac{L_1 \beta^2}{\bar \ell_1} \bar f^{\rm c} \left(\frac{K^{3/2} \mP_x^\top \vx}{\beta}\right),
+\end{align}
+where $\bar f^{\rm c}: \sR^T \rightarrow \sR$ is the convex zero-chain in Definition \ref{dfn:finite-Nes-func}. We can observe that
+the minimizer of 
+the hyper-objective $F(\vx): \sR^{2n} \rightarrow \sR$ is achieved at $\mP_x^\top \vx^* = \beta \vone / K^{3/2}$. Then, setting $\beta = {K^{3/2} D}/{\sqrt{T}}$ satisfies the constraint that
+$\min\{ \Vert \vx \Vert : \vx \in  \arg \min_{\vx \in \sR^{2n}} F(\vx)  \} \le D$.
+As in the proof of NC-SC lower bound, our construction of $\mP = {\rm diag}(\mP_x, \mP_z, \mP_y)$ ensures that 
+any first-order deterministic algorithm with $t \le n$ must satisfy $\langle \vu_x^n, \vx^t \rangle  = 0$, where $n = T (K+1) - K = \Omega(TK)$. Hence, by Lemma \ref{lem:Car-large-grad-convex}, we have 
+%From Lemma \ref{lem:Car-large-grad-convex} and item 4 of Lemma~\ref{lem:property}, we know that for any $t \le K(T-1)$, we have
+\begin{align*}
+    \Vert \nabla F(\vx^t) \Vert = \frac{L_1 \beta K^{3/2} }{\bar \ell_1} \Vert \nabla \bar f^{\rm c}_1(K^{3/2} \mP_x^\top \vx_t/\beta) \Vert > \frac{K^{3}L_1 D}{\bar \ell_1 T^2}.
+\end{align*}
+Setting $K = \Theta(\sqrt{\kappa_y})$ and $T = \Theta( \sqrt{K^{3} L_1 D / \epsilon} )$ proves the lower bound of
+\begin{align*}
+    \Omega (K T) = \Omega\left( \kappa_y^{5/4} \sqrt{ L_1  D/ \epsilon} \right).
+\end{align*}
+\end{proof}
+
+\section{Proof of Theorem \ref{thm:SC-SC}}  \label{apx:proof-thm-SCSC}
+\begin{proof}
+To give lower bounds for SC-SC problems, we add the quadratic regularizer $\mu_x \Vert \vx \Vert^2/2$ to the upper-level function $f$ of C-SC problems in Eq. (\ref{eq:our-f-convex}), that is,
+\begin{align*} 
+    f(\vx,\vz,\vx) :=  \frac{L_1 \beta^2}{2\bar \ell_1} \left(
+    \left( \frac{\langle \vp_z^1, \vz\rangle}{\beta \sqrt{K}} - 1 \right)^2 + h\left(\frac{\mP_z^\top \vz}{\beta},\frac{\mP_y^\top \vy}{\beta} \right) \right)
+    + \frac{\mu_x}{2} \Vert \vx \Vert^2,
+\end{align*}
+and keep the lower-level function $g$ unchanged. Then, the hyper-objective in Eq. (\ref{eq:varphi-sc}) is
+\begin{align*} 
+      F(\vx) 
+      %&= \frac{L_1}{\bar \ell_1} \left(\frac{\sqrt{\nu}}{2} ( \hat x_1 - \beta)^2 + \frac{1}{2} \sum_{i=2}^{2T+1} (\hat x_{i} - \hat x_{i-1})^2 \right) + \frac{L_1 \sigma }{2 \bar \ell_1} \Vert \vx \Vert^2 \\
+   = \frac{L_1 \beta^2}{\bar \ell_1} \bar f^{\rm c} \left(\frac{K^{3/2} \mP_x^\top \vx}{\beta}\right) + \frac{\mu_x}{2} \Vert \vx \Vert^2.
+\end{align*}
+Recall $\mA_{T}$ is the matrix defined in Eq. (\ref{eq:finite-A}) with $K = T$. We solve the minimizer  $\vx^* = \arg \min_{\vx \in \sR^{2n}} F(\vx)$ by taking gradient in Eq. (\ref{eq:varphi-sc}) and set it to be zero, yielding that
+\begin{align} \label{eq:first-order-equation}
+    \left(\mP_x \left( \mA_{T} + \ve_1 \ve_1^\top \right) K^{3/2} \mP_x^\top + \alpha \mI_{2n} \right) \vx^* = \beta \ve_1, \quad {\rm where} \quad \alpha = \frac{\bar \ell_1 \mu_x}{L_1 K^3}.
+\end{align} 
+Recall $\mP_x \in \sR^{2 n \times T}$ is a matrix with $T$ orthogonal columns $(\vp_x^1, \cdots, \vp_x^T)$. Since $T \le 2 n$, according to the extension theorem, it can be extended to a basic $(\vp_x^1, \cdots, \vp_x^T, \vp_x^{T+1}, \cdots, \vp_x^{2n})$. Let $\tilde \mP_x \in \sR^{2n \times 2n} $ be the matrix whose columns consist of the basis.
+% As in \citep{nesterov2018lectures}, we set  $n = T = \infty$. 
+Define the rotated minimizer $\tilde \vx^* = \tilde \mP_x^\top \vx^*$
+Then, expanding Eq. (\ref{eq:first-order-equation}) gives 
+\begin{align} \label{eq:three-term}
+    \begin{cases}
+        -\beta / K^{3/2} + (2 + \alpha)  \tilde x_1^* - \tilde x_2^* = 0 \\
+        - \tilde x_1^* + (2+ \alpha) \tilde x_2^* - \tilde x_3^* = 0 \\
+        - \tilde x_2^* + (2+ \alpha) \tilde x_3^* - \tilde x_4^* = 0  \\
+        \quad \quad \quad \quad \vdots \\
+        % % -\bar x_{2T-1}^* + (2+ \mu_x) \bar x_{2T}^* - \bar x_{2T+1}^* = 0 \\
+        - \tilde x_{T-1}^* + (2+ \alpha) \tilde x_{T}^* = 0,
+    \end{cases}
+\end{align}
+and $\tilde x_{i}^* =0 $ for all the remaining $i = T+1,\cdots, 2n$.
+
+Let $q \in (0,1)$ be the smallest root of the quadratic equation $-1+(2+\alpha) q -q^2 = 0$, \textit{i.e.},
+\begin{align*}
+    q = \frac{2 + \alpha - \sqrt{\alpha^2 + 4\alpha }}{2}.
+\end{align*}
+We can observe that the variable $\hat \vx^* \in \sR^{T}$ defined by 
+$\hat x_i^* = \beta q^i / K^{3/2}$ satisfies Eq. (\ref{eq:three-term}) except the last line with a residual of $\beta q^{T+1} / K^{3/2} $, which means 
+\begin{align*}
+    \left( \mA_T + \ve_1 \ve_1^\top + \alpha \mI_{T} \right) K^{3/2} \hat \vx^* = \beta q^{T+1} \ve_{T} / K^{3/2} 
+\end{align*}
+Compared with Eq. (\ref{eq:first-order-equation}), we know that
+\begin{align*}
+    \hat \vx^* - \tilde \vx^* = \left( \mA_T + \ve_1 \ve_1^\top + \alpha \mI_{T} \right)^{-1} \beta q^{T+1} \ve_{T} / K^{3}.
+\end{align*}
+By the inequality $\left( \mA_T + \ve_1 \ve_1^\top + \alpha \mI_{T} \right)^{-1} \succeq \alpha^{-1}\mI_T  $, taking norm on both sides above gives
+\begin{align} \label{eq:error-x-star}
+    \Vert \hat \vx^* - \tilde \vx^* \Vert \le \beta q^{T+1} / (K^{3} \alpha).
+\end{align}
+If $\alpha \le 1/2$ and $T \ge 4$. We let $T$ also satisfies  
+\begin{align} \label{eq:cond-T}
+    T \ge  2  \ln \left( 4 \left( 1 + \frac{1-q}{\alpha K^{3/2}} \right) \right)     \Big / \ln (q^{-1}).
+\end{align}
+Then we have
+\begin{align*}
+    &\Vert \vx^* \Vert = \Vert \tilde \vx^* \Vert \le \Vert \hat \vx^* \Vert + \Vert \hat \vx^* - \tilde \vx^* \Vert \\
+    \le& \frac{\beta q (1-q^T)}{(1-q) K^{3/2} } + \frac{\beta q^{T+1}}{\alpha K^{3}} \le \frac{2 \beta q}{(1-q) K^{3/2}},
+\end{align*}
+where the second inequality uses $\hat x_i^* = \beta q^i / K^{3/2}$ and Eq. (\ref{eq:error-x-star}), and the last one uses Eq.~(\ref{eq:cond-T}) that $q^T \le \alpha/ ((1-q) K^{3/2})$. From the above inequality, we know that
+% Then $\tilde \vx^*$ satisfies $\tilde x_i^* = \beta q^i / K^{3/2}$ for all $i=1,2,3,\cdots$, which means that
+letting $ \beta = K^{3/2} (1-q) D / (2q) $ satisfies the constraint 
+$\min\{ \Vert \vx \Vert : \vx \in  \arg \min_{\vx \in \sR^{2n}} F(\vx)  \} \le D$.
+% Similarly, we have
+% \begin{align*}
+%     &\Vert \vx^* \Vert = \Vert \tilde \vx^* \Vert \ge \Vert \hat \vx^* \Vert + \Vert \hat \vx^* - \tilde \vx^* \Vert  \\
+%     \ge & \frac{\beta q (1-q^T)}{(1-q) K^{3/2} } + \frac{\beta q^{T+1}}{\alpha K^{3/2}} \ge \frac{\beta q}{2(1-q) K^{3/2}}
+% \end{align*}
+As in the proof of NC-SC lower bound, our construction of $\mP = {\rm diag}(\mP_x, \mP_z, \mP_y)$ ensures that 
+any first-order deterministic algorithm with $t \le n'$ must satisfy
+\begin{align*}
+    \tilde \vx^t_i  = 0, \quad \forall i = \lfloor T/2 \rfloor +1, \cdots, T,
+\end{align*}
+where $n' = \lfloor T/ 2 \rfloor(K+1) -K = \Omega(K T )$. This further gives the following lower bound of the hyper-gradient norm:
+\begin{align*}
+    & \Vert \nabla F(\mP_x^\top \vx^t) \Vert \ge \mu_x \Vert \mP_x^\top \vx^t -\vx^* \Vert \ge \mu_x \Vert \mP_x^\top \vx^t -\tilde \vx^* \Vert \\
+    \ge & \mu_x \left( \Vert \mP_x^\top \vx^t -\tilde \vx^* \Vert - \Vert \tilde \vx^* - \hat \vx^* \Vert \right) \\
+    \ge & \mu_x \left(\frac{\beta q^{\lfloor T/2 \rfloor +1} (1 - q^{T - \lfloor T/2 \rfloor})}{(1-q) K^{3/2}} -  \frac{\beta q^{T+1}}{\alpha K^{3}} \right) \\
+    = & \frac{\mu_x D q^{\lfloor T/2 \rfloor }}{2}   \left(1 -  \left( 1 + \frac{1-q}{\alpha K^{3/2}} \right) q^{T - \lfloor T/2 \rfloor}  \right) \ge  \frac{\mu_x D q^{\lfloor T/2 \rfloor }}{8}.
+\end{align*}
+In the above, the first inequality uses the $\mu_x$-strong convexity of $F(\vx)$, the second last inequality uses $\hat x_i^* = \beta q^i / K^{3/2}$ and Eq. (\ref{eq:error-x-star}), and the last one uses the condition of $T$ in Eq. (\ref{eq:cond-T}).
+% % $\langle \vu_x^n, \vx^t \rangle  = 0$, where $n = T (K+1) - K = \Omega(TK)$. Therefore, we have 
+% % Since item 4 of Lemma \ref{lem:property} still holds by the same chain structure, for any $t \le K (T-1)$, we have $x_j^t = 0 $ for all $j \ge T$ and
+% \begin{align*}
+%     \Vert \nabla F(\mP_x^\top \vx^t) \Vert \ge  \mu_x \Vert \vx^t -\vx^* \Vert \ge   \mu_x \sqrt{\sum_{i=T}^{\infty} (x_i^*)^2} \ge  \mu_x q^T \Vert \vx^0 - \vx^* \Vert,
+% \end{align*}
+To let $\Vert \nabla F(\vx^t) \Vert > \epsilon$ we require that 
+\begin{align} \label{eq:cond-T-eps}
+    T \le 2\ln \left( \frac{\mu_x D}{8 \epsilon}  \right) \Big / \ln (q^{-1}).    
+    % = \Omega \left( \kappa_y^{3/4} \sqrt{\kappa_x}  \ln \left( \frac{\mu_x \Vert \vx^0 - \vx^* \Vert^2}{\epsilon}  \right) \right),
+\end{align}
+Recall that $K = \Theta(\sqrt{\kappa_y})$ and $\alpha^{-1} = \Theta\left(\kappa_y^{3/2} \kappa_x \right)$. We can derive that
+\begin{align} \label{eq:lb-q}
+    \ln (q^{-1}) \ge \frac{q}{1-q} = \frac{2 + \alpha - \sqrt{\alpha^2 + 4 \alpha}}{\sqrt{\alpha^2 + 4 \alpha} - \alpha} = \frac{2}{\sqrt{\alpha^2 + 4\alpha} - \alpha} -1 \ge \sqrt{\frac{1}{\alpha}} - 1,
+\end{align}
+where the last inequality uses $\sqrt{a+b} \le \sqrt{a} + \sqrt{b}$.
+If the accuracy $\epsilon$ satisfies that $\epsilon \lesssim \alpha \mu_x D$, or equivalent to $\epsilon \lesssim \mu_x D / (\kappa_x \kappa_y)$, then we know there exists $T$ that jointly fulfills 
+ Eq. (\ref{eq:cond-T}) and~(\ref{eq:cond-T-eps}). Now,
+we let $T$ be the smallest value that fulfills Eq. (\ref{eq:cond-T-eps}), and by Eq. (\ref{eq:lb-q}), we have 
+% \begin{align*}
+%      \asymp 
+$T = \Omega( \kappa_y^{3/4} \sqrt{\kappa_x}  \ln (\mu_x D/\epsilon))$, which implies the final lower bound of 
+\begin{align*}
+    \Omega(KT)  = \Omega \left( \kappa_y^{5/4} 
+\sqrt{\kappa_x}  \ln (\mu_x D/\epsilon)  \right).
+\end{align*}
+
+\end{proof}
+
+\section{Proof of Theorem \ref{thm:NC-SC-stoc}} \label{apx:proof-thm-NCSC-stoc}
+
+\begin{proof}
+From Eq. (\ref{eq:our-fg-stoc}) it is clear that $(f,g) \in  \gF^{\text{nc-scq}}(L_1,\mu_y, \Delta)$.
+By  Definition~\ref{dfn:rand-alg}, a randomized algorithm $\texttt{A}$ consists of the mappings $\{\texttt{A}^t \}_{t \in \sN}$ recursively defined~as
+\begin{align*}
+    (\vx^t,\vz^t) = \texttt{A}^t(r, \hat \nabla \bar f^{\text{nc-rs}}(\vz^0), \nabla g(\vx^0,\vz^0), \cdots, \hat \nabla \bar f^{\text{nc-rs}}(\vz^{t-1}), \nabla g(\vx^{t-1},\vz^{t-1})   )
+\end{align*}
+Note that $\nabla g(\vx,\vz)$ is a deterministic mapping of $(\vx,\vz)$. We know that there exists mappings $\{\texttt{A}_1^t \}_{t \in \sN}$ that satisfy the recursion
+\begin{align*}
+    (\vx^t,\vz^t) = \texttt{A}_1^t(r, \hat \nabla \bar f^{\text{nc-rs}}(\vz^0), \vx_0,\vz_0, \cdots, \hat \nabla \bar f^{\text{nc-rs}}(\vz^{t-1}), \vx^{t-1}, \vz^{t-1}   )
+\end{align*}
+Expanding the recursion for $(\vx_t,\vz_t)$, we can observe that the above fact implies some mappings  $\{\texttt{A}_2^t \}_{t \in \sN}$ satisfying 
+\begin{align*}
+     (\vx^t,\vz^t) = \texttt{A}_2^t(r, \hat \nabla \bar f^{\text{nc-rs}}(\vz^0), \cdots, \hat \nabla \bar f^{\text{nc-rs}}(\vz^{t-1}) ).
+\end{align*}
+Then we can invoke Lemma \ref{lem:Arj-random} (item 4) to conclude that for all $t \le (T - \log 4 ) /(2p)$ and any deterministic mapping $\gM : \sR^T \rightarrow \sR^T$, with probability at least $1/2$, we have $\Vert \nabla \bar f^{\text{nc-rs}}(\gM(\vx^t)) \Vert \ge 1/2$.  By observation, we have $F(\vx) = (L_1 \beta^2 / 155) \bar f^{\text{nc-rs}}(\kappa_y \vx / \beta) $. Thus,
+\begin{align*}
+    \Vert \nabla F(\vx^t) \Vert = \frac{L_1 \beta \kappa_y}{155} \Vert \nabla \bar f^{\text{nc-rs}}( \kappa_y \vx^t / \beta)\Vert \ge \frac{L_1 \beta \kappa_y}{310},
+\end{align*}
+which means we can set
+\begin{align} \label{eq:para-beta-stoc}
+    \beta = \frac{310 \epsilon}{L_1 \kappa_y}
+\end{align}
+to obtain an $\Omega( T/p )$ lower bound for finding an $\epsilon$-stationary point of $F(\vx)$. Next, by Lemma~\ref{lem:Arj-random} (item 1), we have that
+\begin{align*}
+    F(\vzero) - \inf_{\vx \in \sR^T} F(\vx) \le \frac{12 L_1 \beta^2 T}{155},
+\end{align*}
+which means that we can fulfill the constraint $F(\vzero) - \inf_{\vx \in \sR^T} F(\vx) \le \Delta$ by setting
+\begin{align} \label{eq:para-T-stoc}
+      T = \left \lfloor 
+     \frac{155 \Delta}{12 L_1 \beta^2} 
+    \right \rfloor.
+\end{align}
+By Lemma \ref{lem:Arj-random} (item 3), the variance of the SFO for $(f,g)$ is upper bounded by $ (23 L_1 \beta / 155)^2$ $(1-p)/p $, which means that we can let the variance be bounded by $\sigma^2$ by setting
+\begin{align} \label{eq:para-p-stoc}
+    p = \min \left\{  1, \left( \frac{23 L_1 \beta}{\sigma 155} \right)^2 \right\}.
+\end{align}
+Finally, we can conclude the lower bound of 
+\begin{align*}
+    \Omega(T/p) = \Omega \left( \frac{\Delta}{L_1 \beta^2} \left(1+ \frac{\sigma^2}{L_1^2 \beta^2} \right)  \right) = \Omega \left( \frac{\kappa_y^2 L_1 \Delta }{\epsilon^2} \left( 1+ \frac{\sigma^2 \kappa_y^2}{\epsilon^2} \right)\right).
+\end{align*}
+\end{proof}

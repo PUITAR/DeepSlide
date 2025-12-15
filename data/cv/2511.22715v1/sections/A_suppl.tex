@@ -1,0 +1,143 @@
+\clearpage
+\maketitlesupplementary
+\appendix
+
+\section{Additional Implementation Details}
+\label{supp:details}
+
+This section contains detailed descriptions of our implementation, including model architectures details, training setup, and evaluation protocols.
+
+\tit{Retrieval Details}
+As mentioned in the main paper, to retrieve candidate documents for each query image, we adopt a two-stage retrieval pipeline based on EVA-CLIP-8B. In the coarse-grained stage, the full query image is encoded and matched against the knowledge base. Instead, in the fine-grained retrieval phase, the subject of the question, corresponding to the visual entity in the image, is extracted using SpaCy\footnote{In particular, we use the \texttt{en\_core\_web\_sm} model available at \url{https://spacy.io/models/en}.}. According to the structure of query questions, extraction prioritizes noun phrases starting with demonstratives like ``this'' or ``these'', followed by nouns serving as objects of prepositions (\eg, ``of'', ``by'', ``in'', ``from'', etc.). If neither pattern is found, the last noun in the question is used as a fallback. This approach ensures that the most relevant entity is reliably identified for retrieval and reasoning.
+
+\tit{Critic Model and Dataset}
+The critic model builds upon Qwen2.5-VL-3B and is fine-tuned on a curated subset of the ReflectiVA dataset~\cite{cocchi2025augmenting}. Specifically, we select 1M samples, balanced between InfoSeek and Encyclopedic-VQA, where each sample is paired with a passage labeled as relevant or irrelevant. To encourage more robust discrimination, irrelevant passages are further divided into \textit{soft negatives} (\ie, semantically related but unhelpful passages) and \textit{hard negatives} (\ie, irrelevant passages that exhibit high similarity to the relevant ones), in proportions of 30\% and 70\% respectively. During training, we fine-tune only the visual projector and the LLM, while keeping the vision encoder frozen.
+
+At inference time, given $(I_{q}, q, p)$ (where $I_{q}$ and $q$ are the input image and question, and $p$ is the passage to evaluate), we apply a \emph{yes}-probability threshold equal to 0.1 (cf. Eq.~\ref{eq:critic2} of the main paper). This conservative threshold ensures that the critic $\mathcal{C}$ filters out only those passages for which it is highly confident they are irrelevant.
+
+\tit{Generator Training}
+Our generator is based on Qwen2.5-VL~\cite{bai2025qwen2}, employing the 3B and 7B scale. As mentioned in the main paper, we employ a multi-stage training strategy: first an SFT stage that serves as cold start for a subsequent RL-based training stage.  Specifically, for both the cold-start and RL stages, we apply a cosine learning rate schedule with 450 and 150 warm-up steps, respectively. Weight decay is set to 0.01 during cold-start and removed during RL. 
+SFT fine-tuning of the 3B and 7B models requires roughly 24 hours on 16 and 64 NVIDIA A100 64GB GPUs, respectively.
+In the RL stage, completions are generated with a temperature equal to $1.0$ and a repetition penalty of 1.05, using vLLM~\cite{kwon2023efficient}. 
+
+During training with the custom GRPO loss (cf. Eq.~\ref{eq:customgrpoloss} of the main paper), $\mathcal{G}_\theta$ and ${\mathcal{G}_\theta}_{\text{old}}$ share the same weights, although they operate as separate models. ${\mathcal{G}_\theta}_{\text{old}}$ runs inside the vLLM worker and remains frozen, and gradients are applied only to $\mathcal{G}_\theta$. After each backward pass, we synchronize ${\mathcal{G}_\theta}_{\text{old}}$ with the updated weights of $\mathcal{G}_\theta$. Fine-tuning the 3B and 7B models with our RL strategy takes roughly 48 hours on 32 and 64 NVIDIA A100 64GB GPUs, respectively. We select the best checkpoint based on the best task-specific accuracy on a held-out validation split. All runs employ DeepSpeed ZeRO-3~\cite{rajbhandari2020zero} and gradient checkpointing. Our training codebase builds on Open-R1~\cite{openr1} and TRL~\cite{vonwerra2022trl}.  
+
+\section{Reward Design}
+As discussed in Sec.~\ref{sec:generator_training} of the main paper, we employ a task-specific accuracy reward. The reward function evaluates only the final answer rather than the intermediate reasoning. To extract the predicted answer, we first search for content enclosed within the \texttt{<answer></answer>} tags. If no such content is found, we extract all text following the first \texttt{<answer>} tag. If this is unsuccessful, we instead use the text following the \texttt{</think>} tag. When none of these patterns appear, the entire model output is used. 
+
+In every case, format-specific special tokens are removed. We then apply the same normalization procedure used in the InfoSeek and Encyclopedic-VQA evaluations, including the removal of articles, punctuation, extra whitespace, and capitalization, along with standardization of digits and contractions.
+The final task-specific reward depends on the source dataset and task type, and is computed as follows:
+\begin{equation*}
+\small
+R_{\text{task}}\big(\tilde{o}_i, {o}_i^*, \tau_i\big) =
+\begin{cases}
+\mathbbm{1}\big[\Psi_{\text{num}}(\tilde{o}_i,{o}_i^*)\big], & \text{if } \tau_i=\text{numerical},\\[1.5ex]
+\mathbbm{1}\big[\text{IoU}(\tilde{o}_i,{o}_i^*)\ge 0.5\big], & \text{if } \tau_i=\text{multi},\\[1.5ex]
+\mathbbm{1}\big[\tilde{o}_i = {o}_i^*\big], & \text{otherwise}.
+\end{cases}
+\end{equation*}
+where $\tilde{o}_i$, ${o}_i^*$ and $\tau_i$ denote respectively the extracted prediction, the ground-truth answer and the task type of the $i$-th sample, and $\Psi_{\text{num}}$ evaluates success or failure in numerical match. When multiple alternative ground-truths are provided for a sample, we compute the reward with respect to each and take the maximum.
+For samples from InfoSeek, we use exact string matching for \textit{entity} and \textit{time} questions, while \textit{numerical} questions are evaluated with $\Psi_{\text{num}}$:
+\begin{equation*}
+\small
+\Psi_{\text{num}}(\tilde{o},{o}^*) =
+\begin{cases}
+|\tilde{o}-{o}^*|\le 0.1, & \text{if } \texttt{is\_scalar}(\tilde{o}) \\
+& \quad \wedge \text{ }\texttt{is\_scalar}({o}^*),\\[1mm]
+\tilde{o} \in {o}^*, & \text{if } \texttt{is\_scalar}(\tilde{o}) \\
+& \quad \wedge \text{ }\texttt{is\_interval}({o}^*),\\[1mm]
+\mathrm{IoU}(\tilde{o},{o}^*)\ge 0.5, & \text{if } \texttt{is\_interval}(\tilde{o}) \\
+& \quad \wedge \text{ }\texttt{is\_interval}({o}^*).
+\end{cases}
+\end{equation*}
+
+For samples from Encyclopedic-VQA dataset, we adopt exact match scoring for \textit{single-answer} questions, while for \textit{multi-answer} questions the prediction is rewarded as correct only if intersection-over-union between predicted and ground-truth items reaches or surpasses 0.5. 
+
+The evolution of task-specific accuracy reward during training is reported in Fig.~\ref{fig:reward_plot}.
+
+\section{Additional Experimental Results}
+In this section, we provide additional experiments and analyses that complement the results reported in the main paper.
+
+\subsection{Results with Google Lens Retriever} 
+We further extend the analysis in the main paper by evaluating all methods under an alternative retrieval setup. Specifically, in Table~\ref{tab:results_lens}, we employ the Wikipedia pages retrieved by Google Lens~\footnote{A visual recognition service by Google, available at \url{https://lens.google.com/}.} when provided with the query image for each question of Encyclopedic-VQA, which have been officially released along with the dataset. Even though \ours does not use the fine-grained retriever in this setting, it consistently outperforms ReflectiVA~\cite{cocchi2025augmenting} across different generator scales. Notably, \ours at the 3B scale performs comparable to ReflectiVA at the 8B scale and HAMMR~\cite{castrejon2024hammr} at 55B. In addition, the stronger reasoning capabilities of \ours allow it to benefit substantially from improved retrieval quality, improving single-hop accuracy from 48.0 (3B) to 55.5 (7B), showing a notable gain of +7.5 points.
+
+
+\begin{figure}[t]
+\vspace{-0.1cm}
+    \centering
+    \includegraphics[width=0.99\linewidth]{images/reward_plot.pdf}
+    \vspace{-0.4cm}
+    \caption{Task‑specific accuracy reward progression across training iterations of the \ours 7B generator.}
+    \label{fig:reward_plot}
+    \vspace{-0.3cm}
+\end{figure}
+
+\begin{table}[t]
+\caption{VQA accuracy scores on the Encyclopedic-VQA test set with Google Lens employed as retriever.}
+\label{tab:results_lens}
+  \vspace{-0.2cm}
+  \centering
+  \setlength{\tabcolsep}{.5em}
+  \resizebox{0.97\linewidth}{!}{
+  \begin{tabular}{lc c cc}
+   \toprule
+    & & & \multicolumn{2}{c}{\textbf{E-VQA}} \\
+    \cmidrule{4-5}
+     \textbf{Model} & \textbf{Generator} & & Single-Hop & All \\
+    \midrule
+    Qwen2.5-VL-3B~\cite{bai2025qwen2} & - & & 35.2 & - \\
+    Qwen2.5-VL-7B~\cite{bai2025qwen2} & - & & 44.4 & - \\
+    \midrule
+    HAMMR~\cite{castrejon2024hammr} & PaLI-X-55B & & 47.8 & - \\
+    mR$^\text{2}$AG~\cite{zhang2024mr} & LLaVA-v1.5-7B & & 55.9 & - \\
+    ReflectiVA~\cite{cocchi2025augmenting} & LLaVA-MORE-8B & & 48.2 & 46.1 \\
+   \midrule
+    ReflectiVA~\cite{cocchi2025augmenting} & Qwen2.5-VL-3B & & 45.8 & 43.2 \\
+     \rowcolor{OurColor}
+    \textbf{\ours (Ours)} & Qwen2.5-VL-3B & & \textbf{48.0} & \textbf{48.0} \\
+    \midrule
+    ReflectiVA~\cite{cocchi2025augmenting} & Qwen2.5-VL-7B & & 48.3 & 46.8 \\
+   
+    \rowcolor{OurColor}
+    \textbf{\ours (Ours)} & Qwen2.5-VL-7B & & \textbf{55.5} & \textbf{56.9} \\   
+  \bottomrule
+  \end{tabular}
+  }
+\vspace{-0.35cm}
+\end{table}
+
+\subsection{Varying the Number of Retrieved Documents}
+In Fig.~\ref{fig:k_analysys_avg}, we analyze the effect of varying the number of retrieved documents $k$ on the overall performance and on the average number of filtered passages fed to the generator. As shown, the model achieves the best results around $k=20$, which represents the optimal trade-off between coverage and noise, and is therefore adopted as the default retrieval depth in our pipeline. Retrieving too few documents results in insufficient contextual evidence, causing a drop in recall and limiting the ability of the model to access the necessary information. Conversely, increasing $k$ beyond this point does not yield meaningful performance gains while substantially inflating the computational cost of the filtering stage. 
+
+\begin{figure}
+   \centering
+   \includegraphics[width=0.94\linewidth]{images/combined_average_accuracy_and_passages_k.pdf}
+   \vspace{-0.3cm}
+    \caption{Performance of \ours 7B (red) and average number of filtered passages (blue) when varying the number $k$ of retrieved documents. Accuracy and number of passages are computed as the average of E-VQA and InfoSeek scores.}   \label{fig:k_analysys_avg}
+    \vspace{-0.3cm}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.96\linewidth]{images/filtered_vs_unfiltered_REFLECTIVA_REAG.pdf}
+    \vspace{-0.35cm}
+    \caption{Comparison of the average number of passages fed to the generator with and without the critic filtering.
+    }
+    \label{fig:filtered_vs_unfiltered}
+    \vspace{-0.4cm}
+\end{figure}
+
+\subsection{Effectiveness of the Critic Model}  
+In Fig.~\ref{fig:filtered_vs_unfiltered}, we provide a detailed analysis on the effectiveness of the proposed critic model, employed in \ours to filter relevant passages. Specifically, the plot reports the average number of passages retained after the filtering performed by the critic model when varying the number $k$ of retrieved documents. Across all retrieval sizes, the critic model substantially reduces the number of retained passages (\eg, from an average of $128.6$ to $5.7$ at $k=20$), while preserving answer-relevant information. This highlights the strong ability of the critic model to discard noisy or off-topic passages, leading to a more compact and semantically aligned evidence set for multimodal reasoning.
+
+\subsection{Critic Threshold}
+In Fig.~\ref{fig:yes_prob_thr_analysis_avg}, we report how the performance varies as a function of the \emph{yes}-probability threshold used in our critic model (cf. Eq.~\ref{eq:critic2} in the main paper). The results show that instead of simply letting the fine-tuned MLLM decide if the passage is relevant or not (\ie, $\text{thresh}=0.5$), leveraging the confidence of the model in predicting the ``Yes" token allows us to gain more control over the filtering phase. A threshold $\text{thresh}=0.1$ yields the best trade-off between precision and recall in retrieving relevant passages. This setting enables the critic model to reliably filter out passages for which it is most confident of their non-relevance to the query. 
+
+\begin{figure}
+   \centering
+   \includegraphics[width=0.99\linewidth]{images/combined_average_accuracy_and_passages.pdf}
+   \vspace{-0.3cm}
+    \caption{Performance of \ours 7B (red) and average number of filtered passages (blue) when varying the \emph{yes}-probability threshold in our critic model. Accuracy and number of passages are computed as the average of E-VQA and InfoSeek scores.}
+    \label{fig:yes_prob_thr_analysis_avg}
+    \vspace{-0.3cm}
+\end{figure}

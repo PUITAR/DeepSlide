@@ -1,0 +1,149 @@
+\section{Proposed Method}
+\label{sec:method}
+
+\tinytit{Task Definition}
+In the standard VQA task, a multimodal LLM, referred to as the generator model $\mathcal{G}$, must answer a question $q$ about an image $\mathit{I_q}$. The task requires the model to understand the visual content and provide a correct answer. 
+While MLLMs large-scale pretraining captures general knowledge, it may be insufficient for answering highly specific or domain-specific questions.
+
+Knowledge-based VQA (KB-VQA) extends VQA by incorporating external knowledge. 
+In our setting, the external knowledge base $\mathcal{KB}$ is a collection of $N$ multimodal documents (\eg,~Wikipedia pages) each containing textual passages and images. Formally, the knowledge base can be represented as
+\begin{equation}
+    \mathcal{KB} = \{d_1, \dots , d_N\}, \quad  d_i = (\mathcal{T}_i, I_i, \mathcal{P}_i),
+\end{equation} 
+where $\mathcal{T}_i$ is the metadata of the $i$-th document (\eg,~title and summary of a Wikipedia page), $I_i$ is the associated image, if present, and $\mathcal{P}_i$ are the textual passages of the document.
+
+A retrieval model $\mathcal{R}$ is employed to select the top-$k$ relevant documents from $\mathcal{KB}$ and their associated passages $\mathcal{\tilde{P}} = \{ p_0, \dots, p_j \}$, which are then provided within the generator context window. 
+Finally, the generator produces an answer $A$ conditioned on both the image, the question, and the retrieved passages, as follows:
+\begin{equation}
+\label{eq:answer}
+A \sim \mathcal{G}(A \mid q, I_q,\{ p_0, \dots, p_j \}).
+\end{equation}
+
+During training, the generator $\mathcal{G}$ is optimized to maximize the likelihood of producing the correct answer given the visual and textual context. In particular, the retrieved passages $\tilde{\mathcal{P}}$ act as external conditioning signals that augment the understanding of the model of the visual scene and the question, enabling knowledge-grounded reasoning. The objective can thus be expressed as the negative log-likelihood of the ground-truth answer tokens, averaged over the training distribution, \ie
+\begin{equation}
+\small
+\label{eq:gen loss}
+\mathcal{L}(\theta)
+= \mathbb{E}_{(I_q, q, \tilde{\mathcal{P}}) \sim \mathcal{D}}\left[
+\frac{1}{|y|}\sum_{t=1}^{|y|} \log \mathcal{G}_\theta\!\big(y_t \mid q, I_q, \tilde{\mathcal{P}}, y_{<t}\big)
+\right],
+\end{equation} where $\mathcal{D}$ denotes the training distribution.
+
+
+\tit{Methodology Summary} To address the existing challenges of retrieval-augmented models, \textbf{\ours} enhances KB-VQA performance by employing retrieval, filtering, and reasoning over the retrieved passages. The approach consists of two key components: a \textbf{critic model} that filters retrieval results, and a \textbf{generator} trained to reason over the filtered documents before producing the final answer. The overall pipeline is organized into four main stages: (1) a multi-level retrieval stage to gather candidate passages, (2) a filtering stage where the critic selects relevant content, (3) a cold-start supervised fine-tuning (SFT) stage to instill initial reasoning capabilities in the generator, and (4) a reinforcement learning stage to further refine reasoning and answer generation. Together, these components reduce noise and improve the ability of the generator to produce accurate, knowledge-intensive answers. An overview of our methodology is shown in Fig.~\ref{fig:model}. 
+
+
+\subsection{Retrieval Stage}
+The retrieval stage identifies potentially informative passages related to the query image, which are subsequently filtered to provide the generator with relevant external knowledge for reasoning and answer generation. 
+This process comprises two complementary steps: a \textit{coarse-grained} retrieval, which retrieves candidate documents based on the entire query image, and a \textit{fine-grained} retrieval, which performs retrieval using localized cues.
+Notably, \ours is agnostic to the choice of retriever, so $\mathcal{R}$ can be any cross-modal encoder that maps the query image and either the metadata $\mathcal{T}_i$ or the image $I_i$\footnote{Depending on the test case, see Sec.~\ref{subsec:details} for details.} associated with each document $d_i$ into a shared embedding space. 
+Relevance between queries and documents is then computed via cosine similarity.
+
+
+\tit{Coarse-Grained Retrieval} 
+An initial set of relevant textual passages, denoted as $\mathcal{P}^{\mathrm{cg}}$, is constructed by aggregating all the passages contained in the top-$k$ retrieved documents when using the original image $\mathit{I_q}$ as query to the retriever $\mathcal{R}$. Since each document contains a variable number of passages, the resulting collection is represented as $\mathcal{P}^{\mathrm{cg}} = \{p_1^{\mathrm{cg}}, \dots, p_m^{\mathrm{cg}}\}$, where $m$ denotes the total number of passages gathered from the top-$k$ documents. 
+
+
+\tit{Fine-Grained Retrieval}
+To improve retrieval recall, we introduce a fine-grained retrieval stage that focuses on the specific visual region relevant to the question.
+Given the input image $\mathit{I_q}$ and the question $q$, we identify a bounding box corresponding to the subject of the question, employing an off-the-shelf detection model. If such a region is detected, we crop the image accordingly, obtaining a focused image patch $\mathit{I_q}^{\mathrm{crop}}$.
+This cropped image is then used as input to the retriever model $\mathcal{R}$, which computes relevance scores with respect to each document $d_i$, as in the coarse-grained stage. 
+
+The top-$k$ documents retrieved in this stage form the fine-grained candidate passages, denoted as $\mathcal{P}^{\mathrm{fg}} = \{p_1^{\mathrm{fg}}, \dots, p_l^{\mathrm{fg}}\}$.
+By restricting the visual input to the region of interest, this stage allows the retriever to focus on more fine-grained visual details, yielding passages that are more likely to be relevant to the specific question.
+
+\tit{Final Set of Retrieved Passages} 
+The documents comprising \(\mathcal{P}^{\mathrm{cg}}\) and \(\mathcal{P}^{\mathrm{fg}}\) are merged and ranked by their relevance scores, and all passages contained in the top-$k$ ranked documents are retained to form the final set \(\mathcal{P}^{\mathrm{noisy}}\) from \(\mathcal{KB}\).
+
+\subsection{Filtering}
+After the retrieval steps, we obtain a set $\mathcal{P}^{\mathrm{noisy}}$ of passages from the $k$ retrieved documents. While increasing $k$ generally improves recall by including more potentially relevant passages, this typically comes at the cost of a lower precision, as the probability of introducing noisy information rises as well. To mitigate this, we design a critic model $\mathcal{C}$ to filter out irrelevant passages, resulting in a refined set of relevant passages  $\mathcal{P}^{\mathrm{relevant}}$.
+
+\tit{Critic Model}
+Given a question $q$ and its corresponding image $I_q$, the critic model $\mathcal{C}$ predicts if each retrieved textual passage in $\mathcal{P}^{\mathrm{noisy}}$ is useful for answering the question\footnote{The exact prompt can be found in the supplementary material.}. 
+In \ours, the critic model is implemented as an autoregressive MLLM fine-tuned with a next-token prediction objective optimized on an annotated dataset. Specifically, starting from a subset of samples drawn from the dataset employed in~\cite{cocchi2025augmenting}, we extract tuples $(I_{q}, q, p, y)$, where $p$ is a textual passage to be evaluated and $y \in \{\textit{Yes}, \textit{No}\}$ indicates whether the passage is relevant. The critic model is trained to predict $y$ conditioned on $(I_{q}, q, p)$, enabling it to robustly discriminate between relevant and irrelevant passages.
+
+At inference time, only passages yielding a positive prediction with probability above a threshold are kept, yielding the final subset of relevant passages $\mathcal{P}^{\mathrm{relevant}}$, defined as: 
+\begin{equation}
+\small
+\label{eq:critic2}
+\mathcal{P}^{\mathrm{relevant}} = 
+\{\, p \in \mathcal{P}^{\mathrm{noisy}} \mid \Pr(\textit{Yes} | \mathcal{C}, q, I_{q}, p) > \text{thresh} \,\}.
+\end{equation}
+
+The resulting set $\mathcal{P}^{\mathrm{relevant}}$ is fed to the generator $\mathcal{G}$, which leverages these passages to produce the final answer (Eq.~\ref{eq:answer}).
+
+\subsection{Generator Cold Start}
+\label{sec:cold_start}
+Following the approach popularized by DeepSeek-R1~\cite{guo2025deepseek}, we train our generator $\mathcal{G}$ using a multi-stage strategy. The initial stage is designed to enhance the reasoning and zero-shot capabilities of the model, while mitigating potential instabilities during the subsequent reinforcement learning stage.
+Unlike standard SFT, which focuses solely on answer prediction, our cold-start phase exposes $\mathcal{G}$ to explicit reasoning trajectories that link the visual content, retrieved passages, and the question.
+
+\tit{Collecting Reasoning Traces}
+To achieve this, we fine-tune $\mathcal{G}$ using high-quality reasoning data. Starting from the same subset used for training the critic model, we extend each tuple $(I_{q}, q, p, y)$ with a reasoning trace $tr$.
+Specifically, each tuple is provided as input to an MLLM, which is prompted to generate an explicit reasoning trace that logically explains how the passage $p$ contributes to answering the question $q$ given the image $I_{q}$. To guide this reasoning, the prompt includes both the final answer and the relevance label $y$, indicating whether the reasoning should be grounded in the passage or not. By explicitly conditioning on these signals, the MLLM produces structured reasoning traces that reflect a coherent inference process from the evidence to the answer. These traces are used as supervision for the cold-start fine-tuning of the generator $\mathcal{G}$.
+
+\tit{Training Protocol} 
+Having collected the reasoning-augmented dataset, the generator $\mathcal{G}$ is trained to optimize both its reasoning ability and answer accuracy.
+To guide the model towards structured reasoning behavior, we encourage a templated output format, where the reasoning trace and the final answer are delimited by special tokens which are explicitly added to the vocabulary, \ie
+\begin{center}
+  \texttt{<think>} \text{reasoning trace} \texttt{</think>} \\ 
+  \texttt{<answer>} \text{answer} \texttt{</answer>}.  
+\end{center}
+
+This structure encourages the model to separate intermediate reasoning from the final prediction, improving interpretability and stability during generation.
+Training is performed using a next-token prediction objective over both the reasoning trace and the final answer. The overall SFT loss balances the two components as follows:
+\begin{equation}
+    \mathcal{L}_\mathrm{SFT} = \alpha\mathcal{L}_{\mathrm{A}} + (1-\alpha)\mathcal{L}_{\mathrm{T}},
+\end{equation}
+where $\mathcal{L}_{\mathrm{A}}$ and $\mathcal{L}_{\mathrm{T}}$ denote the negative log-likelihood losses computed over the answer and reasoning trace, respectively.
+
+\subsection{Generator RL Training} 
+\label{sec:generator_training}
+While supervised fine-tuning on cold-start data equips the generator with basic reasoning skills and coherent chain-of-thought generation, we further enhance its quality and robustness through a subsequent reinforcement learning stage.
+
+\tit{Task-specific RL with Retrieved Passages} 
+Our generator model is optimized with a custom objective inspired by GRPO~\cite{shao2024deepseekmath}, incorporating several modifications from DAPO~\cite{yu2025dapo}. Formally, the objective is defined as follows:
+\begin{equation}
+\small
+\begin{aligned}
+\mathcal{J}_{\text{GRPO}}(\theta) =\;& 
+\mathbb{E}_{(I_q, q, p)\sim \mathcal{D}, \{o_i\}_{i=1}^N \sim \mathcal{G}_{\theta_\text{old}}(\cdot \mid I_q, q, p)} \Bigg[ \\
+& \frac{1}{\sum_{i=1}^{N} |o_i|} 
+  \sum_{i=1}^{N} \sum_{t=1}^{|o_i|} 
+    \min \Big( 
+        r_{i,t}(\theta) \hat{A}_{i,t}, \\
+& \qquad \text{clip}\big( r_{i,t}(\theta), 1 - \varepsilon, 1 + \varepsilon \big) \hat{A}_{i,t} 
+      \Big) 
+\Bigg],
+\end{aligned}
+\label{eq:customgrpoloss}
+\end{equation}
+where $\mathcal{G}_{\theta_\text{old}}$ is the generator initialized from the SFT cold-start phase and $\mathcal{G}_\theta$ the generator after optional off-policy updates. Moreover, $\{o_i\}_{i=1}^N$ are the generated completions with  associated rewards $R_i$, and $\hat{A}_i$ the corresponding GRPO advantages~\cite{shao2024deepseekmath}.
+In the formula, $r_{i,t}$ is computed as follows:
+\begin{equation}
+\small
+    r_{i,t}(\theta)=\frac{\mathcal{G}_{\theta}(o_{i,t} \mid I_q, q, p ,o_{i,<t})}{\mathcal{G}_{\theta_{\text{old}}}(o_{i,t} \mid  I_q, q, p ,o_{i,<t})}.
+\label{eq:off_policy_ratio}
+\end{equation}
+
+As in our setting the updates are never off-policy, $\mathcal{G}_{\theta}$ coincides with $\mathcal{G}_{\theta_{\text{old}}}$, thus the ratio $r_{i,t}(\theta)$ is always 1.
+Unlike the GRPO formulation and following DAPO, we omit the KL divergence penalty, which overly constrains exploration of alternative reasoning trajectories. This also improves memory efficiency and training speed by removing the need for a reference model and an extra forward pass. Furthermore, the loss is computed at the token level, as averaging over variable-length sequences would reduce the contribution of tokens in longer sequences and weaken their updates.
+
+At each training iteration, the generator $\mathcal{G}$ is prompted with $({I_q}, q, p)$ to autoregressively generate a group of $N$ completions $\{{o_i}\}_{i=1}^N$. Each generated completion is then evaluated by one or more rule-based reward functions, producing a reward $R_i$ to compute the advantage as:
+\begin{equation}
+\small
+   \hat{A}_{i,t} = \frac{R_i - \text{mean}(\{R_i\}_{i=1}^N)}{\text{std}(\{R_i\}_{i=1}^N)}.
+\label{eq:advantage_calculation}
+\end{equation}
+
+Advantages guide the policy updates: completions with above-average rewards have their likelihood increased, while those below the mean are down-weighted. This exposure allows the generator to explore diverse strategies for interacting with passages, gradually steering it toward producing reasoning trajectories that yield correct answers.
+
+\tit{Rule-Based Reward Design} 
+In our setting, we employ two complementary rule-based binary reward functions: a task-specific \textit{accuracy reward} and a \textit{format reward}. The task-specific accuracy reward $R_{\text{task}}(o_i)$ verifies whether a generated completion is correct by parsing the prediction according to the question type (\ie, numerical or textual, single- or multi-answer)\footnote{Further details are provided in the supplementary material.}.  The format reward $R_{\text{fmt}}(o_i)$ enforces adherence to the expected output template. Both functions return $1$ in case of success and $0$ otherwise.
+The final reward associated to a completion $o_i$ is defined as a weighted sum of the two. Formally, 
+\begin{equation}
+\begin{aligned}
+R_i = \gamma R_{\text{task}}(o_i) + \delta R_{\text{fmt}}(o_i),
+\end{aligned}
+\label{eq:total_reward}
+\end{equation}
+where $\gamma$ and $\delta$ are two hyperparameters.

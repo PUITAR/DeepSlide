@@ -1,0 +1,100 @@
+{
+  "instructions": {
+    "division_strategy": "semantic",
+    "target_slide_count": 5,
+    "min_content_length": 100,
+    "max_content_length": 500,
+    "focus_points": [
+      "神经网络",
+      "应用"
+    ],
+    "special_requirements": "生成简洁的章节"
+  },
+  "chapters": [
+    {
+      "node_id": "semantic_0007d112",
+      "title": "机器学习是人工智能的核心分支，使计算机能从数据中学习。本节介绍基本概念",
+      "level": 2,
+      "node_type": "content",
+      "parent_id": null,
+      "children_ids": [],
+      "position": {
+        "start_line": 0,
+        "end_line": 0,
+        "start_char": 0,
+        "end_char": 0,
+        "page_number": null,
+        "source_file": null
+      },
+      "metrics": {
+        "word_count": 15,
+        "char_count": 221,
+        "sentence_count": 4,
+        "paragraph_count": 0,
+        "formula_count": 0,
+        "image_count": 0,
+        "table_count": 0,
+        "code_block_count": 0,
+        "readability_score": null,
+        "complexity_score": null
+      },
+      "metadata": {},
+      "created_at": "2025-12-08T16:06:38.008035",
+      "updated_at": "2025-12-08T16:06:38.008137",
+      "relationships": {},
+      "importance": 0.8,
+      "tags": [
+        "机器学习",
+        "重点"
+      ],
+      "content": "机器学习是人工智能的核心分支，使计算机能从数据中学习。本节介绍基本概念。 监督学习使用带标签的数据进行训练。常见算法包括： 线性回归 逻辑回归 支持向量机 无监督学习从无标签数据中发现模式，包括聚类( [公式] -means)和降维(PCA)。 深度学习使用多层神经网络，在图像和语音识别中表现出色。 CNN专门用于图像处理，通过卷积层提取特征。公式： [公式] 机器学习在医疗、金融等领域有广泛应用。例如： 医疗诊断 金融欺诈检测 推荐系统"
+    }
+  ],
+  "feedback": {
+    "status": "success",
+    "division_method": "semantic",
+    "total_chapters": 1,
+    "chapters_summary": [
+      {
+        "index": 1,
+        "title": "机器学习是人工智能的核心分支，使计算机能从数据中学习。本节介绍基本概念",
+        "level": 2,
+        "importance": 0.8,
+        "length": 221,
+        "tags": [
+          "机器学习",
+          "重点"
+        ]
+      }
+    ],
+    "statistics": {
+      "avg_chapter_length": 221.0,
+      "max_chapter_length": 221,
+      "min_chapter_length": 221,
+      "level_distribution": {
+        "2": 1
+      },
+      "importance_distribution": {
+        "high": 1,
+        "medium": 0,
+        "low": 0
+      }
+    },
+    "suggestions": [],
+    "warnings": [
+      "章节数(1)不足目标(5)的50%"
+    ],
+    "method_used": "semantic",
+    "original_text_length": 221,
+    "chapters_generated": 1,
+    "avg_chapter_length": 221.0,
+    "focus_coverage": {
+      "covered": [
+        "应用",
+        "神经网络"
+      ],
+      "uncovered": [],
+      "coverage_rate": 1.0
+    }
+  }
+}
