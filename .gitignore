@@ -36,6 +36,7 @@ node_modules/
 .trae/
 .idea/
 .vscode/
+.vercel/
 
 # Logs
 *.log
@@ -81,6 +82,7 @@ all-MiniLM-L6-v2/
 tmp_uploads/
 # workspace
 workspace/
+context_files/
 
 # Vercel cache
 .vercel/cache/
@@ -99,3 +101,8 @@ deepslide/agents/divider/result/*.json
 
 # index-tts
 index-tts/
+audio/
+Example_Audio.wav
+
+# local models
+models/

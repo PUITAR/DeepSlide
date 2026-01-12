@@ -1,0 +1,52 @@
+
+
+
+        
+
+
+\begin{table*}[!t]
+    \centering
+    \caption{Theoretical unified view of various post-training algorithms.}
+    \label{tab:grad_compare}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{cccc}
+    \toprule
+         \textbf{Algorithm} & \textbf{Reference Policy} &\textbf{Advantage Estimate} & \textbf{Unified Policy Gradient Estimator} \\
+        \midrule
+          SFT & $\pi_{ref} = \pi_\theta$& $\hat{A}_{SFT} \equiv 1$ & $\nabla \mathcal{J}_{SFT}(\theta) = \nabla \pi_\theta (\tau ) \frac{\hat{A}_{SFT} = 1}{\pi_\theta (\tau )}$\\
+        \midrule
+        \multicolumn{4}{c}{\textbf{Online Reinforcement Learning Methods}} \\
+        \midrule
+          \makecell{PPO\\\citep{schulman2017proximal}} & $\pi_{ref} = \pi_{\theta_{old}}$&
+        $\hat{A}_{PPO} = \text{GAE \citep{schulman2015high}}$ & 
+        $\nabla \mathcal{J}_{PPO} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{PPO} \mathbb{1}_{\text{Clip}}}{\pi_{ref} (\tau)}$\\
+        \midrule
+          \makecell{GRPO\\\citep{shao2024deepseekmath}} & $\pi_{ref} = \pi_{\theta_{old}}$&
+        $\hat{A}_{GRPO} = \frac{R(\tau_{j}) - \text{mean} (\{R(\tau_{j})\}_{G_{on}})}{\text{std} (\{R(\tau_{j})\}_{G_{on}})}$ & 
+        $\nabla \mathcal{J}_{GRPO} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{GRPO} \mathbb{1}_{\text{Clip}}}{\pi_{ref} (\tau)}$\\
+        \midrule
+         \makecell{REINFORCE\\\citep{ahmadian2024back}} & $\pi_{ref} = \pi_{\theta}$&
+        $\hat{A}_{REINFORCE} = \pm 1$ & 
+        $\nabla \mathcal{J}_{REF.}(\theta) = \nabla \pi_\theta (\tau) \frac{\hat{A}_{REF.}}{\pi_\theta (\tau)}$\\
+        \midrule
+         \makecell{CISPO\\\citep{chen2025minimax}} & $\pi_{ref} = \pi_{\theta_{old}}$&
+        $\hat{A}_{CISPO} = \hat{A}_{GRPO}$ & 
+        $\nabla \mathcal{J}_{CISPO} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{CISPO} \mathbb{1}_{\text{CIS-Mask}}}{\pi_{ref} (\tau)}$\\
+        \midrule
+         \makecell{GSPO\\\citep{zheng2025group}} & $\pi_{ref} = \pi_\theta \left(\frac{\pi_{\theta_{old}} (\tau_{i,j} |q_i ) }{\pi_{\theta} (\tau_{i,j} |q_i )}\right)^{1/|\tau_{i,j}|}  $&
+        $\hat{A}_{GSPO} = \hat{A}_{GRPO}$ & 
+        $\nabla \mathcal{J}_{GSPO} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{GSPO} \mathbb{1}_{\text{Seq-Clip}}}{\pi_{ref} (\tau)}$\\
+        \midrule
+        \multicolumn{4}{c}{\textbf{Offline/Online Reinforcement Learning Methods}} \\
+        \midrule
+         \makecell{SRFT (Offline)\\\citep{fu2025srft}} & $\pi_{ref} \equiv 1$&
+        $\hat{A}_{SRFT} = \frac{R(\tau_{j}) - \text{mean} (\{R(\tau_{j})\}_{G_{on}\cup G_{off}})}{\text{std} (\{R(\tau_{j})\}_{G_{on}\cup G_{off}})}$ & 
+        $\nabla \mathcal{J}_{SRFT} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{SRFT}}{\pi_{ref} (\tau) = 1}$\\
+        \midrule
+         \makecell{LUFFY (Offline)\\\citep{yan2025learning}} & $\pi_{ref} \equiv 1$&
+        $\hat{A}_{LUFFY} = \hat{A}_{SRFT}$ & 
+        $\nabla \mathcal{J}_{LUFFY} = \nabla \pi_\theta (\tau) \frac{\hat{A}_{LUFFY}}{\pi_{ref} (\tau) = 1} f_{\text{shape}}'$ \\
+    \bottomrule
+    \end{tabular}
+    }
+\end{table*}

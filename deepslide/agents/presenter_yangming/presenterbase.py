@@ -58,7 +58,7 @@ class PresenterAgent:
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         env_path = os.path.join(project_root, 'deepslide', 'config', 'env', '.env')
         load_dotenv(env_path)
-        api_key = os.getenv('DEEPSEEK_API_KEY')
+        api_key = os.getenv('DEFAULT_MODEL_API_KEY')
         model_instance = ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="deepseek-chat",

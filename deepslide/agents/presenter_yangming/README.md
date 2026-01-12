@@ -25,7 +25,7 @@
 **运行应用：**
 ```bash
 # 请在项目根目录下运行
-DEEPSEEK_API_KEY="sk-6286dc11a31e45649dbf55081b8aef20" streamlit run /home/ym/DeepSlide/deepslide/agents/presenter/app.py
+DEFAULT_MODEL_API_KEY="sk-6286dc11a31e45649dbf55081b8aef20" streamlit run /home/ym/DeepSlide/deepslide/agents/presenter/app.py
 ```
 
 **操作流程：**

@@ -1,0 +1,61 @@
+%!TeX encoding = UTF-8
+%!TeX program = xelatex
+
+\documentclass[10pt]{beamer}
+\usetheme{Feather}
+
+%-------------------------------------------------------
+% INCLUDE PACKAGES
+%-------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+
+% Remove navigation symbols for a cleaner look
+\setbeamertemplate{navigation symbols}{}
+
+% Simplify the frame title
+\setbeamertemplate{frametitle}{\vspace*{0.5em}\insertframetitle\par\vspace*{-0.5em}}
+
+% Reduce spacing in lists
+\setlength{\leftmargini}{1em}
+\setlength{\leftmarginii}{1em}
+
+% Optional: Use a more compact font if desired (commented out by default)
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+
+%-------------------------------------------------------
+% DEFFINING AND REDEFINING COMMANDS
+%-------------------------------------------------------
+
+% colored hyperlinks
+\newcommand{\chref}[2]{
+  \href{#1}{{\usebeamercolor[bg]{Feather}#2}}
+}
+
+\input{title}
+
+\begin{document}
+
+\begin{frame}[noframenumbering] 
+  \titlepage 
+\end{frame}
+
+
+\begin{frame}{Content}{}
+\tableofcontents
+\end{frame}
+
+\input{content}
+
+% references
+\begin{frame}
+    \frametitle{References}
+    \bibliographystyle{plain}
+    \bibliography{ref}
+\end{frame}
+
+\end{document}

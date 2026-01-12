@@ -1,0 +1,159 @@
+\documentclass{article} %
+\PassOptionsToPackage{dvipsnames,table}{xcolor}
+\usepackage[preprint]{colm2025_conference}
+
+\usepackage{microtype}
+\usepackage{epigraph}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{makecell}    %
+\usepackage[ruled,vlined]{algorithm2e} %
+\let\listofalgorithms\relax
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{lineno}
+
+\definecolor{darkblue}{rgb}{0, 0, 0.5}
+\hypersetup{colorlinks=true, citecolor=darkblue, linkcolor=darkblue, urlcolor=darkblue}
+
+
+\definecolor{lightblue}{RGB}{220,235,250}
+\usepackage[most,skins,theorems]{tcolorbox}
+\tcbset{
+  takeawaysbox/.style={
+    title=Takeaways,
+    colback=lightblue!80,
+    colframe=black,
+    fonttitle=\bfseries\small,
+    coltitle=white,
+    colbacktitle=black,
+    enhanced,
+    attach boxed title to top left={xshift=2.5mm,yshift=-2.5mm},
+    boxed title style={rounded corners, size=small, colframe=black, colback=black},
+    width=\linewidth,
+    arc=3.5mm
+  }
+}
+\tcbset{
+  taskbox/.style={
+    title=Task Definition,
+    colback=lightblue!80,
+    colframe=black,
+    fonttitle=\bfseries\small,
+    coltitle=white,
+    colbacktitle=black,
+    enhanced,
+    attach boxed title to top left={xshift=2.5mm,yshift=-2.5mm},
+    boxed title style={rounded corners, size=small, colframe=black, colback=black},
+    width=\linewidth,
+    arc=2mm
+  }
+}
+
+\usepackage{xspace}
+
+\usepackage{cleveref}
+
+\input{macro}
+\definecolor{darkred}{RGB}{200, 0, 0}
+
+
+\NewDocumentCommand{\yuxin}{ mO{} }{\textcolor{red}{\textsuperscript{yuxin}\textbf{\small[#1]}}}
+\NewDocumentCommand{\youbang}{ mO{} }{\textcolor{magenta}{\textsuperscript{youbang}\textbf{\small[#1]}}}
+\NewDocumentCommand{\xingtai}{ mO{} }{\textcolor{RoyalPurple}{\textsuperscript{xingtai}\textbf{\small[#1]}}}
+
+\usepackage{makecell}    %
+\usepackage{natbib}
+\usepackage{float}
+
+\usepackage{fontawesome5}
+
+\usepackage{colortbl}
+
+\usepackage{amsmath,amssymb,mathtools}
+
+\colorlet{moss}{green!40!black}
+\newcommand{\AlgoCommentStyle}[1]{\ttfamily\color{moss}#1}
+\SetCommentSty{AlgoCommentStyle}                 %
+\SetKwComment{Hash}{\ttfamily\color{moss}\#\ }{} %
+\usepackage{tablefootnote}
+
+\definecolor{titlepurple}{HTML}{9673A6}
+
+
+\title{{\fontsize{14pt}{15pt}\selectfont Towards a Unified View of Large Language Model Post-Training}}
+
+
+
+
+\author{Xingtai Lv$^{1*}$, Yuxin Zuo$^{1*}$, Youbang Sun$^{1\dag}$, Hongyi Liu$^{1}$, Yuntian Wei$^{1}$, \\ 
+\textbf{Zhekai Chen$^{1}$, Lixuan He$^{1}$, Xuekai Zhu$^{1}$, Kaiyan Zhang$^{1}$, Bingning Wang$^{3}$}, \\
+\textbf{Ning Ding$^{1,2\dag}$, Bowen Zhou$^{1,2\dag}$} \\
+$^{1}$Tsinghua University, $^{2}$Shanghai AI Laboratory, $^{3}$WeChat AI\\
+\\
+\faGithub~\textbf{Code:}~\href{https://github.com/TsinghuaC3I/Unify-Post-Training}{TsinghuaC3I/Unify-Post-Training}
+\\[0.5em]
+\faEnvelope~\textbf{Mail:}~\text{lvxt24@mails.tsinghua.edu.cn}
+}
+
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\begin{document}
+
+\ifcolmsubmission
+\linenumbers
+\fi
+
+\maketitle
+
+
+\renewcommand\thefootnote{}\footnote{$^{*}$ Equal Contributions. $^{\dag}$ Corresponding Authors.}
+
+\input{Sections/0_Abstract}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/UPGE_dark.pdf}
+    \caption{Illustration of the Unified Policy Gradient Estimator. The ``$\nabla$'' in the background of the Likelihood Gradient part refers to the calculation of the gradient with respect to the $\pi_\theta$. 
+    }
+    \label{fig:upge_overview}
+\end{figure}
+
+\vspace{-4mm}
+\setlength{\epigraphwidth}{0.85\textwidth}
+\noindent\hfill
+
+
+
+
+\newpage
+{
+  \tableofcontents
+}
+\newpage
+
+\input{Sections/1_Introduction}
+\input{Sections/2_Preliminaries}
+\input{Sections/3_Unified_View}
+\input{Sections/4_5_Experiments}
+\input{Sections/6_Conclusion}
+
+
+
+
+
+
+\bibliography{colm2025_conference}
+\bibliographystyle{colm2025_conference}
+
+\newpage
+\appendix
+
+\input{Sections/appendix}
+
+
+
+\end{document}

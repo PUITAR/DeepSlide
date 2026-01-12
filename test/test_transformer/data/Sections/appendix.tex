@@ -1,0 +1,206 @@
+\section{Gradient Derivation for Classical Algorithms} \label{sec:appdendix_grad_cal}
+\subsection{Gradient of SFT}
+
+We first consider the SFT process as a warm-up. 
+As mentioned in the previous section, SFT takes a pre-trained foundation model and further makes the model more specialized by training its output prediction distribution to align with domain-specific data. 
+The fine-tuning process uses the same cross-entropy loss as in model pre-training, defined as follows,
+
+\begin{equation}\label{eq_sft_loss}
+    \mathcal{L}_{SFT}(\theta) = - \sum_{i=1}^{N} \sum_{t = 1}^{|\tau_{i}|}\log \pi_{\theta} (\tau_{i,t} |q_i, \tau_{i, <t} ).
+\end{equation}
+where $\mathcal{D}_{SFT} = \{(q_i, \tau_i)\}_{i \in [N]}$ denotes the SFT dataset consisting of $N$ question and trajectory pairs. $\tau_t$ denotes the $t$-th token in the trajectory and $\tau_{<t}$ denotes all the tokens prior to $\tau_t$.
+
+For any $t$, the LLM outputs the next-token prediction as a probability distribution. In the context of RL, such a probability distribution has been commonly considered as a stochastic policy. 
+Then, the gradient calculation of SFT can be obtained by directly taking the derivative of Equation \eqref{eq_sft_loss} and takes the following form:
+\begin{equation}\label{eq_SFT_grad}
+    \nabla \mathcal{J}_{SFT}(\theta) = -\nabla \mathcal{L}_{SFT}(\theta) = 
+     \sum_{i=1}^{N} \sum_{t = 1}^{|\tau_{i}|}
+    \nabla \pi_\theta (\tau_{i,t} |q_i, \tau_{i, <t} ) \frac{1}{\pi_\theta (\tau_{i,t} |q_i, \tau_{i, <t} )}.
+\end{equation}
+
+In this section, we slightly abuse the notion of policy gradient and consider the SFT as a case of behavioral cloning (BC) \citep{torabi2018behavioral}, and Equation \eqref{eq_SFT_grad} can be seen as a specific form of policy gradient.
+
+\subsection{Gradient of Online RL: PPO, GRPO and Beyond}
+For online RL, we first consider Proximal Policy Optimization (PPO) \citep{schulman2017proximal} and a series of its derivations. PPO is a pivotal technique for RLVR in LLMs. Motivated by TRPO, PPO keeps the new policy close to the old policy, and perform conservative policy updates by incorporating a clipped version of its policy ratio in its objective. The clipping function was shown to stabilize the training process and avoid performance collapse during training. In this section, we omit the regularization terms, such as the KL divergence and entropy. The loss objective for PPO can be written as follows,
+\begin{equation}\label{eq_PPO_loss}
+    \cL_{PPO}(\pi_\theta) = 
+    - \frac{1}{N}\sum_{i=1}^N \frac{1}{G}\sum_{j=1}^G \frac{1}{|\tau_j|} \sum_{t=1}^{|\tau_j|} 
+        \min (r_{i,j,t}(\theta) \hat{A}_{i,j}, \text{clip}(r_{i,j,t}(\theta), 1-\epsilon, 1+\epsilon)  \hat{A}_{i,j}),
+\end{equation}
+In this setting, we consider questions sampled from a given dataset $\Dc_{RL} \triangleq \{q_i\}_{i=1}^N$, and for each question, we consider $G$ trajectories independently sampled using a reference policy $\pi_{ref}$.
+We use $r_{i,j,t}(\theta) = \frac{\pi_\theta (\tau_{i,j,t} |q_i, \tau_{i,j, <t} ) }{\pi_{ref} (\tau_{i,j,t} |q_i, \tau_{i,j, <t} )}$ to denote the policy ratio $\pi_\theta / \pi_{ref}$ introduced for importance sampling, $\epsilon$ denotes the clipping factor for the importance sampling ratio, enhancing stability.
+
+
+For PPO, $\hat{A}$ is estimated using the Generalized Advantage Estimation (GAE) \citep{schulman2015high}, calculated based on the reward of the sampled trajectories. For the case of GRPO, the advantage estimate $\hat{A}$ is calculated based on a set of sampled trajectories. Given question $q_i$, a group of sampled roll-out trajectoried $\{\tau_{i,j}\}_{j \in [G]}$ with verifiable reward $R(\tau_{i,j}) \in \{0, 1\}$, $\hat{A}_{i,j}$ is calculated as the normalized reward over the group.
+
+\begin{equation}\label{eq_A_GRPO}
+    \hat{A}_{i,j} = \frac{R(\tau_{i,j}) - \text{mean} (\{R(\tau_{i,k})\}_{k \in [G]})}{ \text{std} (\{R(\tau_{i,k})\}_{k \in [G]})},
+\end{equation}
+
+Compared to PPO, the most significant difference introduced by GRPO is the group relative advantage described above. Notably, the original manuscript of GRPO has also induced a sequence-level policy gradient balancing and a KL regularization term. However, more recent works such as \citep{yu2025dapo} have removed or modified these terms in general.
+
+The clipped surrogate objective in PPO and similar algorithms enhances the stability of the RL training process by turning off gradient propagation on samples where $\pi_\theta$ moves too far from $\pi_{ref}$. For gradient calculation, this can be represented as an indicator function $\one_{clip}$. 
+
+\begin{equation}\label{eq_PPO_grad}
+    \nabla \mathcal{J}_{PPO} = -\nabla \cL_{PPO} =     \frac{1}{N}\sum_{i=1}^N \frac{1}{G}\sum_{j=1}^G \frac{1}{|\tau_j|} \sum_{t=1}^{|\tau_j|} 
+    \nabla \pi_\theta (\tau_{i,j,t} |q_i, \tau_{i,j, <t} )  \frac{\hat{A}_{i,j} \one_{clip}}{\pi_{ref} (\tau_{i,j,t} |q_i, \tau_{i,j, <t} )} .
+\end{equation}
+
+Apart from PPO and GRPO, many recent RL algorithms for RL post-training in LLMs can be shown to exhibit a similar form for their policy gradient calculations.
+
+
+\subsection{Gradient of Offline RL}
+
+As stated in the previous sections, many recent studies seek to leverage offline data in the online RL training process for LLMs.
+These methods consider expert demonstration data as trajectories sampled from a near-optimal policy, and perform RL updates on these data based on policy gradient updates. These algorithms are adapted from the online RL literature and often combine offline and online training, setting them apart from simple SFT.
+
+Taking SRFT \citep{fu2025srft} as an instance, the offline RL objective can be written as follows
+
+\begin{equation}\label{eq_SRFT_loss}
+    \cL_{SRFT}(\pi_\theta) = 
+    - \frac{1}{N}\sum_{i=1}^N \frac{1}{G}\sum_{j=1}^G \frac{1}{|\tau_j|} \sum_{t=1}^{|\tau_j|} 
+        \pi_\theta (\tau_{i,j,t} |q_i, \tau_{i,j, <t} )  \hat{A}_{i,j},
+\end{equation}
+
+This objective is derived from the GRPO objective in Equation \eqref{eq_PPO_loss}, while setting $\pi_{ref} \equiv 1$ and removing the clipping mechanism since it becomes imbalanced.
+The motivation behind setting $\pi_{ref} \equiv 1$ is that $\pi_{ref}$ is typically unavailable for offline data. Under the assumption that the demonstration policy evenly covers the current policy $\pi_\theta$. In this case, setting $\pi_{ref}$ to 1 changes the algorithm from importance sampling to rejection sampling.
+The policy gradient of the offline SRFT objective can be derived consequently.
+\begin{equation}\label{eq_SRFT_grad}
+    \nabla \mathcal{J}_{SRFT} = -\nabla \cL_{SRFT} =     \frac{1}{N}\sum_{i=1}^N \frac{1}{G}\sum_{j=1}^G \frac{1}{|\tau_j|} \sum_{t=1}^{|\tau_j|} 
+    \nabla \pi_\theta (\tau_{i,j,t} |q_i, \tau_{i,j, <t} )  \frac{\hat{A}_{i,j} }{\pi_{ref} = 1} .
+\end{equation}
+
+
+
+
+\section{Additional Theoretical Details for Section~\ref{sec:shared-common-objective}}
+\label{app:theory-details}
+
+\newtheorem{propositionA}{Proposition}
+\renewcommand{\thepropositionA}{A\arabic{propositionA}}
+\newtheorem{theoremA}{Theorem}
+\renewcommand{\thetheoremA}{A\arabic{theoremA}}
+\newtheorem{lemmaA}{Lemma}
+\renewcommand{\thelemmaA}{A\arabic{lemmaA}}
+\newtheorem{corollaryA}{Corollary}
+\renewcommand{\thecorollaryA}{A\arabic{corollaryA}}
+\newtheorem{remarkA}{Remark}
+\renewcommand{\theremarkA}{A\arabic{remarkA}}
+
+\subsection{Deriving Equation~\ref{eq:master_grad_pi_measure} from Equation~\ref{eq:master_obj}}
+\label{app:derivation}
+
+\begin{lemmaA}[Score-function identity]
+\label{lemA:score}
+For density $\pi_\theta$ and integrable $f(\tau)$,
+\[
+\nabla_\theta \,\E_{\tau\sim \pi_\theta}[f(\tau)]
+=\E_{\tau\sim \pi_\theta}\!\big[f(\tau)\,\nabla_\theta \log \pi_\theta(\tau)\big],
+\qquad
+\E_{\tau\sim \pi_\theta}\!\big[\nabla_\theta \log \pi_\theta(\tau)\big]=0.
+\]
+\end{lemmaA}
+
+\begin{lemmaA}[Differentiating an expectation with parameterized integrand]
+\label{lemA:param-int}
+For differentiable $f_\theta$,
+\[
+\nabla_\theta \,\E_{\tau\sim \pi_\theta}[f_\theta(\tau)]
+= \E_{\tau\sim \pi_\theta}\!\big[\nabla_\theta \log \pi_\theta(\tau)\,f_\theta(\tau)+\nabla_\theta f_\theta(\tau)\big].
+\]
+\end{lemmaA}
+
+\begin{lemmaA}[Measure-change (importance reweighting) identity]
+\label{lemA:measure}
+Let $s(\tau\mid q)$ be any sampling density that is positive wherever $\pi_\theta(\tau\mid q)$ is. Then
+\[
+\E_{\tau\sim \pi_\theta}\!\big[f(\tau)\,\nabla_\theta \log \pi_\theta(\tau)\big]
+=
+\E_{\tau\sim s}\!\Big[\frac{\pi_\theta(\tau)}{s(\tau)}\,f(\tau)\,\nabla_\theta \log \pi_\theta(\tau)\Big]
+=
+\E_{\tau\sim s}\!\Big[\frac{1}{s(\tau)}\,f(\tau)\,\nabla_\theta \pi_\theta(\tau)\Big].
+\]
+\end{lemmaA}
+
+\begin{proof}
+By Lemma~\ref{lemA:score},
+$\nabla \E_{\pi_\theta}[r(\cdot\mid q)]=\E_{\pi_\theta}[r(\cdot\mid q)\,\nabla \log \pi_\theta]$.
+For the data-adherence term, since
+$\mathrm{KL}(\pi_\beta\|\pi_\theta)=\E_{\pi_\beta}[\log \pi_\beta-\log \pi_\theta]$ and $\pi_\beta$ does not depend on $\theta$,
+we have $-\mu\,\nabla \mathrm{KL}(\pi_\beta\|\pi_\theta)=\mu\,\E_{\pi_\beta}[\nabla \log \pi_\theta]$.
+Summing yields the claim.
+\end{proof}
+
+\subsection{Extension: Adding a Trust-Region Regularizer}
+\label{app:lambda-extension}
+A trust region encourages conservative policy updates by penalizing the KL divergence from the current policy $\pi_\theta$ to a fixed reference policy $\pi_{ref}$:
+\[
+\lambda\,\mathrm{KL}\big(\pi_\theta(\cdot\mid q)\,\|\,\pi_{ref}(\cdot\mid q)\big),\qquad \lambda\ge 0.
+\]
+It is the penalty form of the constrained problem
+\[
+\max_\theta\ \E_{\tau\sim \pi_\theta}[r(\tau\mid q)]
+\quad \text{s.t.}\quad \mathrm{KL}\big(\pi_\theta\|\pi_{ref}\big)\le \delta,
+\]
+where $\lambda$ acts as the Lagrange multiplier tied to the trust-region radius $\delta$.
+Typical choices are $\pi_{ref}=\pi_{\theta_{old}}$ (on-policy stability, TRPO/PPO-style). This penalty controls step sizes, dampens distribution shift, and yields clipping-style masks when optimized with PPO surrogates.
+
+\medskip
+\noindent\textbf{Objective and gradient with trust region.}
+Augmenting the Common Objective with the trust-region term gives
+\[
+\widetilde{\mathcal{J}}_{\lambda,\mu}(\theta)
+=
+\E_{\tau\sim \pi_\theta(\cdot\mid q)}[r(\tau\mid q)]
+\;-\;
+\lambda\,\mathrm{KL}\!\big(\pi_\theta(\cdot\mid q)\,\|\,\pi_{ref}(\cdot\mid q)\big)
+\;-\;
+\mu\,\mathrm{KL}\!\big(\pi_\beta(\cdot\mid q)\,\|\,\pi_\theta(\cdot\mid q)\big),
+\]
+whose gradient is
+\[
+\nabla_\theta \widetilde{\mathcal{J}}_{\lambda,\mu}(\theta)
+=
+\E_{\tau\sim \pi_\theta}\!\Big[\big(r(\tau\mid q)-\lambda \log\tfrac{\pi_\theta(\tau\mid q)}{\pi_{ref}(\tau\mid q)}\big)\,\nabla_\theta \log \pi_\theta(\tau\mid q)\Big]
+\;+\;
+\mu\,\E_{\tau\sim \pi_\beta}\!\big[\nabla_\theta \log \pi_\theta(\tau\mid q)\big].
+\]
+In the estimator \eqref{eq:upge_form}, this corresponds to replacing the unified advantage by
+\[
+\widehat{A}_{uni}^{(\lambda)}(\tau,q)
+=
+r(\tau\mid q)
+\;-\;\lambda \log \frac{\pi_\theta(\tau\mid q)}{\pi_{ref}(\tau\mid q)}
+\;+\;
+\mu\,\mathbb{1}\{\pi_{ref}=\pi_\beta\}\,\frac{\pi_\beta(\tau\mid q)}{\pi_\theta(\tau\mid q)}.
+\]
+All other expressions, including the masked estimator in \eqref{eq:upge_masked}, remain unchanged in form (with $\widehat{A}_{uni}$ replaced by $\widehat{A}_{uni}^{(\lambda)}$).
+
+\subsection{PPO Clipping and the Stabilization Mask}
+\label{app:ppo-mask-subsec}
+
+With rollout policy $\pi_{\theta_{old}}$ and trust-region constraint $\mathrm{KL}(\pi_\theta\|\pi_{\theta_{old}})\le \delta$, the PPO surrogate
+\[
+\max_{\theta}\;\;
+\E_{\tau\sim \pi_{\theta_{old}}}\Big[\min\big(r_\theta(\tau)\,A_{\theta_{old}}(\tau),\ \mathrm{clip}(r_\theta(\tau),1-\epsilon,1+\epsilon)\,A_{\theta_{old}}(\tau)\big)\Big],
+\quad
+r_\theta(\tau)=\frac{\pi_\theta(\tau)}{\pi_{\theta_{old}}(\tau)},
+\]
+has a piecewise derivative that is zero outside the trusted region in the harmful direction, yielding
+\begin{equation}
+\label{eq:ppo_mask_app}
+\nabla_\theta
+\approx
+\E_{\tau\sim \pi_{\theta_{old}}}
+\!\left[
+\mathbb{1}_{stable}(\tau)\,
+\frac{1}{\pi_{\theta_{old}}(\tau)}\,
+A_{\theta_{old}}(\tau)\,
+\nabla_\theta \pi_\theta(\tau)
+\right],
+\end{equation}
+which matches the masked Unified Policy Gradient Estimator with $\pi_{ref}=\pi_{\theta_{old}}$ and $\widehat{A}=A_{\theta_{old}}$.
+
+
+
+

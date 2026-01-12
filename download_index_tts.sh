@@ -16,3 +16,7 @@ fi
 
 rm index-tts.zip
 
+# fix some env problem for the code
+cat index-tts-helper/webui.py >> index-tts/index-tts-main/webui.py
+cat index-tts-helper/infer_v2.py >> index-tts/index-tts-main/indextts/infer_v2.py
+cat index-tts-helper/run.sh >> index-tts/index-tts-main/run.sh

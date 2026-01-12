@@ -1,0 +1,19 @@
+\begin{abstract}
+
+
+
+
+Two major sources of training data exist for post-training modern language models: online~(model-generated rollouts) data, and offline~(human or other-model demonstrations) data. 
+These two types of data are typically used by approaches like Reinforcement Learning (RL) and Supervised Fine-Tuning (SFT), respectively.
+In this paper, we show that these approaches are not in contradiction, but are instances of a single optimization process.
+We derive a \framework, and present the calculations of a wide spectrum of post-training approaches as the gradient of a common objective under different data distribution assumptions and various bias-variance tradeoffs. The gradient estimator is constructed with four interchangeable parts: stabilization mask, reference policy denominator, advantage estimate, and likelihood gradient. 
+Motivated by our theoretical findings, we propose \method~(HPT), an algorithm that dynamically selects different training signals.
+\mot is designed to yield both effective exploitation of demonstration and stable exploration without sacrificing learned reasoning patterns.
+We provide extensive experiments and ablation studies to verify the effectiveness of our unified theoretical framework and \mot.
+Across six mathematical reasoning benchmarks and two out-of-distribution suites, \mot consistently surpasses strong baselines across models of varying scales and families.
+
+
+
+
+
+\end{abstract}

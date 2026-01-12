@@ -1,0 +1,143 @@
+%% ITEM 0 TYPE Section
+\section{Introduction}%% ITEM 1 TYPE Frame
+\begin{frame}
+\frametitle{LLM Post-Training Paradigms}
+  \begin{itemize}
+    \item \textbf{Supervised Fine-Tuning (SFT)}
+      \begin{itemize}
+        \item Trains on curated input-output pairs
+        \item Aligns model behavior with human demonstrations
+      \end{itemize}
+    \item \textbf{Reinforcement Learning (RL)}
+      \item Optimizes policies using feedback signals (e.g., rewards)
+      \item Requires environment interaction for policy improvement
+    \item \textbf{Key Limitations}
+      \begin{itemize}
+        \item SFT lacks adaptability to dynamic environments
+        \item RL demands extensive interaction/data collection
+      \end{itemize}
+  \end{itemize}
+\end{frame}%% ITEM 2 TYPE Section
+\section{Unified Framework}%% ITEM 3 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Overview}
+\begin{itemize}
+  \item Unified framework for gradient calculations in post-training methods
+  \item Combines \textbf{Supervised Fine-Tuning (SFT)} and \textbf{Reinforcement Learning (RL)} approaches
+  \item Provides closed-form policy gradients for diverse algorithms
+  \item Decomposes methods into interpretable components
+  \item Enables systematic comparison via Table \ref{tab:grad_compare} (see next slide)
+\end{itemize}
+\end{frame}%% ITEM 4 TYPE Frame
+\begin{frame}
+\frametitle{Key Components of the Estimator}
+\begin{itemize}
+  \item \textbf{Policy Network}: Core decision-making model parameterized by $\theta$
+  \item \textbf{Value Function}: Estimates expected cumulative reward $V(s)$
+  \item \textbf{Advantage Estimation}: Measures state-action value relative to baseline $A(s,a)$
+  \item \textbf{Baseline Subtraction}: Reduces variance while maintaining unbiasedness
+  \item \textbf{Entropy Regularization}: Encourages exploration through policy entropy $H(\pi_\theta)$
+\end{itemize}
+\end{frame}%% ITEM 5 TYPE Frame
+\begin{frame}
+\frametitle{Unification in Practice}
+\begin{itemize}
+  \item Bridges SFT and RL through shared gradient formulation
+  \item Flexible architecture adapts to different reward structures
+  \item Reduces variance compared to isolated methods
+  \item Enables hybrid training approaches (SFT + RL)
+  \item Provides theoretical guarantees for convergence
+\end{itemize}
+\end{frame}%% ITEM 6 TYPE Frame
+\begin{frame}
+\frametitle{Unification in Practice}
+\begin{itemize}
+  \item Bridges SFT and RL through shared gradient formulation
+  \item Flexible architecture adapts to different reward structures
+  \item Reduces variance compared to isolated methods
+\end{itemize}
+\end{frame}%% ITEM 7 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Overview}
+\begin{itemize}
+  \item Unified framework for gradient calculations in post-training methods
+  \item Combines \textbf{SFT} and \textbf{RL} approaches
+  \item Provides closed-form policy gradients
+  \item Decomposes methods into interpretable components
+\end{itemize}
+\end{frame}%% ITEM 8 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Summary}
+\begin{itemize}
+  \item General framework for policy gradient calculations
+  \item Combines SFT and RL through unified gradient formulation
+  \item Reduces variance and enables hybrid training methods
+  \item Provides interpretable decomposition of algorithms
+  \item Theoretical guarantees for convergence and stability
+\end{itemize}
+\end{frame}%% ITEM 9 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Summary}
+\begin{itemize}
+  \item General framework for policy gradient calculations
+  \item Combines SFT and RL through unified gradient formulation
+  \item Reduces variance and enables hybrid training methods
+  \item Provides interpretable decomposition of algorithms
+  \item Theoretical guarantees for convergence and stability
+\end{itemize}
+\end{frame}%% ITEM 10 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator}
+\begin{itemize}
+  \item Unified framework combining SFT and RL
+  \item Provides closed-form policy gradients
+  \item Decomposes into interpretable components
+  \item Reduces variance through baseline subtraction
+  \item Theoretically guaranteed convergence
+\end{itemize}
+\end{frame}%% ITEM 11 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Core Concepts}
+\begin{itemize}
+  \item Single framework for SFT and RL gradient calculations
+  \item Closed-form expressions for policy gradients
+  \item Component-based decomposition (policy, value, advantage, baseline, entropy)
+  \item Variance reduction through baseline subtraction
+  \item Theoretical convergence guarantees
+\end{itemize}
+\end{frame}%% ITEM 12 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator: Summary}
+\begin{itemize}
+  \item General framework for policy gradient calculations
+  \item Combines SFT and RL through unified gradient formulation
+  \item Reduces variance and enables hybrid training methods
+  \item Provides interpretable decomposition of algorithms
+  \item Theoretical guarantees for convergence and stability
+\end{itemize}
+\end{frame}%% ITEM 13 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator}
+\begin{itemize}
+  \item Unified framework combining SFT and RL
+  \item Closed-form policy gradient expressions
+  \item Component-based decomposition:
+    \begin{itemize}
+      \item Policy network $\pi_\theta$
+      \item Value function $V(s)$
+      \item Advantage estimation $A(s,a)$
+    \end{itemize}
+  \item Variance reduction through baseline subtraction
+  \item Theoretical convergence guarantees
+\end{itemize}
+\end{frame}%% ITEM 14 TYPE Frame
+\begin{frame}
+\frametitle{Unified Policy Gradient Estimator}
+\begin{itemize}
+  \item Unified framework combining SFT and RL
+  \item Closed-form policy gradient expressions
+  \item Key components: policy network, value function, advantage estimation
+  \item Variance reduction through baseline subtraction
+  \item Theoretical convergence guarantees
+\end{itemize}
+\end{frame}

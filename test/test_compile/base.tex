@@ -1,0 +1,85 @@
+%!TeX encoding = UTF-8
+%!TeX program = xelatex
+\documentclass[hyperref={bookmarks=false},aspectratio=43]{beamer} % 169
+\usepackage[utf8]{inputenc}
+
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{color,xcolor}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{amsthm}
+\usepackage{lmodern} % 解决 font warning
+% \usepackage[UTF8]{ctex}
+\usepackage{animate} % insert gif
+
+\usepackage{lipsum} % To generate test text 
+\usepackage{ulem} % 下划线，波浪线
+% \usepackage{subfigure}
+
+\usepackage{listings} % display code on slides; don't forget [fragile] option after \begin{frame}
+
+% ----------------------------------------------
+% tikx
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{pgf}
+
+
+% ---------------  Define theme and color scheme  -----------------
+\usetheme[minimal]{Caltech}  % 3 options: minimal, sidebarleft, sidebarright
+
+% ------------  Information on the title page  --------------------
+\input{title}
+%------------------------------------------------------------
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------------------------
+
+% Minimalist customizations
+\setbeamertemplate{navigation symbols}{} % Remove navigation symbols
+\setbeamertemplate{footline}{} % Remove footline
+\setbeamertemplate{frametitle continuation}{} % Remove continuation marker
+\setbeamertemplate{itemize items}[circle] % Simple circle bullets
+\setbeamertemplate{enumerate items}[default] % Simple numbered items
+
+% Simplify block environments
+\setbeamertemplate{blocks}[rounded][shadow=false] % Remove shadow from blocks
+\setbeamercolor{block title}{bg=white, fg=black} % Plain block titles
+\setbeamercolor{block body}{bg=white, fg=black} % Plain block body
+
+% Reduce spacing and margins for a cleaner look
+\setlength{\leftmargini}{1em}
+\setlength{\leftmarginii}{1em}
+
+% Use a simple, clean font
+\usefonttheme{professionalfonts}
+\usefonttheme{serif}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\input{content}
+
+% references
+\begin{frame}
+    \frametitle{References}
+    \bibliographystyle{plain}
+    \bibliography{ref}
+\end{frame}
+
+\end{document}

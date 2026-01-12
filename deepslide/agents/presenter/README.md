@@ -32,11 +32,20 @@ DEEPSEEK_API_KEY="sk-6286dc11a31e45649dbf55081b8aef20" streamlit run /home/ym/De
 1.  **输入**：在侧边栏输入您的演讲节点（主题或段落）。
 2.  **生成**：点击“生成矩阵”。AI 将提议初始连接。
 3.  **编辑**：在网格中勾选存在逻辑关系的单元格（行和列代表节点）。
-4.  **确认**：点击“确认矩阵”锁定结构。
-5.  **解释**：点击“生成详细说明”，让 AI 分析*为什么*这些节点是连接的。
-6.  **导出**：下载最终结果 `logic_chain.json`。
+4.  **确认**：点击“确认矩阵”锁定结构，进入可视化确认页面。
+5.  **解释与交互**：
+    *   点击“生成详细说明”，AI 将分析节点间的深层逻辑。
+    *   **交互式图表**：生成的逻辑链条图表支持鼠标悬停（Tooltip）。将鼠标移动到连接线上，即可查看该关系的详细解释。有详细说明的边将高亮显示。
+6.  **导出**：
+    *   点击“下载逻辑链条 JSON”保存到本地下载目录。
+    *   点击“✅ 完成流程”将自动保存 `logic_chain.json` 到 `presenter` 文件夹并结束会话。
 
+### 1.1 使用上游 JSON 数据
 
+如果上游 Agent 已生成逻辑链条与用户需求（例如 `combine124_output.json`），可直接在侧栏选择“上游JSON”作为数据源：
+- 默认读取路径：`deepslide/agents/presenter/combine124_output.json`
+- 从 `chains` 中选择链条（如 `pipeline`、`case_study`、`myth_fact`、`teaser_then_depth`），点击“加载链条”后自动预填节点与矩阵（依据 `edges` 的 `from_index`、`to_index` 和 `reason`）
+- 侧栏同时展示受众、时长、风格、备注等需求摘要，便于与上游保持一致
 ### 2. 演讲稿生成 (Python SDK)
 
 使用 `PresenterAgent` 编程方式从幻灯片生成演讲稿。
@@ -52,7 +61,7 @@ agent.generate_script(
     output_file_path="/path/to/output_script.txt"
 )
 ```
-目前的演讲稿生成还是之前的版本，以及逻辑链条还不是上游agent传入的，而是手动输入的模拟数据，需要之后完善。
+演讲稿生成支持 DeepSeek 兼容端点；逻辑链条已支持从上游 JSON 直接导入并编辑确认。
 
 ## 依赖列表
 

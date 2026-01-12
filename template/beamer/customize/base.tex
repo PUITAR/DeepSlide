@@ -10,7 +10,7 @@
 \usepackage{algorithm}
 \usepackage{amsthm}
 \usepackage{lmodern} % 解决 font warning
-% \usepackage[UTF8]{ctex}
+\usepackage{ctex}
 \usepackage{animate} % insert gif
 
 \usepackage{lipsum} % To generate test text 
@@ -25,8 +25,9 @@
 \usepackage{tikz}
 \usepackage{pgf}
 
+\PassOptionsToPackage{subsection=false,footline=authortitle}{beamerouterthememiniframes}
 \usetheme{Darmstadt} 
-\useoutertheme[subsection=false,footline=authortitle]{miniframes}
+% \useoutertheme[subsection=false,footline=authortitle]{miniframes}
 \setbeamertemplate{navigation symbols}{} 
 
 \input{format}

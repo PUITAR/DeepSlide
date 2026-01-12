@@ -18,7 +18,8 @@ class Content(list[Section | Frame]):
 
     def to_file(self, file_path: str):
         if not self.is_valid():
-            return
+            print("Warning: Content is not valid.")
+            # return
 
         mapping: List[Tuple[int, int, str]] = []
         lines_so_far = 1
@@ -57,3 +58,15 @@ class Content(list[Section | Frame]):
                 # if re.match(r"^\s*\\(section|subsection|subsubsection)\{.*\}\s*$", line):
                 if "\\section" in line or "\\subsection" in line or "\\subsubsection" in line:
                     self.append(Section(line))
+
+    def sections(self) -> List[Section]:
+        return [item for item in self if isinstance(item, Section)]
+
+    def frames(self) -> List[Frame]:
+        return [item for item in self if isinstance(item, Frame)]
+
+    def section_len(self) -> int:
+        return len(self.sections())
+
+    def frame_len(self) -> int:
+        return len(self.frames())

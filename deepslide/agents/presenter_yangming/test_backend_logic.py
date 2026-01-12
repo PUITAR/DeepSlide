@@ -18,7 +18,7 @@ def test_matrix_generation():
     load_dotenv(env_path)
     
     # 检查 API Key
-    if not os.getenv("DEEPSEEK_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+    if not os.getenv("DEFAULT_MODEL_API_KEY") and not os.getenv("OPENAI_API_KEY"):
         print("Warning: No API Key found in env. Test might fail or fallback to mock if implemented.")
     
     # 模拟逻辑节点

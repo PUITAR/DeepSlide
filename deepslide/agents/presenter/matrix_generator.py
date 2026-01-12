@@ -47,7 +47,7 @@ class MatrixGenerator:
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="deepseek-chat",
             url='https://api.deepseek.com',
-            api_key=os.getenv('DEEPSEEK_API_KEY'),
+            api_key=os.getenv('DEFAULT_MODEL_API_KEY'),
             model_config_dict={"temperature": 0.2}
         )
 
@@ -85,3 +85,75 @@ class MatrixGenerator:
             # Fallback: return empty matrix
             n = len(logic_nodes)
             return [["" for _ in range(n)] for _ in range(n)]
+
+    def summarize_nodes(self, raw_nodes: list[dict]) -> list[str]:
+        """
+        Summarize a list of raw nodes (dicts with 'role', 'text', etc.) into short strings.
+        """
+        if not raw_nodes:
+            return []
+
+        sys_msg_content = (
+            "你是一个专业的文本摘要助手。你的任务是将给定的逻辑节点（包含角色和长文本）概括为简短的标签。\n"
+            "每个标签应包含角色（如果有）和核心内容的关键词。\n"
+            "长度限制：每个标签不超过 15 个字。\n"
+            "输出格式：JSON 字符串列表，例如 [\"背景: 深度学习起源\", \"方法: Transformer架构\", ...]"
+        )
+        
+        system_message = BaseMessage.make_assistant_message(
+            role_name="Summarizer",
+            content=sys_msg_content
+        )
+
+        user_prompt = "请概括以下节点：\n"
+        for idx, node in enumerate(raw_nodes):
+            role = node.get("role", "Node")
+            text = node.get("text", "")
+            # 取前 200 字避免 token 过长
+            text_preview = text[:200]
+            user_prompt += f"{idx+1}. Role: {role}, Content: {text_preview}\n"
+        
+        user_message = BaseMessage.make_user_message(
+            role_name="User",
+            content=user_prompt
+        )
+
+        import os
+        model_instance = ModelFactory.create(
+            model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+            model_type="deepseek-chat",
+            url='https://api.deepseek.com',
+            api_key=os.getenv('DEFAULT_MODEL_API_KEY'),
+            model_config_dict={"temperature": 0.1}
+        )
+
+        agent = ChatAgent(
+            system_message=system_message,
+            model=model_instance,
+            message_window_size=5
+        )
+
+        try:
+            response = agent.step(user_message)
+            content = response.msg.content
+            
+            import re
+            json_match = re.search(r'\[.*\]', content, re.DOTALL)
+            if json_match:
+                content = json_match.group(0)
+            else:
+                content = content.replace("```json", "").replace("```", "").strip()
+            
+            summaries = json.loads(content)
+            
+            if len(summaries) != len(raw_nodes):
+                print(f"[MatrixGenerator] Summary count mismatch. Expected {len(raw_nodes)}, got {len(summaries)}")
+                # Fallback to simple truncation if count mismatch
+                return [f"{n.get('role', 'Node')}: {n.get('text', '')[:10]}..." for n in raw_nodes]
+            
+            return summaries
+
+        except Exception as e:
+            print(f"[MatrixGenerator] Summarize Error: {e}")
+            return [f"{n.get('role', 'Node')}: {n.get('text', '')[:10]}..." for n in raw_nodes]
+

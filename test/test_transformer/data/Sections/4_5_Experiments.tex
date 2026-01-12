@@ -1,0 +1,428 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+
+\paragraph{Models}
+To evaluate the generalizability of \mot across different backbone models, we conduct experiments using Qwen and LLaMA models of various scales.
+The models we experiment with are as follows:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Qwen Family:} Qwen2.5-Math-1.5B, Qwen2.5-Math-7B~\citep{yang2024qwen2};
+    \item \textbf{LLaMA Family:} LLaMA-3.1-8B~\citep{grattafiori2024llama};
+\end{itemize}
+
+\begin{table*}[!t]
+\definecolor{bluishyellow}{rgb}{0.84, 0.92, 0.85}
+\definecolor{bluishcyan}{rgb}{0.74, 0.93, 0.95}
+\centering
+\caption{In-distribution and out-of-distribution performance of \mot and baselines on Qwen2.5-Math-7B. $^*$ means the results are taken from the corresponding paper.}
+\label{tab:Qwen7B-results}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lccccccc|ccc}
+\toprule
+\multirow{2}{*}{\textbf{Model}} & \multicolumn{7}{c}{\textbf{In-Distribution}} & \multicolumn{3}{c}{\textbf{Out-of-Distribution}} \\
+\cmidrule(lr){2-8} \cmidrule(lr){9-11}
+ & \textbf{AIME 24} & \textbf{AIME 25} & \textbf{AMC} & \textbf{MATH-500} & \textbf{Minerva} & \textbf{Olympiad} & \textbf{Avg} & \textbf{ARC-c} & \textbf{GPQA} & \textbf{Avg} \\
+\midrule
+Qwen2.5-Math-7B
+  & $12.3$ & $4.7$  & $33.0$ & $43.6$ & $8.8$  & $13.6$ & $19.3$ & $30.9$ & $28.3$ & $29.6$ \\
+\midrule
+\multicolumn{1}{r}{SFT}                                     
+  & $25.1$ & $\mathbf{22.8}$ & $56.1$ & $84.2$ & $33.8$ & $44.7$ & $44.5$ & $67.4$ & $25.3$ & $46.4$ \\
+\multicolumn{1}{r}{GRPO}                                  
+  & $19.4$ & $13.8$ & $59.1$ & $81.8$ & $38.2$ & $46.2$ & $43.1$ & $81.2$ & $36.4$ & $58.8$ \\
+\multicolumn{1}{r}{SFT $\rightarrow$ GRPO}
+  & $25.7$ & $21.6$ & $62.2$ & $84.6$ & $38.2$ & $46.8$ & $46.5$ & $67.7$ & $30.8$ & $49.3$ \\
+\midrule
+\multicolumn{1}{r}{LUFFY} & $26.1$ & $21.8$ & $66.2$ & $88.4$ & $41.9$ & $54.1$ & $49.8$ & $80.8$ & $39.4$ & $60.1$ \\
+\multicolumn{1}{r}{SRFT} & $18.4$ & $15.5$ & $55.9$ & $83.8$ & $42.6$ & $48.9$ & $44.2$ & $80.5$ & $36.8$ & $58.7$ \\
+\rowcolor{lightblue!100}\multicolumn{1}{r}{\mot} & $\mathbf{33.0}$ & $21.9$ & $\mathbf{69.4}$ & $\mathbf{89.2}$ & $\mathbf{46.0}$ & $\mathbf{56.9}$ & $\mathbf{52.7}$ & $\mathbf{81.6}$ & $\mathbf{42.9}$ & $\mathbf{62.3}$ \\
+\midrule
+\textcolor{gray}{Qwen2.5-Math-7B-Ins.}
+  & \textcolor{gray}{$11.8$} & \textcolor{gray}{$9.8$} & \textcolor{gray}{$48.3$} & \textcolor{gray}{$83.2$} & \textcolor{gray}{$34.2$} & \textcolor{gray}{$39.3$} & \textcolor{gray}{$37.8$} & \textcolor{gray}{$72.7$} & \textcolor{gray}{$29.3$} & \textcolor{gray}{$51.0$} \\
+\textcolor{gray}{PRIME-Zero$^*$}                               
+  & \textcolor{gray}{$17.0$} & \textcolor{gray}{$12.8$} & \textcolor{gray}{$54.0$} & \textcolor{gray}{$81.4$} & \textcolor{gray}{$39.0$} & \textcolor{gray}{$40.3$} & \textcolor{gray}{$40.8$} & \textcolor{gray}{$73.3$} & \textcolor{gray}{$18.2$} & \textcolor{gray}{$45.8$} \\
+\textcolor{gray}{SimpleRL-Zero$^*$}                                 
+  & \textcolor{gray}{$27.0$} & \textcolor{gray}{$6.8$}  & \textcolor{gray}{$54.9$} & \textcolor{gray}{$76.0$} & \textcolor{gray}{$25.0$} & \textcolor{gray}{$34.7$} & \textcolor{gray}{$37.4$} & \textcolor{gray}{$30.2$} & \textcolor{gray}{$23.2$} & \textcolor{gray}{$26.7$} \\
+\textcolor{gray}{OpenReasoner-Zero$^*$}                             
+  & \textcolor{gray}{$16.5$} & \textcolor{gray}{$15.0$} & \textcolor{gray}{$52.1$} & \textcolor{gray}{$82.4$} & \textcolor{gray}{$33.1$} & \textcolor{gray}{$47.1$} & \textcolor{gray}{$41.0$} & \textcolor{gray}{$66.2$} & \textcolor{gray}{$29.8$} & \textcolor{gray}{$48.0$} \\
+\textcolor{gray}{Oat-Zero$^*$}                                  
+  & \textcolor{gray}{$33.4$} & \textcolor{gray}{$11.9$} & \textcolor{gray}{$61.2$} & \textcolor{gray}{$78.0$} & \textcolor{gray}{$34.6$} & \textcolor{gray}{$43.4$} & \textcolor{gray}{$43.8$} & \textcolor{gray}{$70.1$} & \textcolor{gray}{$23.7$} & \textcolor{gray}{$46.9$} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+\paragraph{Benchmarks}
+We evaluate \mot on $6$ mathematical reasoning benchmarks: AIME 2024~\citep{li2024numinamath},  AIME 2025~\citep{li2024numinamath}, AMC~\citep{li2024numinamath}, MATH-500~\citep{hendrycks2021measuring},  Minerva~\citep{lewkowycz2022solving}, and OlympiadBench~\citep{he2024olympiadbench}.
+AMC~\citep{li2024numinamath} comprises problems drawn from the AMC12 2022 and AMC12 2023 examinations.
+Moreover, when employing Qwen2.5-Math-7B as the backbone, we further conduct evaluations on GPQA-Diamond~\citep{rein2024gpqa}, a challenging and high-quality subset of the Graduate-Level Google-Proof Question Answering benchmark, as well as on ARC-c~\citep{clark2018think}, an open-domain reasoning benchmark.
+
+\paragraph{Evaluation Setup}
+We set the maximum generation length to $8,192$ tokens, unless otherwise specified.
+For the main experiments, following DeepSeek-R1~\citep{guo2025deepseek}, we adopt the \emph{Pass@k} evaluation protocol~\citep{chen2021evaluating} and report \emph{Pass@1} using non-zero temperature sampling.
+To ensure a fair comparison with previous works~\citep{yan2025learning,fu2025srft}, we compute avg@32 for AIME 24, AIME 25, and AMC (avg@1 for others) using a temperature of $0.6$ and a top-$p$ value of $0.95$ for accuracy calculation.
+
+
+\paragraph{Baselines}
+Since \mot dynamically integrates GRPO~\citep{shao2024deepseekmath} and SFT, the most natural baselines are SFT and GRPO individually.
+Furthermore, we compare \mot against the mix-policy approach LUFFY~\citep{yan2025learning}.
+For experiments using Qwen2.5-Math-7B as the backbone, we additionally include SFT$\rightarrow$GRPO and SRFT\footnote{The results of SRFT are based on our own implementation, as the official code is not public.}~\citep{fu2025srft} as a baseline, as well as models trained with the Zero-RL procedure on the same backbone for a more comprehensive comparison. We also use PRIME-Zero \citep{cui2025process}, SimpleRL-Zero \citep{zeng2025simplerl}, OpenReasoner-Zero \citep{hu2025openreasonerzeroopensourceapproach} and Oat-Zero \citep{liu2025understanding} as baselines.
+
+
+\paragraph{Implementation Details}
+We apply GRPO~\citep{shao2024deepseekmath} as the RL algorithm to implement \mot.
+We introduce a gating mechanism that adaptively assigns the coefficients $\alpha$ and $\beta$ to the RL loss and the SFT loss based on the rollout performance, respectively.
+Formally, the gating mechanism is defined as:
+\[
+(\alpha, \beta) =
+\begin{cases}
+(0, 1), & \text{if } P \leq \gamma, \\[6pt]
+(1, 0), & \text{if } P > \gamma,
+\end{cases}
+\]
+where $P$ denotes model's performance as introduced in Section~\ref{sec:method} and $\gamma$ is the gate threshold.
+We fix $\gamma$ at $0$ throughout all experiments on the Qwen Family models and $2$ for LLaMA, and provide relative ablation studies in Section~\ref{sec:gate_threshold_ablation}.
+For hyperparameters, we use a constant learning rate of $5 \times 10^{-6}$ and adopt the AdamW optimizer for the policy model.
+For rollout, we sample $8$ responses using a temperature of $1.0$.
+The maximum generation length is set to $8,192$ tokens for all other models.
+For other details that may not have been explicitly introduced, we have endeavored to follow previous works as closely as possible~\citep{zhao2025learning,zuo2025ttrl}.
+All experiments were conducted on 8 x NVIDIA A800 80GB GPUs.
+
+
+\subsection{Main Results}
+
+Table~\ref{tab:Qwen7B-results} presents the overall performance of \mot on Qwen2.5-Math-7B.
+As introduced in Section~\ref{sec:method}, in our implementation of \mot, the coefficients of the RL and SFT loss terms are both degraded and simplified into a binary form.
+Despite this highly streamlined experimental setup, \mot still yields substantial performance gains.
+It not only significantly outperforms both SFT-only and GRPO-only baselines, but also surpasses SFT$\rightarrow$GRPO, which requires substantially higher computational cost.
+This suggests that simply concatenating the two training stages is not the most effective strategy.
+Moreover, \mot achieves marked improvements over existing mixed-policy approaches such as LUFFY and SRFT, with particularly notable gains of 6.9 and 14.6 points on AIME 2024, respectively.
+Furthermore, we conduct experiments on models of different scales and families to evaluate the effectiveness of \mot, including LLaMA3.1-8B and Qwen2.5-Math-1.5B, as shown in Table~\ref{tab:llama qwen results}.
+Compared with SFT, GRPO, and LUFFY, \mot achieves substantial performance gains.
+
+
+
+
+
+
+
+
+
+
+
+\begin{table*}[t]
+\definecolor{bluishyellow}{rgb}{0.84, 0.92, 0.85}
+\centering
+\caption{Performance of \mot and baselines on LaMA3.1-8B and Qwen2.5-Math-1.5B. $^*$ means the results are taken from the LUFFY paper~\citep{yan2025learning}.}
+\label{tab:llama qwen results}
+\resizebox{.85\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Model} & \textbf{AIME 24} & \textbf{AIME 25} & \textbf{AMC} & \textbf{MATH-500} & \textbf{Minerva} & \textbf{Olympiad} & \textbf{Avg} \\
+\midrule
+LLaMA3.1-8B
+  & $0.4$ & $0.1$  & $4.7$ & $13.8$ & $4.8$  & $3.9$ & $4.6$       \\
+\midrule
+\multicolumn{1}{r}{SFT$^*$}                                     
+  & $0.5$ & $0.1$ & $5.4$ & $20.2$ & $4.0$ & $5.3$ & $5.9$ \\
+\multicolumn{1}{r}{GRPO$^*$}                                  
+  & $0.3$ & $0.5$ & $9.4$ & $23.4$ & $17.6$ & $6.1$ & $9.6$ \\
+\multicolumn{1}{r}{LUFFY$^*$} & $1.9$ & $0.1$ & $13.5$ & $39.0$ & $15.1$ & $9.6$ & $13.2$ \\
+\rowcolor{lightblue!100}\multicolumn{1}{r}{\mot} & $\mathbf{2.1}$ & $\mathbf{1.2}$ & $\mathbf{18.6}$ & $\mathbf{47.8}$ & $\mathbf{18.8}$ & $\mathbf{20.4}$ & $\mathbf{18.2}$ \\
+\midrule
+Qwen2.5-Math-1.5B
+  & $2.8$ & $6.1$  & $24.5$ & $32.8$ & $11.0$  & $16.4$ & $15.6$      \\
+\midrule
+\multicolumn{1}{r}{SFT}                                     
+  & $14.7$ & $17.6$ & $45.4$ & $78.4$ & $29.4$ & $35.7$ & $36.9$ \\
+\multicolumn{1}{r}{GRPO}                                
+  & $12.2$ & $8.5$ & $43.8$ & $71.0$ & $33.1$ & $35.3$ & $34.0$ \\
+\multicolumn{1}{r}{LUFFY} & $14.1$ & $9.4$ & $43.5$ & $75.2$ & $26.1$ & $39.7$ & $34.7$ \\
+\rowcolor{lightblue!100}\multicolumn{1}{r}{\mot} & $\mathbf{16.6}$ & $\mathbf{17.8}$ & $\mathbf{51.0}$ & $\mathbf{81.0}$ & $\mathbf{37.5}$ & $\mathbf{47.3}$ & $\mathbf{41.9}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+
+
+\section{Empirical Analysis}
+Our empirical analysis progressively reveals how \mot reconciles exploration and exploitation, stabilizes training, and ultimately enhances the reasoning ability.
+We begin in $\S$~\ref{sec:explor_exploit} with an examination of \textcolor{cyan!40!black}{\textit{exploration}} and \textcolor{cyan!40!red}{\textit{exploitation}}.
+In $\S$~\ref{sec:training_visualization}, we provide a training visualization, contrasting \mot with the conventional SFT$\rightarrow$GRPO.
+Next, $\S$~\ref{sec:training_dynamics} investigates fine-grained training metrics of \mot.
+Building on this, $\S$~\ref{sec:impact_of_off-policy_rl} explores the role of off-policy RL, testing whether alternative strategies for utilizing offline data yield benefits.
+Finally, $\S$~\ref{sec:gate_threshold_ablation} presents a gate threshold ablation study.
+
+\subsection{Exploration and Exploitation}
+\label{sec:explor_exploit}
+
+\mot inherently achieves an adaptive switching between RL and SFT. These two paradigms naturally correspond to the learning modes of \textcolor{cyan!40!black}{\textit{exploration}} and \textcolor{cyan!40!red}{\textit{exploitation}}.
+Accordingly, we can examine whether \mot addresses the initial challenges from both perspectives.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/pass_k_v3_2048_norep.pdf}
+    \caption{\emph{Pass@k} performance of \mot against baselines on Qwen2.5-Math-7B. The evaluation spans 3 benchmarks, with \emph{Pass@k} values estimated via bootstrap sampling from a set of $2048$ generated solutions per problem.
+    }
+    \label{fig:passk}
+\end{figure}
+
+
+\paragraph{\textcolor{cyan!40!black}{Exploration}}
+From the exploration perspective, we want to analyze the model’s \emph{Pass@k} performance after training with \mot.
+Recently, Limit-of-RLVR~\citep{yue2025does} demonstrated that while RLVR training yields a significant improvement in \emph{Pass@1}, it does not lead to gains in large-$k$ \emph{Pass@k}.
+In other words, RLVR does not expand the capability boundary of the base model.
+This finding has sparked broad discussions regarding the relationship between a model’s exploratory capacity and its \emph{Pass@k} performance. Moreover, \emph{Pass@k} has increasingly been recognized as a widely accepted metric for evaluating both the upper bound of model capability and its exploration ability.
+We follow~\citet{yue2025does} to evaluate \emph{Pass@k} up to 1024 for each problem of AIME25, AIME24, and AMC for \emph{Pass@k} evaluation.
+Based on these sets of generated solutions, we apply bootstrap sampling to obtain accurate estimates of \emph{Pass@k} scores for various values of $k$.
+Figure~\ref{fig:passk} illustrates the resulting \emph{Pass@k} curves, comparing \mot against baselines and the base model.
+
+\begin{itemize}[leftmargin=2em]
+    \item 
+    First, we can observe that methods incorporating SFT achieve higher large-$k$ \emph{Pass@k} compared to the GRPO (purely RL).
+    This may be attributed to the introduction of data outside the model’s own distribution during SFT, which increases output uncertainty while also providing new knowledge from offline data, thereby enhancing the model’s exploratory capacity.
+    \item 
+    Furthermore, we identify an interesting phenomenon: since \mot dynamically integrates RL (GRPO) with SFT, we might intuitively expect its large-$k$ \emph{Pass@k} performance to fall between that of the two individual methods.
+    However, \mot achieves the highest large-$k$ \emph{Pass@k} performance overall.
+    \emph{This indicates that \method not only delivers substantial improvements in Pass@1, but also maximally preserves and enhances the model’s exploratory ability.}
+\end{itemize}
+
+
+\begin{table*}[!h]
+\centering
+\definecolor{darkgreen}{RGB}{50,100,0}
+\definecolor{darkred}{RGB}{200,0,0}
+\newcommand{\gain}[2]{\textcolor{darkred}{+#1}/\textcolor{darkgreen}{-#2}}
+\newcommand{\gainp}[2]{\textcolor{darkred}{+#1\%}/\textcolor{darkgreen}{-#2\%}}
+
+\caption{
+Bidirectional analysis of exclusive solves on MATH-500, comparing the Qwen2.5-Math-7B trained with \mot against baseline methods (GRPO and LUFFY).
+The notation \textcolor{darkgreen}{+X}\,/\,\textcolor{darkred}{-Y} in each cell indicates the performance trade-off: \textcolor{darkred}{+X} represents the number of problems solved by the \mot but not the baseline, while \textcolor{darkgreen}{-Y} represents the number solved by the baseline but not by the \mot.
+}
+\label{tab:mot-ex-solves}
+\resizebox{\textwidth}{!}{
+  \begin{tabular}{@{}lcccccc@{}}
+  \toprule
+  Methods & Level 1 & Level 2 & Level 3 & Level 4 & Level 5 & Overall \\
+  & (N=43) & (N=90) & (N=105) & (N=128) & (N=134) & (N=500) \\
+  \midrule
+  \textbf{GRPO}\\
+  \quad Absolute & \gain{0}{0} & \gain{5}{1} & \gain{9}{2} & \gain{17}{4} & \gain{27}{8} & \gain{58}{15} \\
+  \quad Percentage & \gainp{0.0}{0.0} & \gainp{5.6}{1.1} & \gainp{8.6}{1.9} & \gainp{13.3}{3.1} & \gainp{20.1}{6.0} & \gainp{11.6}{3.0} \\
+  \textbf{LUFFY}\\
+  \quad Absolute & \gain{1}{0} & \gain{5}{1} & \gain{5}{3} & \gain{10}{5} & \gain{22}{7} & \gain{43}{16} \\
+  \quad Percentage & \gainp{2.3}{0.0} & \gainp{5.6}{1.1} & \gainp{4.8}{2.9} & \gainp{7.8}{3.9} & \gainp{16.4}{5.2} & \gainp{8.6}{3.2} \\
+  \bottomrule
+  \end{tabular}
+}
+\end{table*}
+
+\paragraph{\textcolor{cyan!40!red}{Exploitation}}
+From the exploitation perspective, the key question is whether our method, by leveraging SFT, enhances the model’s initial competence and facilitates subsequent RL training.
+As illustrated in Figure~\ref{fig:SFT+GRPO-3-5-ep50}, RL training alone may fail to solve many problems (white line), requiring the dynamic intervention of SFT.
+To investigate this, we analyze its exclusive solves against the GRPO and LUFFY, building upon the results from the evaluation on MATH-500 with Qwen2.5-Math-7B as the backbone, as shown in Table~\ref{tab:mot-ex-solves}.
+The red numbers denote problems that are solved by our method but not by GRPO or LUFFY, i.e., problems newly acquired through our training procedure.
+Three clear trends emerge from the analysis:
+\begin{itemize}[leftmargin=2em]
+    \item First, the red counts consistently increase with problem difficulty, suggesting that \mot improves the model’s ability to tackle more challenging problems.
+    \item Second, the green counts within the red boxes remain essentially unchanged across settings: this indicates that, compared with existing methods, \mot preserves performance on problems that the model could already solve, thereby mitigating the risk of catastrophic forgetting.
+    \item Finally, the fact that the red counts are consistently large relative to both baselines demonstrates that our method enables the model to acquire a substantial number of problems that prior approaches struggled to solve.
+\end{itemize}
+
+
+\subsection{Training Visualization}
+\label{sec:training_visualization}
+
+
+
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/SFT+GRPO-3-5-ep50.pdf}
+    \caption{GRPO training dynamics of SFT$\rightarrow$GRPO on Qwen2.5-Math-1.5B across 50 training epochs. We visualize the model's per-question sampling accuracy throughout the training process.}
+    \label{fig:SFT+GRPO-3-5-ep50}
+    \vspace{-2mm}
+\end{figure}
+
+\begin{figure}[!t]
+    \centering
+    \par \vspace{-1.5mm}
+    \includegraphics[width=\linewidth]{Figures/HPT-SFT+GRPO-3-5-ep50.pdf}
+    \caption{Performance difference (\mot v.s. SFT$\rightarrow$GRPO) on Qwen2.5-Math-1.5B across 50 training epochs.
+    A diverging color scale indicates the advantage: red for \mot, blue for SFT$\rightarrow$GRPO, and white for no difference.}
+    \label{fig:HPT-SFT+GRPO-3-5-ep50}
+\end{figure}
+
+To facilitate a fine-grained examination of the training process and thereby obtain deeper insights into how \mot works, we conduct a visualization analysis comparing the SFT$\rightarrow$GRPO approach with \mot.
+We sample 255 problems from the MATH dataset~\citep{hendrycksmath2021} for subsequent training, with 85 problems each from Levels 3, 4, and 5.
+For SFT$\rightarrow$GRPO, we perform 50 epochs of GRPO on a Qwen2.5-Math-1.5B model fine-tuned with SFT, tracking rollout accuracy across training, as shown in Figure~\ref{fig:SFT+GRPO-3-5-ep50}.
+We track the rollout accuracy for each sample throughout the entire training process.
+To highlight difficulty effects, we focus on Levels 3 and 5 as representative cases.
+The left subplot shows Level 3 (easier) problems, and the right shows Level 5 (hardest).
+Notably, GRPO frequently produces dense white regions, and sometimes even continuous white lines, reflecting widespread rollout errors across outputs.
+This illustrates a core limitation of RL methods: they struggle to learn effectively when frequent rollout errors occur across all outputs.
+
+In parallel, we train Qwen2.5-Math-1.5B from scratch for 50 epochs to visualize \mot.
+To compare against SFT$\rightarrow$GRPO and enable a more intuitive comparison, we conduct a differential analysis of the training dynamics.
+Specifically, we calculate the accuracy difference at corresponding positions (at matched prompts and steps) in the evaluation grid between two methods: red indicates \mot is better, blue the opposite.
+Figure~\ref{fig:HPT-SFT+GRPO-3-5-ep50} presents the results of the difference plots.
+Notably, SFT$\rightarrow$GRPO actually requires greater computational resources than \mot: it involves a preceding SFT phase, and our approach also reduces computational costs during the transition from GRPO to SFT, as expensive operations such as rollouts are no longer required.
+This unfair comparison leads to an initial dominance of the blue regions, which is expected since the SFT stage in SFT$\rightarrow$GRPO has already incorporated substantial prior knowledge.
+However, in the later stages of training, \mot still surpasses and ultimately reveals the dominance of the red regions, indicating that \mot consistently outperforms SFT$\rightarrow$GRPO by substantially enhancing learning performance on the training set.
+This advantage becomes even more pronounced in the Level 5 subplot, suggesting that \mot provides particular benefits for learning on more challenging problems, which may be attributed to its use of question-level rollout performance as feedback.
+
+
+
+\subsection{Training Dynamics}
+\label{sec:training_dynamics}
+In this section, we investigate the training dynamics of \mot, focusing on validation performance, entropy, response length, and the offline data ratio.
+Our analysis centers on two aspects: whether \mot enables the model to acquire knowledge from offline data when its initial capabilities are limited, and whether its performance can be further enhanced through continued exploration with reinforcement learning.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{Figures/val_score_vs_steps_qwen_1.5b.pdf}
+  \caption{Validation performance comparisons on Qwen2.5-Math-1.5B across benchmarks.}
+  \label{fig:val_score_1.5B}
+\end{figure}
+
+
+\paragraph{Validation Performance.}
+We track the validation performance on the Qwen2.5-Math-1.5B as shown in Figure~\ref{fig:val_score_1.5B}, where \mot consistently outperforms the baselines and delivers stable improvements across multiple benchmarks.
+
+\begin{wrapfigure}{r}{.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/ratio_vs_steps.pdf}
+    \caption{Dynamic offline data ratio dynamics during training.
+    The offline data ratio is calculated as the proportion of offline training samples relative to the total training data at each step.
+    }
+    \label{fig:training_ratio}
+\end{wrapfigure}
+\paragraph{Offline Data Ratio.}
+We begin by quantifying the fraction of prompts whose gradients update the model through the SFT loss versus the RL loss at each training step, as shown in Figure~\ref{fig:training_ratio}.
+The offline data ratio is defined as the proportion of offline samples relative to the total number of training samples in each batch, with online samples calculated based on the remaining batch capacity.
+As expected, when the model has not yet acquired competence on the target tasks, the early phase is characterized by a large proportion of SFT-driven updates.
+As training progresses and the model’s on-policy reward increases, the mixture gradually shifts: the contribution of RL grows while that of SFT diminishes, eventually stabilizing at a small but non-zero level.
+This trend is observed for both Qwen2.5-Math-7B and Qwen2.5-Math-1.5B.
+The weaker 1.5B model remains in the SFT-dominated regime for a longer period before transitioning, whereas the stronger 7B model shifts earlier.
+These results align with our technical analysis of the design of~\mot, where the mixing ratio is automatically adjusted based on performance rather than fixed in advance like LUFFY.
+
+
+
+
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{Figures/training_metrics_combined_qwen_7b.pdf}
+  \caption{Comparisons of training dynamics across different methods: (left) The entropy measures the diversity of model outputs, indicating exploration behavior; (right) The response length tracks the average length of generated responses.}
+  \label{fig:training_metrics_7B}
+\end{figure}
+\paragraph{Entropy and exploration.}
+Figure~\ref{fig:training_metrics_7B} (left) tracks token-level entropy over 500 steps. \mot maintains higher entropy than GRPO throughout the training phases.
+This is expected as the offline SFT trajectories are derived from the external demonstration distribution, which consequently increases the diversity in the model’s outputs.
+
+
+\paragraph{Response length and acquired reasoning patterns.}
+Figure~\ref{fig:training_metrics_7B} (right) reports the average response length. Our offline SFT trajectories have a length of up to 8k tokens. Under \mot, the model’s response length increases quickly during the early steps but does not jump to the 8k ceiling.
+More importantly, after the method shifts toward RL and the SFT proportion plateaus at a low level, the response length does not regress. This persistence suggests that the model has internalized long-form reasoning routines from the offline data rather than merely echoing teacher outputs. In other words, the learned reasoning pattern becomes part of the policy, and RL fine-tuning refines it instead of erasing it.
+
+
+
+ 
+
+
+\subsection{Impact of Off-policy RL}
+\label{sec:impact_of_off-policy_rl}
+
+
+\begin{table*}[!h]
+\definecolor{bluishyellow}{rgb}{0.84, 0.92, 0.85}
+\definecolor{bluishcyan}{rgb}{0.74, 0.93, 0.95}
+\centering
+\caption{Performance of different training paradigms to evaluate the impact of Off-policy RL.
+\textbf{SFT/ON} denotes SFT/On-policy~(\mot), 
+\textbf{OFF/ON} denotes Off-policy/On-policy,
+and \textbf{Mix/ON} denotes Mix-policy/On-policy.}
+\label{tab:offpolicy_rl_impact}
+\resizebox{.85\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Name} & \textbf{AIME 24} & \textbf{AIME 25} & \textbf{AMC} & \textbf{MATH-500} & \textbf{Minerva} & \textbf{Olympiad} & \textbf{Avg} \\
+\midrule
+\multicolumn{1}{r}{OFF/ON}                                     
+  & $16.6$ & $11.8$ & $47.3$ & $76.2$ & $35.3$ & $41.6$ & $38.1$ \\
+\multicolumn{1}{r}{Mix/ON}                                  
+  & $\mathbf{16.7}$ & $17.2$ & $46.9$ & $79.4$ & $37.5$ & $43.9$ & $40.3$ \\
+\multicolumn{1}{r}{SFT/ON}
+  & $16.6$ & $\mathbf{17.8}$ & $\mathbf{51.0}$ & $\mathbf{81.0}$ & $\mathbf{37.5}$ & $\mathbf{47.3}$ & $\mathbf{41.9}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+In our work, we have only made preliminary attempts at unifying post-training by integrating RL with SFT.
+However, off-policy RL represents an important training paradigm that emphasizes leveraging offline data. To this end, we further conduct experiments to investigate its influence and potential role.
+
+We compare three different training paradigms:
+(1) SFT/On-policy, the model alternates between SFT and on-policy RL, which corresponds to the method we introduced above (\mot);
+(2) Off-policy/On-policy, the model alternates between off-policy RL and on-policy RL during training;
+and (3) Mix-policy/On-policy, the model combines the loss from SFT and off-policy RL, and dynamically switches it with the on-policy RL objective. For the Mix setting, we performed hyperparameter search and found the optimal SFT/OFF weighting ratio to be $1/10$, i.e., the coefficients of the SFT loss and the off-policy loss are set to $0.1$ and $1.0$, respectively.
+We replicate the off-policy RL implementation described in LUFFY~\citep{yan2025learning}, and all experiments are conducted in the same settings to ensure fairness.
+
+We evaluate the results of three methods on six math benchmarks. Table \ref{tab:offpolicy_rl_impact} presents results.
+Overall, the SFT/ON method achieves the best average performance (41.9), outperforming both Mix/ON (40.3) and OFF/ON (38.1).
+This suggests that off-policy RL may not be essential, as SFT already serves effectively as the training method of \mot for learning from offline data.
+
+
+
+
+\subsection{Gate Threshold Ablation}
+\label{sec:gate_threshold_ablation}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/gate_combined_analysis.pdf}
+    \caption{
+    Training reward (left) and offline data ratio (right) comparisons across different gate settings on Qwen2.5-Math-1.5B.
+    }
+    \label{fig:gate_training_reward}
+\end{figure}
+
+
+
+
+
+
+In this section, we investigate the effect of different gate thresholds $\gamma$. A value of $\gamma=0$ indicates that the model switches to SFT only when it fails all questions.
+Similarly, $\gamma=1$ and $\gamma=2$ correspond to settings where the model remains in on-policy reinforcement learning as long as it answers at least one or two out of eight questions correctly, respectively.
+To visualize the impact of the gating mechanism, we conduct experiments on the Qwen2.5-Math-1.5B under three different gate settings.
+As shown in Figure~\ref{fig:gate_training_reward}, we analyze the training dynamics by tracking the dynamics of rewards and the proportion of offline data utilized throughout training, thereby highlighting how different gate thresholds mediate the balance between leveraging offline demonstrations and incorporating online feedback.
+We observe that, under different gate thresholds, varying degrees of engagement with offline data–based SFT learning emerge.
+A larger gate threshold introduces a greater extent of SFT based on offline data, as expected.
+
+\begin{table*}[!ht]
+\definecolor{bluishyellow}{rgb}{0.84, 0.92, 0.85}
+\definecolor{bluishcyan}{rgb}{0.74, 0.93, 0.95}
+\centering
+\caption{Performance of \mot with different switch gate $\gamma$ on Qwen2.5-Math-1.5B.}
+\label{tab:gate_results}
+\resizebox{.85\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Name} & \textbf{AIME 24} & \textbf{AIME 25} & \textbf{AMC} & \textbf{MATH-500} & \textbf{Minerva} & \textbf{Olympiad} & \textbf{Avg} \\
+\midrule
+\multicolumn{1}{r}{$\gamma=2$} & $15.8$ & $13.0$ & $49.0$ & $77.6$ & $34.6$ & $44.1$ & $39.0$ \\
+\multicolumn{1}{r}{$\gamma=1$} & $\mathbf{18.1}$ & $14.2$ & $46.0$ & $75.4$ & $35.7$ & $42.5$ & $38.7$ \\
+\multicolumn{1}{r}{$\gamma=0$} & $16.6$ & $\mathbf{17.8}$ & $\mathbf{51.0}$ & $\mathbf{81.0}$ & $\mathbf{37.5}$ & $\mathbf{47.3}$ & $\mathbf{41.9}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+To further compare the performance across different gating strategies, we evaluate the three trained models on six benchmarks.
+Table~\ref{tab:gate_results} presents the results.
+Among the three configurations, $\gamma=0$ achieves the best overall performance with an average score of 41.9, outperforming both $\gamma=1$ (38.7) and $\gamma=2$ (39.0).
+This observation suggests that simply incorporating more SFT does not necessarily lead to better outcomes.
+Instead, it is crucial to maintain a dynamic balance between the \textcolor{cyan!40!black}{exploration} of RL and the \textcolor{cyan!40!red}{exploitation} of SFT.
+The optimal degree of this gating mechanism should be adjusted according to the characteristics of the base model and the specific training data employed.

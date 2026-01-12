@@ -1,0 +1,1 @@
+A lightweight Beamer template using the Feather theme, emphasizing readable typography and simple navigation. It features a title page without frame numbering, an automatic contents slide, and colored hyperlink helpers for clear cross-referencing. This template is ideal for concise conference talks and tutorials that benefit from a bright, minimal aesthetic.

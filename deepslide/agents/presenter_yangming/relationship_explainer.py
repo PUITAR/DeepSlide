@@ -19,7 +19,7 @@ class RelationshipExplainer:
             role_name="RelationExplainer",
             content=sys_msg_content
         )
-        api_key = os.getenv('DEEPSEEK_API_KEY')
+        api_key = os.getenv('DEFAULT_MODEL_API_KEY')
         self.model = ModelFactory.create(
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="deepseek-chat",

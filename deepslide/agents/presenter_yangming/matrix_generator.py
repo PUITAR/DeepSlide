@@ -47,7 +47,7 @@ class MatrixGenerator:
             model_platform=ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
             model_type="deepseek-chat",
             url='https://api.deepseek.com',
-            api_key=os.getenv('DEEPSEEK_API_KEY'),
+            api_key=os.getenv('DEFAULT_MODEL_API_KEY'),
             model_config_dict={"temperature": 0.2}
         )
 

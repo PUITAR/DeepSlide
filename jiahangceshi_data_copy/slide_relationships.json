@@ -1,0 +1,235 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\LARGE\\textbf{CSPG: Cross-Partition Sparse Proximity Graph}\n\\end{center}\n\n\\vspace{0.5cm}\n\n\\begin{itemize}\n    \\item \\textbf{Goal}: Improve graph-based Approximate Nearest Neighbor Search (ANNS)\n    \\item \\textbf{Core Idea}: Partition dataset to reduce distance computations\n    \\item \\textbf{Key Insight}: Use different step sizes for speed vs. accuracy\n    \\item \\textbf{Two Key Algorithms}: Partitioning algorithm and search algorithm\n    \\item \\textbf{Approach}: Balance between fast approaching and precise search\n\\end{itemize}\n\\end{frame}%% ITEM 3 TYPE Frame\n",
+        "Today I'll introduce our novel method called CSPG, which stands for Cross-Partition Sparse Proximity Graph. This is a graph-based approach designed to improve approximate nearest neighbor search. Our main goal is to reduce the number of distance computations while maintaining high accuracy. The core insight behind CSPG is that we need different strategies when we're far from the query versus when we're close to it. When far away, we want large steps for speed; when close, we need small steps for..."
+      ],
+      "section": "Methods",
+      "summary": "Introduces CSPG: Cross-Partition Sparse Proximity Graph for improving ANNS through partitioning and two-stage search algorithms"
+    },
+    {
+      "id": 1,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{Partitioning Algorithm: Core Strategy}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Random Partitioning}: Dataset $\\mathcal{D}$ divided into multiple groups\n    \\item \\textbf{Routing Vectors}: Common vectors shared across groups (red nodes)\n    \\item \\textbf{Group-Specific Vectors}: Distinct vectors in each group (green/blue nodes)\n    \\item \\textbf{Sparse Subgraphs}: Build smaller, sparser graphs for each group\n    \\item \\textbf{Key Benefit}: Sparse graphs allow larger steps for fast approaching\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Example}: Two groups $\\mathcal{G}_1$ (left) and $\\mathcal{G}_2$ (right) with shared routing vectors\n\\end{frame}%% ITEM 4 TYPE Frame\n",
+        "Let's start with the partitioning algorithm. The basic idea is to randomly divide our dataset into multiple groups. Each group shares some common vectors called routing vectors, shown as red nodes in our diagrams. These routing vectors act as bridges between groups. Additionally, each group has its own distinct vectors, shown as green and blue nodes for different groups. For each group, we build a sparse proximity graph. Because these subgraphs are smaller and sparser than a single graph for the..."
+      ],
+      "section": "Methods",
+      "summary": "Describes the partitioning algorithm: random partitioning with routing vectors and group-specific vectors to create sparse subgraphs"
+    },
+    {
+      "id": 2,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{Search Algorithm: Two-Stage Approach}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Stage 1}: Fast approaching using single partition\n    \\item \\textbf{Stage 2}: Precise search across all partitions\n    \\item \\textbf{Different Beam Sizes}: $ef_1 < ef_2$ for two stages\n    \\item \\textbf{Traditional vs CSPG}: Fixed candidate set vs dynamic expansion\n    \\item \\textbf{Goal}: Quickly zone in, then carefully search around\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Key Innovation}: Dynamic traversal across multiple proximity graphs\n\\end{frame}%% ITEM 5 TYPE Frame\n",
+        "Now let's look at the search algorithm, which employs a two-stage approach. In the first stage, we perform a fast approaching using only one partition. This quickly gets us near the query with minimal expansions. In the second stage, we conduct a precise search that considers all groups to find the final closest vectors. Unlike traditional beam search that maintains a fixed-size candidate set, CSPG uses different beam sizes for the two stages: $ef_1$ for the first stage and $ef_2$ for the second..."
+      ],
+      "section": "Methods",
+      "summary": "Outlines the two-stage search algorithm: fast approaching (Stage 1) and precise search across partitions (Stage 2)"
+    },
+    {
+      "id": 3,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{Stage 1: Fast Approaching}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Greedy Beam Search}: Starts from group $\\mathcal{G}_1$\n    \\item \\textbf{Short Search Length}: Fewer neighbor expansions\n    \\item \\textbf{Visualization}: Yellow arrows in method diagram\n    \\item \\textbf{Result}: Zones in on query's nearby region\n    \\item \\textbf{Output}: Candidate set with closest vector from first partition\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Process}: Search from $\\mathcal{G}_1$ → Approach query → Continue from $\\mathcal{G}_2$\n\\end{frame}%% ITEM 6 TYPE Frame\n",
+        "Let me detail the first stage: fast approaching. We conduct a greedy beam search starting from group $\\mathcal{G}_1$. This stage uses a shorter search length with fewer neighbor expansions, visualized by the yellow arrows in our method diagram. The goal is to quickly approach the query's nearby region, which we represent as a dot parallelogram in our visualization. After this stage, we've successfully zoned in on the query's neighborhood. The output is a candidate set containing the closest vect..."
+      ],
+      "section": "Methods",
+      "summary": "Details Stage 1: fast approaching using greedy beam search within a single partition to zone in on query region"
+    },
+    {
+      "id": 4,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{Stage 2: Cross-Partition Expansion}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Dynamic Graph Traversal}: Search across multiple proximity graphs\n    \\item \\textbf{Routing Vector Expansion}: If neighbor $u$ is routing vector, add all instances\n    \\item \\textbf{Maximized Search Space}: Include all potential closest vectors\n    \\item \\textbf{Visualization}: Orange arrows in method diagram\n    \\item \\textbf{Key Feature}: Appears as single graph search in practice\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Critical Difference}: Routing vectors trigger cross-partition expansion\n\\end{frame}%% ITEM 7 TYPE Frame\n",
+        "Now for the second stage: cross-partition expansion. This is where CSPG really shines. After the first stage, we continue with a greedy beam search using a larger candidate set size $ef_2$. The significant difference from the first stage is this: when we expand a neighbor $u$, if $u$ happens to be a routing vector, we push ALL its instances from ALL partitions into the candidate set. This allows the search process to dynamically traverse different proximity graphs, maximizing our search space to..."
+      ],
+      "section": "Methods",
+      "summary": "Details Stage 2: cross-partition expansion with dynamic graph traversal and routing vector expansion"
+    },
+    {
+      "id": 5,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{CSPG Advantages and Performance}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Speed Advantage}: Sparse graphs enable faster initial search\n    \\item \\textbf{Accuracy Advantage}: Cross-partition expansion ensures thorough search\n    \\item \\textbf{Balance Achieved}: Large steps when far, small steps when close\n    \\item \\textbf{Outperforms Traditional PG}: With appropriate partitioning\n    \\item \\textbf{Generalizable}: Works with multiple partitions beyond two\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Key Result}: Higher query speed and accuracy compared to traditional proximity graphs\n\\end{frame}%% ITEM 8 TYPE Frame\n",
+        "Let me summarize the advantages of CSPG. First, we achieve speed advantages because sparse graphs allow larger steps when we're far from the query. Second, we maintain accuracy through cross-partition expansion that ensures a thorough search of the query's neighborhood. We've successfully balanced the trade-off: large steps for speed when far away, small steps for precision when close. With appropriate partitioning, CSPG outperforms traditional proximity graph algorithms. The method is also gene..."
+      ],
+      "section": "Methods",
+      "summary": "Highlights CSPG advantages: speed from sparse graphs, accuracy from cross-partition expansion, outperforming traditional PG"
+    },
+    {
+      "id": 6,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\Large\\textbf{Summary: CSPG Method}\n\\end{center}\n\n\\vspace{0.3cm}\n\n\\begin{itemize}\n    \\item \\textbf{Partitioning}: Random division with shared routing vectors\n    \\item \\textbf{Two-Stage Search}: Fast approaching + cross-partition expansion\n    \\item \\textbf{Speed Mechanism}: Sparse graphs enable large steps when far\n    \\item \\textbf{Accuracy Mechanism}: Routing vectors enable thorough search\n    \\item \\textbf{Key Innovation}: Dynamic traversal across multiple graphs\n\\end{itemize}\n\n\\vspace{0.3cm}\n\n\\textbf{Final Result}: Balanced approach outperforming traditional proximity graphs\n\\end{frame}%% ITEM 9 TYPE Section\n",
+        "In summary, CSPG introduces a novel approach to approximate nearest neighbor search through intelligent partitioning and a two-stage search strategy. The partitioning algorithm randomly divides the dataset into groups with shared routing vectors, creating sparse subgraphs that enable fast initial search. The search algorithm then employs a two-stage approach: first, fast approaching using a single partition to quickly zone in on the query's neighborhood, and second, cross-partition expansion tha..."
+      ],
+      "section": "Methods",
+      "summary": "Summarizes CSPG method: partitioning with routing vectors, two-stage search, speed/accuracy mechanisms, dynamic traversal"
+    },
+    {
+      "id": 7,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\LARGE\\textbf{Conclusion: CSPG Performance Summary}\n\\end{center}\n\n\\vspace{10pt}\n\n\\textbf{CSPG achieves superior performance through innovative design:}\n\n\\begin{itemize}\n\\item \\textbf{Higher QPS and Recall@10} than traditional proximity graphs\n\\item \\textbf{Random partitioning} creates smaller, sparser graphs per partition\n\\item \\textbf{Efficient two-stage search} with routing vectors for cross-partition expansion\n\\item \\textbf{Consistent improvements} across multiple baseline algorithms\n\\item \\textbf{Balanced approach} for both speed and accuracy\n\\end{itemize}\n\\end{frame}%% ITEM 12 TYPE Frame\n",
+        "In conclusion, CSPG demonstrates superior performance compared to traditional proximity graph implementations. It achieves higher QPS, meaning more queries per second, and higher Recall@10, meaning better accuracy. This is accomplished through an innovative design that combines random partitioning with an efficient two-stage search algorithm. CSPG consistently shows improvements across multiple baseline algorithms, providing a balanced approach that excels in both speed and accuracy...."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: CSPG achieves superior performance with higher QPS/recall, random partitioning, efficient two-stage search"
+    },
+    {
+      "id": 8,
+      "content_tuple": [
+        "\\begin{frame}\n\\textbf{Core Innovation: Random Partitioning}\n\n\\begin{itemize}\n\\item \\textbf{Dataset $\\mathcal{D}$ is randomly divided} into multiple groups\n\\item \\textbf{Routing vectors} are shared across groups for connectivity\n\\item \\textbf{Smaller, sparser graphs} are built for each partition\n\\item \\textbf{Enables larger search steps} when far from query (for speed)\n\\item \\textbf{Allows finer search} when close to query (for accuracy)\n\\end{itemize}\n\n\\vspace{10pt}\n\n\\textbf{Key Benefits:}\n\\begin{itemize}\n\\item Reduced graph complexity per partition\n\\item Faster initial approach to query region\n\\item Maintains accuracy through routing connections\n\\end{itemize}\n\\end{frame}%% ITEM 13 TYPE Frame\n",
+        "The core innovation of CSPG is its random partitioning strategy. The dataset is randomly divided into multiple groups, with some vectors designated as routing vectors that are shared across groups. This allows us to build smaller, sparser graphs for each partition. When the search is far from the query, these sparser graphs enable larger steps to quickly approach the query region, which improves speed. When the search gets close to the query, the routing vectors allow for finer, more precise sea..."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Core innovation of random partitioning with routing vectors for smaller, sparser graphs enabling speed/accuracy"
+    },
+    {
+      "id": 9,
+      "content_tuple": [
+        "\\begin{frame}\n\\textbf{Efficient Two-Stage Search Algorithm}\n\n\\begin{itemize}\n\\item \\textbf{First Stage: Fast Approaching}\n\\begin{itemize}\n\\item Greedy beam search within a single partition\n\\item Quickly approaches the query region\n\\item Uses sparser graph for larger steps\n\\end{itemize}\n\n\\item \\textbf{Second Stage: Precise Search}\n\\begin{itemize}\n\\item Cross-partition expansion using routing vectors\n\\item When encountering a routing vector, all its instances across partitions are added to candidate set\n\\item Maximizes search space for accurate results\n\\end{itemize}\n\n\\item \\textbf{Smart Transition}\n\\begin{itemize}\n\\item Automatically switches between stages\n\\item Balances speed and accuracy dynamically\n\\end{itemize}\n\\end{itemize}\n\\end{frame}%% ITEM 14 TYPE Frame\n",
+        "CSPG employs an efficient two-stage search algorithm. In the first stage, we perform a greedy beam search within a single partition. This allows us to quickly approach the query region using the sparser graph structure. Once we get close to the query, we transition to the second stage for precise search. Here, we use cross-partition expansion through routing vectors. When the search encounters a routing vector, we add all instances of that vector across different partitions to our candidate set...."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Efficient two-stage search algorithm - fast approaching and precise search with cross-partition expansion"
+    },
+    {
+      "id": 10,
+      "content_tuple": [
+        "\\begin{frame}\n\\textbf{Experimental Results: Superior Performance}\n\n\\begin{itemize}\n\\item \\textbf{CSPG built upon multiple baselines:}\n\\begin{itemize}\n\\item HNSW (Hierarchical Navigable Small World)\n\\item HCNNG (Hierarchical Clustering Nearest Neighbor Graph)\n\\item Vamana\n\\item NSG (Navigating Spreading-out Graph)\n\\end{itemize}\n\n\\item \\textbf{Consistent improvements across all baselines}\n\\item \\textbf{Higher QPS:} More queries processed per second\n\\item \\textbf{Higher Recall@10:} More accurate nearest neighbor retrieval\n\\item \\textbf{Better trade-off curve} between speed and accuracy\n\\end{itemize}\n\n\\vspace{10pt}\n\n\\textbf{Key Finding:} CSPG's design principles work effectively regardless of the underlying graph construction algorithm.\n\\end{frame}%% ITEM 15 TYPE Frame\n",
+        "Experimental results demonstrate CSPG's superior performance. We tested CSPG built upon multiple baseline algorithms including HNSW, HCNNG, Vamana, and NSG. Across all these baselines, CSPG consistently showed improvements. It achieved higher QPS, meaning it can process more queries per second, and higher Recall@10, meaning it retrieves more accurate nearest neighbors. The trade-off curve between speed and accuracy is significantly better with CSPG. A key finding is that CSPG's design principles..."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Experimental results showing CSPG outperforms baselines (HNSW, HCNNG, etc.) with higher QPS and recall"
+    },
+    {
+      "id": 11,
+      "content_tuple": [
+        "\\begin{frame}\n\\textbf{Why CSPG Works: Key Insights}\n\n\\begin{itemize}\n\\item \\textbf{Smaller graphs are faster to search}\n\\begin{itemize}\n\\item Reduced complexity per partition\n\\item Faster neighbor exploration\n\\end{itemize}\n\n\\item \\textbf{Routing vectors enable efficient cross-partition search}\n\\begin{itemize}\n\\item Maintain connectivity between partitions\n\\item Enable smart expansion when needed\n\\end{itemize}\n\n\\item \\textbf{Two-stage approach matches search strategy to proximity}\n\\begin{itemize}\n\\item Fast when far, precise when close\n\\item Dynamic adaptation to query location\n\\end{itemize}\n\n\\item \\textbf{Random partitioning ensures balanced distribution}\n\\begin{itemize}\n\\item Avoids bias in partition creation\n\\item Maintains statistical properties\n\\end{itemize}\n\\end{itemize}\n\\end{frame}%% ITEM 16 TYPE Frame\n",
+        "Let's examine why CSPG works so well. First, smaller graphs are inherently faster to search because they have reduced complexity per partition, allowing faster neighbor exploration. Second, routing vectors provide efficient cross-partition connectivity, enabling smart expansion when needed without sacrificing speed. Third, the two-stage approach intelligently matches the search strategy to proximity - using fast, coarse search when far from the query and precise, detailed search when close. Fina..."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Key insights - smaller graphs are faster, routing vectors enable cross-partition search, two-stage approach matches proximity"
+    },
+    {
+      "id": 12,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\LARGE\\textbf{Final Summary}\n\\end{center}\n\n\\vspace{15pt}\n\n\\textbf{CSPG delivers:}\n\n\\begin{itemize}\n\\item \\textbf{Superior performance} in both speed (QPS) and accuracy (Recall@10)\n\\item \\textbf{Innovative architecture} combining random partitioning with two-stage search\n\\item \\textbf{Consistent improvements} across multiple graph-based ANNS algorithms\n\\item \\textbf{Efficient cross-partition exploration} through routing vectors\n\\item \\textbf{Practical solution} for large-scale nearest neighbor search problems\n\\end{itemize}\n\n\\vspace{15pt}\n\n\\textbf{Key Contribution:} A novel approach that fundamentally improves the speed-accuracy trade-off in proximity graph search.\n\\end{frame}%% ITEM 17 TYPE Frame\n",
+        "In summary, CSPG delivers superior performance in both speed and accuracy through its innovative architecture. By combining random partitioning with an efficient two-stage search algorithm, CSPG achieves consistent improvements across multiple graph-based approximate nearest neighbor search algorithms. The use of routing vectors enables efficient cross-partition exploration, making it a practical solution for large-scale nearest neighbor search problems. Our key contribution is a novel approach ..."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Final summary - CSPG delivers superior performance, innovative architecture, consistent improvements, efficient exploration"
+    },
+    {
+      "id": 13,
+      "content_tuple": [
+        "\\begin{frame}\n\\begin{center}\n\\LARGE\\textbf{Thank You}\n\\end{center}\n\n\\vspace{20pt}\n\n\\begin{center}\n\\textbf{Questions?}\n\\end{center}\n\n\\vspace{20pt}\n\n\\begin{center}\n\\textbf{Key Takeaways:}\n\\end{center}\n\n\\begin{itemize}\n\\item CSPG achieves higher QPS and Recall@10\n\\item Random partitioning creates efficient smaller graphs\n\\item Two-stage search with routing vectors enables cross-partition expansion\n\\item Consistent improvements across multiple baseline algorithms\n\\item Better speed-accuracy trade-off for ANNS\n\\end{itemize}\n\\end{frame}",
+        "Thank you for your attention. To recap the key takeaways: CSPG achieves higher QPS and Recall@10 than traditional proximity graphs. Its random partitioning strategy creates efficient smaller graphs per partition. The two-stage search algorithm with routing vectors enables smart cross-partition expansion. We've shown consistent improvements across multiple baseline algorithms, providing a better speed-accuracy trade-off for approximate nearest neighbor search. I'm now happy to take any questions ..."
+      ],
+      "section": "Conclusion",
+      "summary": "Conclusion: Thank you slide with key takeaways summarizing CSPG achievements and improvements"
+    }
+  ],
+  "edges": [
+    {
+      "from": 7,
+      "to": 0,
+      "type": "reference",
+      "reason": "References CSPG design and performance improvements introduced in Slide 0"
+    },
+    {
+      "from": 7,
+      "to": 1,
+      "type": "reference",
+      "reason": "References random partitioning concept from Slide 1"
+    },
+    {
+      "from": 7,
+      "to": 2,
+      "type": "reference",
+      "reason": "References efficient two-stage search algorithm from Slide 2"
+    },
+    {
+      "from": 8,
+      "to": 1,
+      "type": "reference",
+      "reason": "References random partitioning and routing vectors details from Slide 1"
+    },
+    {
+      "from": 8,
+      "to": 5,
+      "type": "reference",
+      "reason": "References speed/accuracy advantages from Slide 5"
+    },
+    {
+      "from": 9,
+      "to": 2,
+      "type": "reference",
+      "reason": "References two-stage search algorithm framework from Slide 2"
+    },
+    {
+      "from": 9,
+      "to": 3,
+      "type": "reference",
+      "reason": "References fast approaching (Stage 1) details from Slide 3"
+    },
+    {
+      "from": 9,
+      "to": 4,
+      "type": "reference",
+      "reason": "References cross-partition expansion (Stage 2) details from Slide 4"
+    },
+    {
+      "from": 10,
+      "to": 5,
+      "type": "reference",
+      "reason": "References CSPG performance advantages and baseline comparisons from Slide 5"
+    },
+    {
+      "from": 11,
+      "to": 1,
+      "type": "reference",
+      "reason": "References smaller graphs concept from partitioning in Slide 1"
+    },
+    {
+      "from": 11,
+      "to": 2,
+      "type": "reference",
+      "reason": "References two-stage approach matching search strategy from Slide 2"
+    },
+    {
+      "from": 12,
+      "to": 0,
+      "type": "reference",
+      "reason": "References CSPG innovative architecture introduced in Slide 0"
+    },
+    {
+      "from": 12,
+      "to": 5,
+      "type": "reference",
+      "reason": "References superior performance in speed and accuracy from Slide 5"
+    },
+    {
+      "from": 12,
+      "to": 6,
+      "summary": "Summarizes CSPG method components from Slide 6",
+      "type": "reference",
+      "reason": "Summarizes CSPG method components from Slide 6"
+    },
+    {
+      "from": 13,
+      "to": 7,
+      "type": "reference",
+      "reason": "References key performance takeaways from Slide 7"
+    },
+    {
+      "from": 13,
+      "to": 8,
+      "type": "reference",
+      "reason": "References random partitioning concept from Slide 8"
+    },
+    {
+      "from": 13,
+      "to": 9,
+      "type": "reference",
+      "reason": "References two-stage search algorithm from Slide 9"
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+%% ITEM 0 TYPE Section
+\section{Introduction}%% ITEM 1 TYPE Frame
+%% ITEM 1 TYPE Frame
+\begin{frame}
+\frametitle{The Need for Efficient Vector Search}
+
+\begin{itemize}
+    \item \textbf{Vector embeddings} convert words, sentences, and knowledge into numerical vectors
+    \item AI systems need to find vectors most similar to query vectors
+    \item This is called \textbf{Nearest Neighbor Search (NNS)} or \textbf{Approximate Nearest Neighbor Search (ANNS)}
+    \item Example: AI searching for materials about "Covid-19" needs to find similar vectors
+    \item Similarity measured by Euclidean distance: $dist(x, y) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2}$
+\end{itemize}
+\end{frame}%% ITEM 2 TYPE Frame
+%% ITEM 2 TYPE Frame
+\begin{frame}
+\frametitle{From Exact to Approximate Search}
+
+\begin{itemize}
+    \item \textbf{Nearest Neighbor Search (NNS)}: Find vectors with smallest distance to query
+    \item Applications: information retrieval, pattern recognition, RAG systems
+    \item \textbf{Problem}: Finding exact nearest neighbors is computationally expensive
+    \item \textbf{Solution}: Approximate Nearest Neighbor Search (ANNS)
+    \item \textbf{ANNS}: Find vectors with smallest distance while relaxing accuracy constraints
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Four Categories of ANNS Methods:}
+\begin{enumerate}
+    \item Tree-based approaches
+    \item Hashing-based approaches
+    \item Quantization-based approaches
+    \item \textbf{Graph-based approaches} (our focus)
+\end{enumerate}
+\end{frame}%% ITEM 3 TYPE Frame
+%% ITEM 3 TYPE Frame
+\begin{frame}
+\frametitle{Graph-Based ANNS: The Power of Proximity Graphs}
+
+\begin{itemize}
+    \item \textbf{Proximity Graphs}: Connect similar vectors as edges
+    \item \textbf{Search Process}: Start from entry point, traverse to neighbors
+    \item \textbf{Key Insight}: "Six Degrees of Separation" - any two nodes connected by short path
+    \item \textbf{Four Types of Proximity Graphs}:
+    \begin{itemize}
+        \item Delaunay Graph (DG): Guarantees exact NNS but high degree
+        \item Relative Neighborhood Graph (RNG): Subgraph of DG
+        \item K-Nearest Neighbor Graph (KNNG): Each node connects to k nearest neighbors
+        \item Minimum Spanning Tree (MST) Graph: Subgraph of RNG
+    \end{itemize}
+    \item \textbf{Search Complexity}: Dominated by distance computations
+\end{itemize}
+\end{frame}%% ITEM 4 TYPE Frame
+%% ITEM 4 TYPE Frame
+\begin{frame}
+\frametitle{The Challenge: Limitations of Traditional Approaches}
+
+\begin{itemize}
+    \item \textbf{Performance Bottleneck}: Distance computations dominate search time
+    \item \textbf{Memory Access}: Random access patterns reduce cache efficiency
+    \item \textbf{Scalability Issues}: Graph size grows with dataset size
+    \item \textbf{Search Speed vs Accuracy Trade-off}: Traditional methods struggle to balance both
+    \item \textbf{Need for Innovation}: Partitioning strategies to improve both speed and accuracy
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Our Contribution}: A novel partitioning approach that addresses these limitations by optimizing graph structure for faster, more accurate ANNS.
+\end{frame}%% ITEM 5 TYPE Section
+%% ITEM 5 TYPE Section
+\section{Methods}%% ITEM 6 TYPE Frame
+%% ITEM 6 TYPE Frame
+\begin{frame}
+\centering
+\LARGE\textbf{CSPG Method: Overview}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Goal}: Design a graph-based ANNS method that balances speed and accuracy
+    \item \textbf{Core Idea}: Random partitioning with shared routing vectors
+    \item \textbf{Key Insight}: Use larger steps when far from query (for speed), smaller steps when close (for accuracy)
+    \item \textbf{Two Key Algorithms}:
+    \begin{enumerate}
+        \item Partitioning Algorithm: Random division with routing vectors
+        \item Search Algorithm: Two-stage approach (fast approaching + precise search)
+    \end{enumerate}
+    \item \textbf{Advantage}: Sparse subgraphs enable faster search while routing vectors maintain connectivity
+\end{itemize}
+\end{frame}%% ITEM 7 TYPE Frame
+%% ITEM 7 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Partitioning Algorithm}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Random Division}: Dataset $\mathcal{D}$ randomly partitioned into groups
+    \item \textbf{Routing Vectors}: Common vectors shared across all groups (shown in red)
+    \item \textbf{Separate Graphs}: Each group gets its own proximity graph
+    \item \textbf{Example}: Two groups $\mathcal{G}_1$ (left) and $\mathcal{G}_2$ (right)
+    \item \textbf{Benefits}:
+    \begin{itemize}
+        \item Sparse subgraphs allow larger search steps
+        \item Routing vectors enable cross-group connectivity
+        \item Smaller graphs reduce distance computations
+    \end{itemize}
+\end{itemize}
+\end{frame}%% ITEM 8 TYPE Frame
+%% ITEM 8 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Search Algorithm: Two-Stage Approach}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Stage 1: Fast Approaching}
+    \begin{itemize}
+        \item Uses only one proximity graph ($\mathcal{G}_1$)
+        \item Greedy beam search with smaller candidate set ($ef_1$)
+        \item Quickly zones in on query's nearby region
+        \item Minimal neighbor expansions for speed
+    \end{itemize}
+    
+    \item \textbf{Stage 2: Precise Search}
+    \begin{itemize}
+        \item Considers all groups for final closest vectors
+        \item Larger candidate set ($ef_2 > ef_1$)
+        \item Cross-partition expansion technique
+        \item Maximizes search space coverage
+    \end{itemize}
+    
+    \item \textbf{Key Difference}: Traditional beam search uses fixed candidate size, CSPG uses different sizes for each stage
+\end{itemize}
+\end{frame}%% ITEM 9 TYPE Frame
+%% ITEM 9 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Stage 1: Fast Approaching Details}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Starting Point}: Search begins from $\mathcal{G}_1$
+    \item \textbf{Search Process}: Greedy beam search (shown with yellow arrows)
+    \item \textbf{Objective}: Quickly reach query's nearby region with minimal expansions
+    \item \textbf{Result}: Candidate set contains closest vector from first partition
+    \item \textbf{Visualization}: Algorithm zones into dot parallelogram region around query
+    \item \textbf{Efficiency}: Shorter search length and fewer neighbor expansions
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Key Insight}: When far from query, use larger steps for speed; when close, use smaller steps for accuracy.
+\end{frame}%% ITEM 10 TYPE Frame
+%% ITEM 10 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Stage 2: Cross-Partition Expansion}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Continuation}: Greedy beam search continues with larger candidate set ($ef_2$)
+    \item \textbf{Critical Innovation}: When expanded neighbor $u$ is a routing vector...
+    \item \textbf{Cross-Partition Push}: All instances of $u$ in all partitions are pushed into candidate set
+    \item \textbf{Dynamic Traversal}: Search process dynamically traverses different proximity graphs
+    \item \textbf{Maximized Search Space}: Includes as many potential closest vectors as possible
+    \item \textbf{Visual Effect}: Search across multiple graphs appears as single graph search
+\end{itemize}
+
+\vspace{3mm}
+\textbf{Result}: With appropriate partitioning, CSPG outperforms traditional proximity graph algorithms.
+\end{frame}%% ITEM 11 TYPE Frame
+%% ITEM 11 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Algorithmic Advantages}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Speed Advantage}: Sparse subgraphs reduce distance computations
+    \item \textbf{Accuracy Advantage}: Cross-partition expansion maximizes search coverage
+    \item \textbf{Adaptive Search}: Different strategies for different proximity levels
+    \item \textbf{Connectivity Maintenance}: Routing vectors ensure graph connectivity
+    \item \textbf{Scalability}: Smaller graphs are easier to build and maintain
+    \item \textbf{Flexibility}: Can be extended to more than two partitions
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\textbf{Core Contribution}: Combining partitioning strategy with two-stage search\\
+for improved speed-accuracy tradeoff in graph-based ANNS
+\end{center}
+\end{frame}%% ITEM 12 TYPE Frame
+%% ITEM 12 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Summary \& Conclusion}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Two Key Innovations}:
+    \begin{enumerate}
+        \item Partitioning algorithm with random division and routing vectors
+        \item Two-stage search algorithm (fast approaching + precise search)
+    \end{enumerate}
+    
+    \item \textbf{Speed Mechanism}: Sparse subgraphs enable larger search steps
+    
+    \item \textbf{Accuracy Mechanism}: Cross-partition expansion maximizes search coverage
+    
+    \item \textbf{Adaptive Strategy}: Different approaches for different proximity levels
+    
+    \item \textbf{Performance}: Outperforms traditional proximity graph methods
+    
+    \item \textbf{Future Work}: Extension to multiple partitions and optimization
+\end{itemize}
+
+\vspace{5mm}
+\begin{center}
+\textbf{Thank You! Questions?}
+\end{center}
+\end{frame}%% ITEM 13 TYPE Section
+%% ITEM 13 TYPE Section
+\section{Conclusion}%% ITEM 14 TYPE Section
+%% ITEM 14 TYPE Section
+\section{Conclusion}%% ITEM 15 TYPE Frame
+%% ITEM 15 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Conclusion: CSPG Schema for ANNS}
+\end{center}
+
+\vspace{10pt}
+
+\begin{itemize}
+    \item Proposed novel CSPG schema for Approximate Nearest Neighbor Search
+    \item Core innovation: Random dataset partitioning strategy
+    \item Creates smaller, sparser proximity graphs for each partition
+    \item Introduces shared routing vectors across partitions
+    \item Enables efficient two-stage search approach
+\end{itemize}
+\end{frame}%% ITEM 16 TYPE Frame
+%% ITEM 16 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{Two-Stage Search Architecture}
+\end{center}
+
+\vspace{10pt}
+
+\begin{itemize}
+    \item \textbf{Stage 1: Fast Proximity Search}
+    \begin{itemize}
+        \item Uses only one proximity graph initially
+        \item Quickly approaches query vector with larger steps
+        \item Smaller candidate set size ($ef_1$) for speed
+    \end{itemize}
+    
+    \item \textbf{Stage 2: Cross-Partition Expansion}
+    \begin{itemize}
+        \item Dynamically searches across multiple partitions
+        \item Adds all instances of encountered routing vectors
+        \item Larger candidate set size ($ef_2$) for precision
+    \end{itemize}
+    
+    \item Traditional beam search maintains fixed-size candidate set
+    \item CSPG uses adaptive sizes: $ef_1 < ef_2$
+\end{itemize}
+\end{frame}%% ITEM 17 TYPE Frame
+%% ITEM 17 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{Key Advantages of CSPG}
+\end{center}
+
+\vspace{10pt}
+
+\begin{itemize}
+    \item \textbf{Speed Advantage:}
+    \begin{itemize}
+        \item Smaller, sparser graphs enable faster traversal
+        \item Reduced number of distance computations
+        \item Quick initial approach to query region
+    \end{itemize}
+    
+    \item \textbf{Accuracy Advantage:}
+    \begin{itemize}
+        \item Cross-partition search expands coverage
+        \item Routing vectors enable fine-grained exploration
+        \item Dynamic adaptation to query location
+    \end{itemize}
+    
+    \item \textbf{Scalability:}
+    \begin{itemize}
+        \item Partitioning reduces graph complexity
+        \item Parallel processing potential across partitions
+        \item Memory efficiency with smaller subgraphs
+    \end{itemize}
+\end{itemize}
+\end{frame}%% ITEM 18 TYPE Frame
+%% ITEM 18 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{Experimental Results \& Impact}
+\end{center}
+
+\vspace{10pt}
+
+\begin{itemize}
+    \item \textbf{Superior Performance:}
+    \begin{itemize}
+        \item Higher QPS (Queries Per Second) than traditional proximity graphs
+        \item Higher Recall@10 accuracy metrics
+        \item Validated on standard benchmarks like SIFT1M
+    \end{itemize}
+    
+    \item \textbf{Theoretical Contribution:}
+    \begin{itemize}
+        \item Novel partitioning strategy for graph-based ANNS
+        \item Two-stage search with adaptive candidate sets
+        \item Routing vector concept for cross-partition connectivity
+    \end{itemize}
+    
+    \item \textbf{Practical Impact:}
+    \begin{itemize}
+        \item Improved efficiency for large-scale similarity search
+        \item Applications in recommendation systems, image retrieval
+        \item Database indexing and information retrieval systems
+    \end{itemize}
+\end{itemize}
+\end{frame}%% ITEM 19 TYPE Frame
+%% ITEM 19 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Summary \& Future Work}
+\end{center}
+
+\vspace{15pt}
+
+\begin{itemize}
+    \item CSPG combines random partitioning with two-stage search
+    \item Achieves higher QPS and Recall@10 than traditional methods
+    \item Routing vectors enable efficient cross-partition exploration
+    
+    \vspace{10pt}
+    \item \textbf{Future Directions:}
+    \begin{itemize}
+        \item Optimize partitioning strategies
+        \item Explore adaptive routing vector selection
+        \item Extend to distributed and parallel implementations
+        \item Apply to diverse data types and applications
+    \end{itemize}
+\end{itemize}
+
+\vspace{10pt}
+\begin{center}
+\Large Thank You!
+\end{center}
+\end{frame}

@@ -56,6 +56,14 @@ def _parse_log_for_errors(log_path: str, err_line_ext: int = 10, helper: dict[st
                         ff = str(m_fi.group(1))
                     if m_ln:
                         ln = int(m_ln.group(1))
+                
+                # Heuristic: If error is "Option clash", it's likely base.tex
+                if "Option clash" in s:
+                    ff = "base"
+                # Heuristic: If error is "File `...' not found", check the line number context
+                if "File `" in s and "not found" in s and ln and ln < 100 and ff is None:
+                    # Usually base.tex preamble
+                    ff = "base"
 
                 # print(f"helper: {helper}")
                 file_helper = helper.get('file', None) if helper is not None else None
@@ -66,15 +74,24 @@ def _parse_log_for_errors(log_path: str, err_line_ext: int = 10, helper: dict[st
                     if file_helper is not None:
                         ff = str(file_helper)
                     else:
-                        # 如果没有找到错误文件匹配，默认是 content.tex
+                        # 如果没有找到错误文件匹配，默认是 none
                         print(f"WARNING: no file match for error: {s}")
-                        ff = "content"
+                        ff = "none"
                         
                 errors.append({"message": s, "line": ln, "file": ff})
     except Exception as e:
         print(f"parse log for errors error: {e}")
         pass
     return errors
+
+
+def _translate_to_docker_path(host_path: str) -> str:
+    # host_root = "/home/ym/DeepSlide"
+    host_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    container_root = "/app"
+    if host_path.startswith(host_root):
+        return host_path.replace(host_root, container_root, 1)
+    return host_path
 
 
 def compile_content(base_dir: str, helper: dict[str, Any] = None) -> Dict[str, Any]:
@@ -92,17 +109,32 @@ def compile_content(base_dir: str, helper: dict[str, Any] = None) -> Dict[str, A
     if not mapping:
         return {"success": False, "errors": [{"message": "content.tex is empty or not valid", "line": None}]}   
 
-    engine = _detect_engine(base_dir, CANDIDATE_ENGINES)
+    # engine = _detect_engine(base_dir, CANDIDATE_ENGINES)
+    # Always use docker for now as requested
+    engine = "docker_xelatex"
+    # run_script = "/home/ym/DeepSlide/run_in_docker.sh"
+    run_script = os.path.join(os.path.dirname(__file__), "run_in_docker.sh")
 
-    if engine is None:
-        return {"success": False, "errors": [{"message": "latex engine not found", "line": None}]} 
-
-    cmd = [engine, "-interaction=nonstopmode", "-halt-on-error", os.path.basename(base_tex_path)]
+    if engine == "docker_xelatex":
+        if not os.path.exists(run_script):
+             return {"success": False, "errors": [{"message": f"Docker script not found: {run_script}", "line": None}]}
+        
+        # Command to run inside docker:
+        # We use 'bash -c' to handle cd and multiple commands safely
+        container_base_dir = _translate_to_docker_path(base_dir)
+        latex_cmd = f"cd {container_base_dir} && xelatex -interaction=nonstopmode -halt-on-error {os.path.basename(base_tex_path)}"
+        
+        cmd = ["bash", run_script, latex_cmd]
+        
+    else:
+        if engine is None:
+             return {"success": False, "errors": [{"message": "latex engine not found", "line": None}]} 
+        cmd = [engine, "-interaction=nonstopmode", "-halt-on-error", os.path.basename(base_tex_path)]
 
     try:
         last_proc = None
         for _ in range(2):
-            last_proc = subprocess.run(cmd, cwd=base_dir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            last_proc = subprocess.run(cmd, cwd=base_dir if engine != "docker_xelatex" else None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if last_proc.returncode != 0:
                 break
         proc = last_proc
@@ -114,6 +146,13 @@ def compile_content(base_dir: str, helper: dict[str, Any] = None) -> Dict[str, A
     log_path = os.path.join(base_dir, "base.log")
     pdf_path = os.path.join(base_dir, "base.pdf")
     errors = _parse_log_for_errors(log_path, helper=helper)
+
+    if proc.returncode != 0 and not errors:
+        # If compilation failed but no errors parsed from log, maybe log was not generated or parsing failed
+        # Include stdout in errors for debugging
+        output = proc.stdout.decode('utf-8', errors='ignore') if proc.stdout else "No output"
+        print(f"Compilation Failed with return code {proc.returncode}. Output:\n{output[:1000]}...")
+        return {"success": False, "errors": [{"message": f"Compilation failed with code {proc.returncode}. Check output.", "line": None}]}
 
     errors = [
         {"message": e.get("message"), "line": e.get("line"), "file": e.get("file")} for e in errors
@@ -130,6 +169,19 @@ def compile_content(base_dir: str, helper: dict[str, Any] = None) -> Dict[str, A
             ln = e.get("line")
             if ln is None:
                 continue
+            e["idx"] = -1 # 未找到匹配索引
+            for idx, (start, end, typ) in enumerate(mapping):
+                # print(f"line {ln} in {typ} [{start}, {end}]")
+                if start <= ln <= end:
+                    e["idx"] = idx
+                    # print(f"line {ln} in {typ} [{start}, {end}] -> idx {idx}")
+                    break
+
+        elif error_file == "none": 
+            ln = e.get("line")
+            if ln is None:
+                continue
+            e["idx"] = -1 # 未找到匹配索引
             for idx, (start, end, typ) in enumerate(mapping):
                 # print(f"line {ln} in {typ} [{start}, {end}]")
                 if start <= ln <= end:
