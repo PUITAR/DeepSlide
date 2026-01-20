@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "timestamp": "20260119_143653",
+    "total_pairs_evaluated": 3,
+    "ppt_frame_count": 6,
+    "speech_segment_count": 9,
+    "successful_evaluations": 3,
+    "failed_evaluations": 0,
+    "average_score": 5.0,
+    "min_score": 5.0,
+    "max_score": 5.0
+  },
+  "detailed_results": [
+    {
+      "pair_id": 1,
+      "ppt_title": "CSPG: Core Idea",
+      "ppt_preview": "\\begin{frame}\n\\frametitle{CSPG: Core Idea}\n\n\\begin{columns}\n\\begin{column}{0.5\\textwidth}\n\\begin{itemize}\n\\item \\textbf{Random partitioning} of dataset $\\mathcal{D}$ into groups\n\\item Each group share...",
+      "speech_preview": "Now let me introduce our proposed method called CSPG, which stands for Cross-Partition Sparse Proximity Graph. The core idea is quite elegant: we randomly partition the dataset into multiple groups, w...",
+      "evaluation": {
+        "success": true,
+        "result": {
+          "content_consistency": 5,
+          "logical_coherence": 5,
+          "information_completeness": 5,
+          "clarity_of_expression": 5,
+          "overall_score": 5.0,
+          "strengths": "PPT与演讲稿高度匹配，核心概念（随机分区、路由向量、稀疏图、两阶段搜索）完全对应；图文结合清晰，逻辑结构一致；关键信息无遗漏，表达简洁有力，能有效辅助观众理解演讲内容。",
+          "weaknesses": "无明显缺陷。若需进一步提升，可在PPT中补充CSPG全称（Cross-Partition Sparse Proximity Graph）以增强首次呈现的完整性。",
+          "summary": "PPT与演讲稿的匹配度极高，内容准确、逻辑连贯、信息完整、表达清晰，是优秀的演示设计范例。"
+        },
+        "raw_response": "```json\n{\n    \"content_consistency\": 5,\n    \"logical_coherence\": 5,\n    \"information_completeness\": 5,\n    \"clarity_of_expression\": 5,\n    \"overall_score\": 5.0,\n    \"strengths\": \"PPT与演讲稿高度匹配，核心概念（随机分区、路由向量、稀疏图、两阶段搜索）完全对应；图文结合清晰，逻辑结构一致；关键信息无遗漏，表达简洁有力，能有效辅助观众理解演讲内容。\",\n    \"weaknesses\": \"无明显缺陷。若需进一步提升，可在PPT中补充CSPG全称（Cross-Partition Sparse Proximity Graph）以增强首次呈现的完整性。\",\n    \"summary\": \"PPT与演讲稿的匹配度极高，内容准确、逻辑连贯、信息完整、表达清晰，是优秀的演示设计范例。\"\n}\n```"
+      }
+    },
+    {
+      "pair_id": 2,
+      "ppt_title": "Two-Stage Search Algorithm",
+      "ppt_preview": "\\begin{frame}\n\\frametitle{Two-Stage Search Algorithm}\n\n\\textbf{Stage 1: Fast Approaching}\n\\begin{itemize}\n\\item Start from routing vectors in \\textbf{one partition}\n\\item Navigate sparse graph $\\mathc...",
+      "speech_preview": "The CSPG method employs a two-stage search algorithm. In Stage 1, we perform fast approaching. We start from the routing vectors in just one partition and navigate its sparse graph toward the query. W...",
+      "evaluation": {
+        "success": true,
+        "result": {
+          "content_consistency": 5,
+          "logical_coherence": 5,
+          "information_completeness": 5,
+          "clarity_of_expression": 5,
+          "overall_score": 5.0,
+          "strengths": "PPT与演讲稿高度匹配，结构清晰，关键信息完整且一一对应。PPT将演讲稿的每个核心概念（如两阶段、算法复杂度）都提炼为清晰的要点和公式，便于观众跟随演讲者的思路。",
+          "weaknesses": "无显著弱点。若需进一步提升，PPT可考虑添加一个简单的流程图或示意图来直观展示两阶段搜索的过程，以增强视觉辅助效果。",
+          "summary": "PPT内容与演讲稿完美契合，准确、完整且逻辑清晰地呈现了演讲的核心信息，是优秀的演示辅助材料。"
+        },
+        "raw_response": "{\n    \"content_consistency\": 5,\n    \"logical_coherence\": 5,\n    \"information_completeness\": 5,\n    \"clarity_of_expression\": 5,\n    \"overall_score\": 5.0,\n    \"strengths\": \"PPT与演讲稿高度匹配，结构清晰，关键信息完整且一一对应。PPT将演讲稿的每个核心概念（如两阶段、算法复杂度）都提炼为清晰的要点和公式，便于观众跟随演讲者的思路。\",\n    \"weaknesses\": \"无显著弱点。若需进一步提升，PPT可考虑添加一个简单的流程图或示意图来直观展示两阶段搜索的过程，以增强视觉辅助效果。\",\n    \"summary\": \"PPT内容与演讲稿完美契合，准确、完整且逻辑清晰地呈现了演讲的核心信息，是优秀的演示辅助材料。\"\n}"
+      }
+    },
+    {
+      "pair_id": 3,
+      "ppt_title": "Summary: CSPG Advantages",
+      "ppt_preview": "\\begin{frame}\n\\frametitle{Summary: CSPG Advantages}\n\n\\begin{itemize}\n\\item \\textbf{Efficiency}: Sparse graphs reduce distance computations\n\\item \\textbf{Scalability}: Partitioning enables parallel pro...",
+      "speech_preview": "To summarize, CSPG offers several key advantages. First, it's efficient - sparse graphs dramatically reduce the number of distance computations needed. Second, it's scalable - the partitioning natural...",
+      "evaluation": {
+        "success": true,
+        "result": {
+          "content_consistency": 5,
+          "logical_coherence": 5,
+          "information_completeness": 5,
+          "clarity_of_expression": 5,
+          "overall_score": 5.0,
+          "strengths": "PPT内容与演讲稿高度一致，核心信息、逻辑顺序和关键术语完全匹配。PPT结构清晰，通过项目符号和标题（如'Summary: CSPG Advantages'、'Key Innovations'）有效引导观众，强化了演讲要点。",
+          "weaknesses": "无显著缺点。若需进一步提升，可考虑在PPT中加入少量视觉元素（如图标或示意图）以增强对'Two-stage search'或'Cross-partition connectivity'等概念的直观理解。",
+          "summary": "PPT与演讲稿的匹配度极佳，是一份优秀的演示材料。PPT精准提炼了演讲稿的核心内容，逻辑流畅，信息完整，表达清晰，能有效辅助演讲并帮助观众理解。"
+        },
+        "raw_response": "{\n    \"content_consistency\": 5,\n    \"logical_coherence\": 5,\n    \"information_completeness\": 5,\n    \"clarity_of_expression\": 5,\n    \"overall_score\": 5.0,\n    \"strengths\": \"PPT内容与演讲稿高度一致，核心信息、逻辑顺序和关键术语完全匹配。PPT结构清晰，通过项目符号和标题（如'Summary: CSPG Advantages'、'Key Innovations'）有效引导观众，强化了演讲要点。\",\n    \"weaknesses\": \"无显著缺点。若需进一步提升，可考虑在PPT中加入少量视觉元素（如图标或示意图）以增强对'Two-stage search'或'Cross-partition connectivity'等概念的直观理解。\",\n    \"summary\": \"PPT与演讲稿的匹配度极佳，是一份优秀的演示材料。PPT精准提炼了演讲稿的核心内容，逻辑流畅，信息完整，表达清晰，能有效辅助演讲并帮助观众理解。\"\n}"
+      }
+    }
+  ]
+}

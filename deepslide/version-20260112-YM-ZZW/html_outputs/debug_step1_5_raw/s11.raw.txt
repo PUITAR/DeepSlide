@@ -1,0 +1,24 @@
+{
+  "slide_id": "s11",
+  "section_label": "Method",
+  "theme_tag": "Framework Innovation",
+  "template_id": "spec_poster",
+  "primary_elements": [
+    {"type": "hero_title", "text": "CSPG: Key Contributions"},
+    {"type": "hero_subtitle", "text": "A Novel ANNS Framework for Speed & Accuracy"},
+    {
+      "type": "spec_blocks",
+      "items": [
+        {"k": "Novel Schema", "v": "Crossing Sparse Proximity Graph (CSPG)"},
+        {"k": "Random Partitioning", "v": "Splits dataset into groups with separate, sparser graphs"},
+        {"k": "Routing Vectors", "v": "Shared vectors enable cross-partition traversal"},
+        {"k": "Two-Stage Search", "v": "Fast greedy beam search + Cross-partition expansion"}
+      ]
+    },
+    {
+      "type": "takeaway",
+      "text": "Random partitioning creates smaller, sparser graphs for faster traversal, while intelligent cross-partition search maintains high accuracy."
+    }
+  ],
+  "reserve_elements": []
+}

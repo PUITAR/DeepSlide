@@ -1,0 +1,18 @@
+{
+  "slide_id": "s10",
+  "section_label": "Method",
+  "theme_tag": "Method Summary",
+  "template_id": "spec_poster",
+  "primary_elements": [
+    {"type": "hero_title", "text": "CSPG Method Summary"},
+    {"type": "hero_subtitle", "text": "A Two-Stage Search with Cross-Partition Expansion"},
+    {"type": "spec_blocks", "items": [
+      {"k": "Partitioning", "v": "Random dataset division with shared routing vectors"},
+      {"k": "Search", "v": "Two-stage approach: fast approaching + precise search"},
+      {"k": "Advantage", "v": "Reduces distance computations while maintaining accuracy"},
+      {"k": "Innovation", "v": "Cross-partition expansion via routing vectors"}
+    ]},
+    {"type": "takeaway", "text": "Next: Experimental evaluation demonstrates significant performance improvements."}
+  ],
+  "reserve_elements": []
+}

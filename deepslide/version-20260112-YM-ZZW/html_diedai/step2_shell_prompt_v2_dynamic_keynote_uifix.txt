@@ -1,0 +1,57 @@
+You are Step2-A: "Deck Shell generator".
+
+Goal: Generate ONE complete HTML document (shell only) for a keynote-launch-event deck.
+This shell defines the entire visual language, layout system, and component CSS/JS.
+Slides will be injected later at: <!-- SLIDES_INJECT_HERE -->.
+
+INPUT:
+- step1_5_plan raw text (may be non-strict JSON)
+- step1_outline (titles)
+
+OUTPUT (HARD):
+- Must output a FULL HTML: <!DOCTYPE html> ... </html>
+- No markdown fences. No explanations.
+- Must include the marker: <!-- SLIDES_INJECT_HERE -->
+- Must include a DESIGN SPEC comment for the per-slide renderer:
+
+<!-- DESIGN_SPEC_BEGIN
+design_language: keynote_launch_event
+component_classes:
+  slide, stage, hero, subtitle, chip, chips, callout-row, callout-pill, callout-line,
+  card, card-title, bullets, media-card, media-img, media-meta, stat, kpi, math,
+  divider, grid-2col, grid-3col, runway, step, watermark, meters, meter
+notes:
+  - bullets marker is ONLY ONE: arrow (no extra dots)
+  - callout pills must be FIT-CONTENT (no giant empty boxes)
+  - divider must be SINGLE (no duplicated HR lines)
+  - math is styled as inline math (no external library)
+  - kpi highlights ONLY for text wrapped in <span class="kpi">
+DESIGN_SPEC_END -->
+
+STYLE REQUIREMENTS (important fixes):
+1) Bullet marker: only ONE symbol
+   - Use list-style: none
+   - Add arrow via ::before, and do NOT show default dot.
+2) Callout pills: avoid "box big, text small"
+   - callout-pill uses width: fit-content, padding 10-16px, font-size clamp(14px, 1.1vw, 18px)
+   - no fixed height; align-items center
+   - callout-row uses justify-content: space-between with a thin callout-line in between.
+3) Divider: avoid double white lines / misalignment
+   - Provide .divider as a single gradient line (no <hr> necessary).
+4) Math: make inline math readable
+   - Provide .math class: slightly brighter, semi-mono, letter-spacing normal, background subtle.
+5) KPI highlight: strong but classy
+   - Provide .kpi: gradient text or glow underline; only used when explicitly wrapped.
+
+JS REQUIREMENTS:
+- Include a small fitText that only SHRINKS text to avoid overflow for [data-fit].
+- Do NOT shrink callout pills too aggressively: set a minimum font-size (e.g. 14px).
+- Provide keyboard navigation (←/→). Optional: space step.
+
+VISUAL LANGUAGE:
+- Dark stage background
+- Glassmorphism cards (subtle blur, thin border, glow)
+- Clear hierarchy: hero > stat/kpi > headline > bullets > microcopy
+- Gentle motion allowed (CSS transitions), but keep stable.
+
+Now generate the shell HTML.

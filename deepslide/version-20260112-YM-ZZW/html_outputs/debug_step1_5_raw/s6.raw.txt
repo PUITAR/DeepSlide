@@ -1,0 +1,50 @@
+```json
+{
+    "slide_id": "s6",
+    "section_label": "Method",
+    "theme_tag": "Graph ANNS",
+    "template_id": "spec_poster",
+    "primary_elements": [
+        {
+            "type": "hero_title",
+            "text": "Graph-Based ANNS: Core Concepts"
+        },
+        {
+            "type": "hero_subtitle",
+            "text": ""
+        },
+        {
+            "type": "spec_blocks",
+            "items": [
+                {
+                    "k": "Graph",
+                    "v": "$G = (V, E)$ where nodes $V$ are vectors and edges $E$ connect similar vectors"
+                },
+                {
+                    "k": "Six Degrees of Separation",
+                    "v": "Any two nodes connected through $\\leq 6$ intermediate nodes"
+                },
+                {
+                    "k": "Proximity Graphs",
+                    "v": "Connect similar vectors for efficient search"
+                },
+                {
+                    "k": "Graph-based ANNS",
+                    "v": "Use both long edges (quick discovery) and short edges (precise refinement)"
+                }
+            ]
+        },
+        {
+            "type": "takeaway",
+            "text": "Proximity graph structure enables efficient approximate nearest neighbor search."
+        }
+    ],
+    "reserve_elements": [
+        {
+            "type": "snapshots",
+            "snapshot_ids": ["SNAPSHOT_6"],
+            "caption": "Proximity graph structure for ANNS"
+        }
+    ]
+}
+```

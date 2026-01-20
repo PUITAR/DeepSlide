@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>HAMMER: Hamiltonian Curiosity Augmented LLM Reinforcement</title>
+  <style>
+:root {
+  --base-bg: #0a0e2a;
+  --text-color: #e6e9ff;
+  --text-muted: #a0a7d0;
+  --radius-2xl: 1.5rem;
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-teal: #00f0ff;
+  --accent-purple: #b56eff;
+  --accent-gold: #ffcc00;
+  --accent-bg-teal: rgba(0, 240, 255, 0.1);
+  --accent-bg-purple: rgba(181, 110, 255, 0.1);
+  --accent-bg-gold: rgba(255, 204, 0, 0.1);
+}
+body {
+  background: radial-gradient(ellipse at center, #0f1540 0%, var(--base-bg) 70%);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.6;
+  margin: 0;
+  padding: 2rem;
+  min-height: 100vh;
+}
+.slide {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-soft);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.slide::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+section[data-theme="navy_teal"] { border-top: 4px solid var(--accent-teal); }
+section[data-theme="navy_purple"] { border-top: 4px solid var(--accent-purple); }
+section[data-theme="navy_gold"] { border-top: 4px solid var(--accent-gold); }
+.stage {
+  text-align: center;
+  padding: 3rem;
+}
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-2xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--glass-border);
+}
+.grid2, .grid4 {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.grid2 { grid-template-columns: repeat(2, 1fr); }
+.grid4 { grid-template-columns: repeat(4, 1fr); }
+.bullets ul {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+.bullets li {
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.bullets li::before {
+  content: '▸';
+  color: var(--accent-teal);
+  position: absolute;
+  left: -1.5rem;
+  font-weight: bold;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  margin: 2rem 0;
+}
+.divider + .divider { display: none; }
+.callout-pill {
+  display: inline-block;
+  background: var(--accent-bg-teal);
+  color: var(--accent-teal);
+  border: 1px solid var(--accent-teal);
+  border-radius: 100px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+.callout-pill[data-fit] {
+  width: fit-content;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  padding: 0.4rem 1rem;
+}
+.quote {
+  font-style: italic;
+  border-left: 4px solid var(--accent-purple);
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+}
+.math {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+  font-family: 'Cambria Math', serif;
+  font-size: 0.95em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.kpi {
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  font-size: 1.2em;
+}
+.media, .caption {
+  margin: 1rem 0;
+}
+.caption {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  text-align: center;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-2xl);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.data-table th {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--glass-border);
+}
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.data-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+.data-table .cell-hi,
+.data-table [data-hi="1"] {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--accent-teal);
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.2);
+  font-weight: 600;
+}
+.table-title, .table-caption {
+  text-align: center;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+.table-caption {
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+
+/* =================== SYSTEM PAGING OVERRIDE ===================
+   Force slide-by-slide (no long scroll). Only the .is-active slide is visible.
+   This block is appended by the pipeline to prevent LLM CSS from breaking paging.
+*/
+html, body { height: 100%; margin: 0; overflow: hidden !important; }
+.deck-root { height: 100%; overflow: hidden !important; }
+.stage { position: relative !important; width: 100%; height: 100%; overflow: hidden !important; }
+section.slide {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateX(16px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+section.slide.is-active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(0);
+}
+/* ============================================================= */
+    
+
+  </style>
+  <!-- DESIGN_SPEC_BEGIN
+design_language=keynote_launch_event
+base_bg=#0a0e2a (dark navy with subtle radial gradient + vignette)
+text_color=#e6e9ff (light blue-white)
+accent_rules=teal (#00f0ff) for default, purple (#b56eff) for quotes, gold (#ffcc00) for KPIs; per-slide theme via border-top on section[data-theme]
+component_classes=slide, stage, card, grid2, grid4, bullets, divider, callout-pill, quote, math, kpi, media, caption, table-wrap, data-table, table-title, table-caption, cell-hi
+bullet_marker=chevron (▸) colored with accent-teal
+callout-pill rule for [data-fit]=width:fit-content, smaller padding, clamped font-size
+divider collapse rule=.divider + .divider {display:none}
+math rule=inline "math chip": subtle background, rounded border, Cambria Math font
+kpi rule=bold gold text with soft glow shadow
+table rules=data-table: glass background, subtle zebra striping, soft shadow. Highlight: .cell-hi or [data-hi="1"] gets teal background tint, border, inner glow.
+DESIGN_SPEC_END -->
+</head>
+<body>
+  <div class="deck-root">
+    <div class="stage">
+<section class="slide" data-slide-id="s1" data-theme="navy_teal">
+  <div class="stage">
+    <h1>Introduction: RL for LLM Reasoning</h1>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li><strong>Reinforcement Learning with Verifiable Rewards (RLVR)</strong> is key for enhancing LLM reasoning</li>
+        <li>Models like <strong>OpenAI-o1</strong> and <strong>DeepSeek-R1</strong> use RLVR for advanced reasoning capabilities</li>
+        <li>Standard training: LLM generates responses, learns from reward signals (e.g., correctness)</li>
+        <li>Goal: Optimize policy to maximize expected reward</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="divider"></div>
+      <h3>The Challenge</h3>
+      <ul class="bullets bullets--chevron">
+        <li>Traditional "easy-to-hard" curriculum learning often fails in RLVR</li>
+        <li>Models get stuck in local optima, unable to solve harder problems</li>
+        <li>Need better curriculum strategies for effective exploration</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s2" data-theme="navy_purple">
+  <div class="stage">
+    <h1>The Problem: Local Optimization in Curriculum Learning</h1>
+  </div>
+
+  <div class="grid2">
+    <figure class="card media">
+      <img src="snapshots/s2_fig1_p5.png" alt="Traditional easy-to-hard curriculum leads to local optimization"/>
+      <figcaption class="caption">Traditional "easy-to-hard" curriculum leads to local optimization</figcaption>
+    </figure>
+
+    <div class="card">
+      <ul class="bullets bullets--dot">
+        <li>Naive difficulty-based training fails to improve performance on harder problems</li>
+        <li>Models converge to suboptimal policies that can't generalize</li>
+        <li>Need for active curriculum principles beyond simple difficulty ordering</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s3" data-theme="navy_teal">
+  <div class="stage">
+    <h1>Introduction: RL for LLM Reasoning</h1>
+  </div>
+
+  <div class="callout-row">
+    <span class="callout-pill" data-fit="1">RLVR</span>
+    <span class="callout-pill" data-fit="1">Curriculum Learning</span>
+    <span class="callout-pill" data-fit="1">Local Optima</span>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li><strong>Reinforcement Learning with Verifiable Rewards (RLVR)</strong> enhances LLM reasoning</li>
+        <li>Used by models like <strong>OpenAI-o1</strong> and <strong>DeepSeek-R1</strong></li>
+        <li>Standard training: LLM generates responses, learns from reward signals</li>
+      </ul>
+    </div>
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li><strong>Problem</strong>: Traditional "easy-to-hard" curriculum learning fails</li>
+        <li>Models get stuck in local optima, can't solve harder problems</li>
+        <li>Need better curriculum strategies for effective exploration</li>
+        <li>Simple difficulty ordering isn't sufficient for RLVR</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s4" data-theme="navy_gold">
+  <div class="stage">
+    <h1>HAMMER: Hamiltonian Curiosity Augmented LLM Reinforcement</h1>
+  </div>
+
+  <div class="grid2" data-fit>
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li><strong>HAMMER</strong>: Two-component training schema for LLMs</li>
+        <li><strong>Component 1</strong>: Semantic embedding via LLM forward propagation</li>
+        <li><strong>Component 2</strong>: Hamiltonian curiosity order for training sequence</li>
+        <li>Goal: Transfer diversity metrics into dynamic reinforcement learning</li>
+      </ul>
+    </div>
+
+    <figure class="card media">
+      <img src="snapshots/s4_full_p9_1.png" alt="HAMMER training schema overview"/>
+      <figcaption class="caption">HAMMER training schema overview</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s5" data-theme="navy_teal">
+  <div class="stage">
+    <h1>Semantic Embedding Generation</h1>
+  </div>
+
+  <div class="grid2" data-fit>
+    <div class="card">
+      <ul class="bullets bullets--dot">
+        <li>Sentence embeddings derived from LLM's forward propagation</li>
+        <li>Captures the model's intrinsic semantic understanding</li>
+        <li>Each training sample <span class="math">xᵢ</span> produces embedding <span class="math">eᵢ</span></li>
+        <li>Pairwise similarities form complete graph <span class="math">G = (V, E)</span></li>
+        <li>Similarity matrix <span class="math">S</span> where <span class="math">Sᵢⱼ = sim(eᵢ, eⱼ)</span></li>
+      </ul>
+      <div class="divider"></div>
+      <p><strong>Key Insight</strong>: Embeddings reflect how the LLM itself perceives semantic relationships, not external metrics.</p>
+    </div>
+
+    <figure class="card media">
+      <div class="media-placeholder" style="background: linear-gradient(135deg, #0a1f3a, #003333); border-radius: 12px; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="text-align: center; color: #b0e0e6;">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem;">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="#00f0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="2" fill="#00f0ff"/>
+            <circle cx="7" cy="7" r="2" fill="#b56eff"/>
+            <circle cx="17" cy="7" r="2" fill="#b56eff"/>
+            <circle cx="7" cy="17" r="2" fill="#b56eff"/>
+            <circle cx="17" cy="17" r="2" fill="#b56eff"/>
+          </svg>
+          <h3 style="margin: 0; color: #e6e9ff;">Embedding Graph</h3>
+          <p style="margin: 0.5rem 0 0; font-size: 0.9rem; color: #a0a8cc;">Complete graph <span class="math">G</span> from pairwise similarities</p>
+        </div>
+      </div>
+      <figcaption class="caption">Semantic network derived from LLM forward propagation</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s6" data-theme="navy_purple">
+  <div class="stage">
+    <h1>Hamiltonian Curiosity Order</h1>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li>Complete graph <span class="math">G</span> with <span class="math">n</span> vertices (samples)</li>
+        <li>Hamiltonian path visits each vertex exactly once</li>
+        <li>Find path with <strong>minimum cumulative similarity</strong></li>
+        <li>Minimizes: <span class="math">∑_{k=1}^{n-1} S_{π(k),π(k+1)}</span></li>
+        <li>Result: Curiosity-driven training sequence</li>
+      </ul>
+      <div class="divider"></div>
+      <p><strong>Why this works</strong>: By minimizing similarity between consecutive samples, we maximize semantic diversity during training, retaining exploration in early phases.</p>
+    </div>
+    <div class="card media">
+      <div class="media-placeholder">
+        <p class="caption">[Visualization: Graph with highlighted Hamiltonian path]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s7" data-theme="navy_gold">
+  <div class="stage">
+    <h1>Summary: HAMMER Methodology</h1>
+  </div>
+
+  <div class="grid4" data-fit>
+    <figure class="card">
+      <h3>Core Idea</h3>
+      <ul class="bullets bullets--dot">
+        <li>Transfer diversity metrics into dynamic reinforcement learning</li>
+      </ul>
+    </figure>
+
+    <figure class="card">
+      <h3>Step 1</h3>
+      <ul class="bullets bullets--dot">
+        <li>Generate semantic embeddings via LLM forward propagation</li>
+      </ul>
+    </figure>
+
+    <figure class="card">
+      <h3>Step 2</h3>
+      <ul class="bullets bullets--dot">
+        <li>Compute pairwise similarity matrix</li>
+      </ul>
+    </figure>
+
+    <figure class="card">
+      <h3>Step 3</h3>
+      <ul class="bullets bullets--dot">
+        <li>Find Hamiltonian path with minimum cumulative similarity</li>
+      </ul>
+    </figure>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid2" style="margin-top: 1.5em;" data-fit>
+    <figure class="card">
+      <h3>Result</h3>
+      <ul class="bullets bullets--dot">
+        <li>Curiosity-driven training order retains exploration</li>
+      </ul>
+    </figure>
+    <figure class="card">
+      <h3>Key Benefit</h3>
+      <ul class="bullets bullets--dot">
+        <li>Prevents premature convergence, promotes better generalization</li>
+      </ul>
+    </figure>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s8" data-theme="navy_teal">
+  <div class="stage">
+    <h1>Key Results: HAMMER's Consistent Performance Gains</h1>
+  </div>
+
+  <div class="kpi-result-line">
+    <span class="kpi">3–4%</span> average accuracy improvement
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid2" data-fit>
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li>Tested on <span class="kpi">4 model families</span> and <span class="kpi">2 training methods</span> (DAPO, GRPO)</li>
+        <li>Benchmarks: AIME 2024/2025, AMC 2023, OlympiadBench</li>
+        <li>Diversity-driven ordering consistently outperforms random shuffle baseline</li>
+      </ul>
+    </div>
+    <div class="card">
+      <ul class="bullets bullets--chevron">
+        <li>Demonstrates stable convergence and stimulates model curiosity</li>
+        <li>Avoids local optimization pitfalls of difficulty-based curricula</li>
+        <li>Validated across diverse mathematical reasoning benchmarks</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s9" data-theme="navy_purple" data-fit data-fit-min="14">
+  <div class="stage">
+    <h1>Main Results Table: HAMMER vs. Baseline</h1>
+  </div>
+
+  <div class="grid2">
+    <figure class="card table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Dataset</th>
+            <th>Baseline Avg.</th>
+            <th>HAMMER Avg.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Qwen3-1.7B DAPO</td>
+            <td>AIME 2024</td>
+            <td>52.4</td>
+            <td class="cell-hi">55.4 (<span class="kpi">+3.0</span>)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>37.8</td>
+            <td class="cell-hi">42.3 (<span class="kpi">+4.5</span>)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>78.1</td>
+            <td>80.6 (+2.5)</td>
+          </tr>
+          <tr>
+            <td>Qwen3-4B DAPO</td>
+            <td>AIME 2024</td>
+            <td>66.0</td>
+            <td class="cell-hi">69.3 (<span class="kpi">+3.3</span>)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>50.3</td>
+            <td class="cell-hi">55.3 (<span class="kpi">+5.0</span>)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>84.5</td>
+            <td>85.4 (+0.9)</td>
+          </tr>
+          <tr>
+            <td>Qwen3-8B GRPO</td>
+            <td>AIME 2024</td>
+            <td>70.5</td>
+            <td>73.4 (+2.9)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>56.9</td>
+            <td>57.0 (+0.1)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>88.3</td>
+            <td>88.1 (-0.2)</td>
+          </tr>
+        </tbody>
+      </table>
+      <figcaption class="table-caption">Main Results Table: HAMMER vs. Baseline</figcaption>
+    </figure>
+
+    <div class="card">
+      <ul class="bullets bullets--dot">
+        <li>Gains are consistent across model sizes and training methods</li>
+        <li>Largest improvements on challenging datasets (AIME 2025: <span class="kpi">+4.5% to +5.0%</span>)</li>
+        <li>Performance remains stable as model size increases</li>
+        <li>HAMMER effectively leverages semantic similarity for training efficiency</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-slide-id="s10" data-theme="navy_gold">
+  <div class="stage">
+    <h1>Training Dynamics: Stable Convergence</h1>
+  </div>
+
+  <div class="grid2">
+    <div class="card media">
+      <img src="snapshots/s10_fig1_p16.png" alt="Training dynamics visualization"/>
+      <div class="caption">HAMMER training dynamics show stable convergence and consistent performance gains.</div>
+    </div>
+
+    <div class="card" data-fit>
+      <ul class="bullets bullets--chevron">
+        <li><strong>Consistent <span class="kpi">3–4%</span> accuracy gains</strong> across diverse inference benchmarks</li>
+        <li><strong>Diversity-driven ordering</strong> facilitates stable convergence and stimulates model curiosity</li>
+        <li><strong>Outperforms traditional difficulty-based curricula</strong> that suffer from local optimization</li>
+        <li><strong>Validated across <span class="kpi">4 model families</span></strong> and multiple training methods</li>
+      </ul>
+      <div class="divider"></div>
+      <p><strong>Conclusion:</strong> HAMMER provides an efficient, stable data preprocessing method that consistently improves mathematical reasoning performance.</p>
+    </div>
+  </div>
+</section>
+    </div>
+    <div class="controls">
+      <button id="btnPrev" class="btn">←</button>
+      <div class="counter"><span id="curSlide">1</span>/<span id="totalSlides">1</span></div>
+      <button id="btnNext" class="btn">→</button>
+    </div>
+    <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+  </div>
+  <script>
+
+(function(){
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function slides(){ return Array.from(document.querySelectorAll('section.slide')); }
+
+  function fitOne(el){
+    const min = parseFloat(el.getAttribute('data-fit-min') || '14');
+    let size = parseFloat(el.getAttribute('data-fit-max') || getComputedStyle(el).fontSize || '24');
+    el.style.fontSize = size + 'px';
+    const tooBig = () => (el.scrollWidth > el.clientWidth + 1) || (el.scrollHeight > el.clientHeight + 1);
+    let guard = 250;
+    while(tooBig() && size > min && guard-- > 0){
+      size -= 1;
+      el.style.fontSize = size + 'px';
+    }
+  }
+  function fitAll(){
+    const els = Array.from(document.querySelectorAll('[data-fit]'));
+    for(const el of els) fitOne(el);
+  }
+
+  let idx = 0;
+  function show(i){
+    const ss = slides();
+    if(!ss.length) return;
+    idx = clamp(i, 0, ss.length - 1);
+    ss.forEach((s,k)=> s.classList.toggle('is-active', k===idx));
+    const cur = document.getElementById('curSlide');
+    const tot = document.getElementById('totalSlides');
+    const bar = document.getElementById('progressBar');
+    if(cur) cur.textContent = String(idx+1);
+    if(tot) tot.textContent = String(ss.length);
+    if(bar) bar.style.width = ((idx+1)/ss.length*100).toFixed(1)+'%';
+    requestAnimationFrame(()=>fitAll());
+  }
+  function next(){ show(idx+1); }
+  function prev(){ show(idx-1); }
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); next(); }
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+  });
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  if(btnPrev) btnPrev.addEventListener('click', prev);
+  if(btnNext) btnNext.addEventListener('click', next);
+
+  window.addEventListener('load', ()=>{ show(0); fitAll(); });
+  window.addEventListener('resize', ()=>{ fitAll(); });
+})();
+
+  </script>
+</body>
+</html>

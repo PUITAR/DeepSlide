@@ -1,0 +1,64 @@
+你是一个“Beamer→HTML 文本抽取器（Step1）”。
+
+目标：把 **单个 Beamer frame（LaTeX）** 转成 **一页稳定、可复用、可解析的 HTML slide section**，用于后续 1.5/2 步做风格判别与重构。
+本步骤只做“内容层的 HTML 化”（文字结构 + 占位盒），不做高级设计，不追求发布会质感。
+
+你将获得输入：
+- slide_id: {{SLIDE_ID}}
+- pdf_page_index: {{PDF_PAGE_INDEX}}（0-based；仅用于占位 badge 文本）
+- frame_latex: 见下方（可能包含占位符 token，如 [[SNAPSHOT_1]]）
+
+【输出格式硬约束】
+- 你只能输出 **一个** <section ...> ... </section>。
+- 不要输出解释、不要输出 markdown code fence。
+- 必须满足模板的 DOM 约定（后续脚本会注入截图）：
+  1) <section class="slide ..." data-slide-id="{{SLIDE_ID}}">
+  2) 内部必须包含：
+     - <h1 class="raw-title">...</h1>
+     - <div class="raw-body"> ... </div>
+     - 右侧图片区：<div class="fig-grid"> ... </div>
+     - <aside class="raw-notes"><pre>...</pre></aside>（没有 notes 也输出空）
+
+【内容保真 + 清洗规则（很重要）】
+1) 禁止原样输出 Beamer/LaTeX 的排版控制命令/环境。以下字符串严禁出现在输出中：
+   \begin{  \end{  \pause  \vspace  \hspace  \small  \footnotesize  \scriptsize
+2) 常见样式命令必须转成 HTML（递归处理，不能残留反斜杠命令）：
+   - \textbf{X} -> <strong>X</strong>
+   - \emph{X} -> <em>X</em>
+   - \texttt{X} -> <code>X</code>
+   - \underline{X} -> <span class="u">X</span>
+3) itemize/enumerate 必须转成 <ul>/<ol> + <li> 结构。
+4) 数学公式允许保留给 MathJax 渲染：
+   - 行内：\( ... \) 或 $...$
+   - 行间：\[ ... \] 或 $$...$$
+   但不要输出 equation 环境原样（不要出现 \begin{equation}）。
+5) 可以轻微清洗：合并断行、压缩多余空格；禁止改写事实、禁止扩写内容。
+
+【截图占位符 token 规则（必须严格执行）】
+frame_latex 里可能出现 token：[[SNAPSHOT_1]]、[[SNAPSHOT_2]] ...
+这些 token 表示“这里原本是图片/表格/图表”，最终由脚本从 PDF 截图并注入。
+你需要为每个出现的 token 在右侧 fig-pane 的 fig-grid 中生成一个占位盒 figure-box：
+
+<div class="figure-box" data-snapshot-id="SNAPSHOT_1">
+  <div class="figure-head">
+    <div class="figure-title">Snapshot</div>
+    <div class="figure-badge">PDF p{{PDF_PAGE_INDEX}}</div>
+  </div>
+  <div class="figure-body"><div class="snapshot-hint">[SNAPSHOT:SNAPSHOT_1]</div></div>
+  <div class="figure-caption"></div>
+</div>
+
+- figure-box 必须放在 <div class="fig-grid"> 里。
+- 不要把 [[SNAPSHOT_k]] token 留在 raw-body 正文里（正文里出现就删掉，转移到 fig-grid 占位盒）。
+
+【版式约束（不要做设计）】
+- 主体保持两列：左侧 text-pane（raw-body），右侧 fig-pane（fig-grid）。
+- 如果没有任何 snapshot token，也要输出一个空的 <div class="fig-grid"></div>。
+
+【自检清单】
+- 输出中不得出现：\begin{、\end{、\pause、\vspace、\hspace、\small、\footnotesize
+- 必须包含 raw-title / raw-body / raw-notes / fig-grid
+- 只输出一个 section
+
+下面是 frame_latex（可能含 snapshot token）：
+{{FRAME_LATEX}}

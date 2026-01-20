@@ -1,0 +1,33 @@
+<section class="slide" data-slide-id="s3" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Method</div>
+    <div class="theme-chip">Vector Search</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>Vector Embeddings & Approximate Nearest Neighbor Search</div>
+    <div class="spec-hero-line2" data-fit>Efficient Semantic Similarity for AI Applications</div>
+    <div class="spec-takeaway" data-fit>ANNS trades mild accuracy for dramatic speed gains, enabling real-time AI applications like retrieval, pattern recognition, and RAG systems.</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Vector Embeddings</div>
+      <div class="spec-v" data-fit>Numerical representations capturing semantic meaning</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Similarity Metric</div>
+      <div class="spec-v" data-fit>Measured by distance; smaller distance = higher similarity</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Nearest Neighbor Search (NNS)</div>
+      <div class="spec-v" data-fit>Finds vectors closest to a query vector</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Core Challenge</div>
+      <div class="spec-v" data-fit>Exact NNS is computationally expensive at scale</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Key Solution</div>
+      <div class="spec-v" data-fit>Approximate Nearest Neighbor Search (ANNS)</div>
+    </div>
+  </div>
+</section>

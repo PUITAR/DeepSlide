@@ -1,0 +1,29 @@
+<section class="slide" data-slide-id="s7" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Method</div>
+    <div class="theme-chip">Search Algorithm</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>CSPG: Cross-Partition Search on Proximity Graphs</div>
+    <div class="spec-hero-line2" data-fit>A Two-Stage Approach for Efficient High-Dimensional Search</div>
+    <div class="spec-takeaway" data-fit>"When far from query: use large steps for speed. When close to query: use small steps for accuracy."</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Core Idea</div>
+      <div class="spec-v" data-fit>Partition dataset into smaller graphs to reduce distance computations</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Key Innovation</div>
+      <div class="spec-v" data-fit>Two-stage search balancing speed and accuracy</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Goal</div>
+      <div class="spec-v" data-fit>Faster search while maintaining high accuracy</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Approach</div>
+      <div class="spec-v" data-fit>Random partitioning + shared routing vectors</div>
+    </div>
+  </div>
+</section>

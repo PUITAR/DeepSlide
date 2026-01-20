@@ -1,0 +1,41 @@
+You are generating ONLY the CSS/theme for a web-based slide deck.
+
+Goal: Keynote launch event aesthetic, but NOT monotonous:
+- Dark navy background with subtle gradient + vignette
+- Glass cards (2xl radius), soft shadows, neon accents (teal/purple/gold variants)
+- Support per-slide theme via section[data-theme="navy_teal|navy_purple|navy_gold"]
+
+IMPORTANT: Output ONLY plain text (no Markdown fences), and to avoid truncation output ONLY:
+1) optional single line: <title>Deck Title</title>
+2) one <style> ... </style> block
+3) one DESIGN SPEC comment block:
+<!-- DESIGN_SPEC_BEGIN
+<= 25 lines
+DESIGN_SPEC_END -->
+
+Hard constraints:
+- No <script>, no <body>, no external resources.
+- Keep CSS moderate length (prefer CSS variables).
+- Provide readable typography: clamp() defaults, never tiny.
+- Provide components/classes and make them look good:
+  Required component classes: slide, stage, card, grid2, grid4, bullets, divider, callout-pill, quote, math, kpi, media, caption.
+- Fix known issues:
+  A) callout pills: if element has [data-fit], it must shrink to content (no giant boxes) and text must be appropriately sized.
+  B) dividers: prevent "double white lines" (hide consecutive dividers: .divider + .divider {display:none})
+  C) math: style span.math as an inline "math chip" (subtle background), and it must not look like raw LaTeX.
+  D) KPI: span.kpi should pop (weight + glow) but only when present.
+- Create slides
+
+Also: Provide bullet marker style defined in DESIGN_SPEC (either chevron or dot).
+Do NOT include huge frameworks; keep under ~200 lines.
+
+DESIGN_SPEC must include:
+- design_language=keynote_launch_event
+- base_bg, text_color, accent rules
+- component_classes list
+- bullet_marker: chevron|dot
+- callout-pill rule for [data-fit]
+- divider collapse rule
+- math and kpi rules
+
+

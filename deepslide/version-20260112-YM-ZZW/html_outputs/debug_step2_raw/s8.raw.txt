@@ -1,0 +1,29 @@
+<section class="slide" data-slide-id="s8" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Method</div>
+    <div class="theme-chip">Partitioning</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>Partitioning Algorithm</div>
+    <div class="spec-hero-line2" data-fit>Divide and Conquer for Efficient Graph Construction</div>
+    <div class="spec-takeaway" data-fit>Partitioning enables scalable graph construction by reducing complexity per group while maintaining global connectivity.</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Step 1: Partition</div>
+      <div class="spec-v" data-fit>Randomly split dataset \(\mathcal{D}\) into multiple groups.</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Step 2: Build Subgraphs</div>
+      <div class="spec-v" data-fit>Construct sparse, smaller graphs for each group (\(\mathcal{G}_1\), \(\mathcal{G}_2\)).</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Shared Routing Vectors</div>
+      <div class="spec-v" data-fit>Red vectors connect different partitions.</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Group-Specific Vectors</div>
+      <div class="spec-v" data-fit>Green for \(\mathcal{G}_1\), blue for \(\mathcal{G}_2\).</div>
+    </div>
+  </div>
+</section>

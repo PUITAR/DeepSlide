@@ -1,0 +1,29 @@
+metrics:
+  basic_alignment:
+    description: 基础内容对齐评估
+    enabled: true
+    evaluator_class: BasicAlignmentEvaluator
+    weight: 0.2
+  hook_score:
+    description: 开头吸引力指数
+    enabled: true
+    evaluator_class: HookEvaluator
+    evaluator_params:
+      opening_length: 500
+    max_score: 3.0
+    weight: 0.25
+  peak_structure:
+    description: 节奏与爆点分布
+    enabled: true
+    evaluator_class: PeakStructureEvaluator
+    weight: 0.2
+  stake_score:
+    description: 利害关系指数
+    enabled: true
+    evaluator_class: StakeEvaluator
+    weight: 0.15
+  visual_dynamism:
+    description: 视觉动态性
+    enabled: true
+    evaluator_class: VisualDynamismEvaluator
+    weight: 0.1

@@ -1,0 +1,283 @@
+%% ITEM 0 TYPE Section
+\section{Introduction}%% ITEM 1 TYPE Frame
+%% ITEM 1 TYPE Frame
+\begin{frame}
+\frametitle{Introduction: Vector Embeddings and Similarity Search}
+
+\begin{itemize}
+    \item \textbf{Vector embeddings} convert words and sentences into numerical vectors
+    \item Capture semantic meaning and relationships between concepts
+    \item Example: $\heartsuit \overset{\text{embedding}}{\implies} [0.124, 1.564, ...]$
+    \item AI systems need to find vectors most similar to query vectors
+    \item This is called \textbf{Nearest Neighbor Search (NNS)}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Key Insight}: Smaller distance = Higher similarity between vectors
+\end{frame}%% ITEM 2 TYPE Frame
+%% ITEM 2 TYPE Frame
+\begin{frame}
+\begin{center}
+\vspace{-0.5cm}
+\color{white}\Large\textbf{Introduction to ANNS}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+    \item \textbf{Exact NNS} is computationally expensive for large datasets
+    \item \textbf{Approximate Nearest Neighbor Search (ANNS)} finds close matches efficiently
+    \item Mildly relaxes accuracy constraints for speed
+    \item Essential for real-world AI applications:
+    \begin{itemize}
+        \item Information retrieval \cite{zhu2019accelerating}
+        \item Pattern recognition \cite{kosuge2019object}
+        \item Retrieval Augmented Generation (RAG) \cite{brown2020language}
+    \end{itemize}
+    \item Four main ANNS approaches: tree-based, hashing-based, quantization-based, and graph-based
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Graph-based approaches} offer high quality and low latency
+\end{frame}%% ITEM 3 TYPE Frame
+%% ITEM 3 TYPE Frame
+\begin{frame}
+\begin{center}
+\LARGE\textbf{Vector Embeddings and Approximate Nearest Neighbor Search}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+    \item \textbf{Vector embeddings}: Numerical representations capturing semantic meaning
+    \item \textbf{Similarity measured by distance}: Smaller distance = Higher similarity
+    \item \textbf{Nearest Neighbor Search (NNS)}: Find vectors closest to query
+    \item \textbf{Challenge}: Exact NNS is computationally expensive
+    \item \textbf{Solution}: \textbf{Approximate Nearest Neighbor Search (ANNS)}
+    \begin{itemize}
+        \item Efficiently finds close matches
+        \item Mildly relaxes accuracy for speed
+        \item Essential for AI applications
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Key applications}: Information retrieval, pattern recognition, RAG systems
+\end{frame}%% ITEM 4 TYPE Section
+%% ITEM 4 TYPE Section
+\section{Literature Review (pain points)}%% ITEM 5 TYPE Section
+%% ITEM 5 TYPE Section
+\section{Literature Review: Graph-Based ANNS Methods}%% ITEM 6 TYPE Frame
+%% ITEM 6 TYPE Frame
+\begin{frame}
+{Graph-Based ANNS: Core Concepts}
+\vspace{-0.2cm}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item \textbf{Graph Definition}: $G = (V, E)$ where $V$ are nodes (vectors) and $E$ are edges (connections)
+\item \textbf{Six Degrees of Separation}: Any two nodes can be connected through at most 6 intermediate nodes
+\item \textbf{Proximity Graphs}: Connect similar vectors to enable efficient search
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth,height=0.7\textheight,keepaspectratio]{picture/pg.jpg}
+\caption{Proximity graph with 7 nodes and 7 edges}
+\end{figure}
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+\begin{itemize}
+\item \textbf{Key Insight}: Graph structure enables finding nearest neighbors by traversing connections
+\item \textbf{Challenge}: Balancing search speed vs. accuracy in high-dimensional spaces
+\end{itemize}
+\end{frame}%% ITEM 7 TYPE Frame
+%% ITEM 7 TYPE Frame
+\begin{frame}
+{Current Limitations \& Pain Points}
+\vspace{-0.2cm}
+\begin{itemize}
+\item \textbf{Traditional Methods}: Struggle with computational efficiency during nearest neighbor searches
+\item \textbf{Speed-Accuracy Trade-off}: Existing approaches can't optimize both simultaneously
+\item \textbf{Graph Construction}: Most methods use both long and short edges:
+\begin{itemize}
+\item \textbf{Long edges}: For quick initial neighbor discovery (early stage)
+\item \textbf{Short edges}: For precise late-stage refinement
+\end{itemize}
+\item \textbf{Fixed Parameters}: Current algorithms use uniform search strategies throughout the entire process
+\item \textbf{Key Insight}: Search process should be divided into stages with different optimization strategies
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{State-of-the-art}: HNSW \cite{malkov2018efficient} and other proximity graphs \cite{dobson2023scaling} show promise but need improvement in dynamic optimization.
+\end{frame}%% ITEM 8 TYPE Section
+%% ITEM 8 TYPE Section
+\section{Literature Review: Graph-Based ANNS Methods}%% ITEM 9 TYPE Frame
+%% ITEM 9 TYPE Frame
+\begin{frame}
+{Graph-Based ANNS: Core Concepts}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item \textbf{Graph}: $G = (V, E)$ where nodes $V$ are vectors and edges $E$ connect similar vectors
+    \item \textbf{Six Degrees of Separation}: Any two nodes connected through $\leq 6$ intermediate nodes
+    \item \textbf{Proximity graphs}: Connect similar vectors for efficient search
+    \item \textbf{Graph-based ANNS}: Use both long edges (quick discovery) and short edges (precise refinement)
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth,height=0.7\textheight,keepaspectratio]{picture/pg.jpg}
+\caption{Proximity graph structure for ANNS}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}%% ITEM 10 TYPE Section
+%% ITEM 10 TYPE Section
+\section{Methods (your approach)}%% ITEM 11 TYPE Section
+%% ITEM 11 TYPE Section
+\section{Methods: CSPG Approach}%% ITEM 12 TYPE Frame
+%% ITEM 12 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{CSPG: Cross-Partition Search on Proximity Graphs}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Core Idea}: Partition dataset into smaller graphs to reduce distance computations
+    \item \textbf{Key Innovation}: Two-stage search balancing speed and accuracy
+    \item \textbf{Goal}: Faster search while maintaining high accuracy
+    \item \textbf{Approach}: Random partitioning + shared routing vectors
+\end{itemize}
+
+\vspace{5mm}
+
+\begin{center}
+\textit{"When far from query: use large steps for speed}\\
+\textit{When close to query: use small steps for accuracy"}
+\end{center}
+\end{frame}%% ITEM 13 TYPE Frame
+%% ITEM 13 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{Partitioning Algorithm}
+\end{center}
+
+\vspace{3mm}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\textwidth,height=0.6\textheight,keepaspectratio]{picture/method.png}
+	\caption{Example of CSPG partitioning: dataset divided into two groups with shared routing vectors (red)}
+\end{figure}
+
+\vspace{3mm}
+
+\begin{itemize}
+    \item Randomly partition dataset $\mathcal{D}$ into multiple groups
+    \item Build sparse, smaller graphs for each group ($\mathcal{G}_1$, $\mathcal{G}_2$)
+    \item Shared routing vectors (red) connect different partitions
+    \item Group-specific vectors: green for $\mathcal{G}_1$, blue for $\mathcal{G}_2$
+\end{itemize}
+\end{frame}%% ITEM 14 TYPE Frame
+%% ITEM 14 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{Two-Stage Search Algorithm}
+\end{center}
+
+\vspace{5mm}
+
+\begin{itemize}
+    \item \textbf{Stage 1: Fast Approaching}
+    \begin{itemize}
+        \item Greedy beam search using only one partition
+        \item Small candidate set size $ef_1$ for speed
+        \item Quickly zones into query's nearby region
+    \end{itemize}
+    
+    \item \textbf{Stage 2: Precise Search}
+    \begin{itemize}
+        \item Cross-partition expansion with larger candidate set $ef_2$
+        \item When encountering routing vectors, add all instances from all partitions
+        \item Maximizes search space for final closest vectors
+    \end{itemize}
+    
+    \item \textbf{Key Parameters}: $ef_1 < ef_2$ for optimal speed-accuracy balance
+\end{itemize}
+\end{frame}%% ITEM 15 TYPE Frame
+%% ITEM 15 TYPE Frame
+\begin{frame}
+\begin{center}
+\Large\textbf{CSPG Method Summary}
+\end{center}
+
+\vspace{8mm}
+
+\begin{itemize}
+    \item \textbf{Partitioning}: Random dataset division with shared routing vectors
+    \item \textbf{Search}: Two-stage approach (fast approaching + precise search)
+    \item \textbf{Advantage}: Reduces distance computations while maintaining accuracy
+    \item \textbf{Innovation}: Cross-partition expansion via routing vectors
+\end{itemize}
+
+\vspace{8mm}
+
+\begin{center}
+\textbf{Next}: Experimental evaluation showing performance improvements
+\end{center}
+\end{frame}%% ITEM 16 TYPE Section
+%% ITEM 16 TYPE Section
+\section{Conclusion (contributions)}%% ITEM 17 TYPE Frame
+%% ITEM 17 TYPE Frame
+\begin{frame}
+{CSPG: Key Contributions}
+\centering
+\vspace{0.2cm}
+
+\begin{itemize}
+    \item \textbf{Novel ANNS Schema}: Crossing Sparse Proximity Graph (CSPG) framework
+    \item \textbf{Random Partitioning}: Dataset split into groups with separate, sparser graphs
+    \item \textbf{Routing Vectors}: Shared vectors enable cross-partition traversal
+    \item \textbf{Two-Stage Search}: 
+    \begin{itemize}
+        \item[--] Fast greedy beam search for initial approach
+        \item[--] Cross-partition expansion for precise results
+    \end{itemize}
+    \item \textbf{Key Advantage}: Achieves both higher speed \textbf{and} higher accuracy
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Core Innovation}: Random partitioning creates smaller, sparser graphs that enable faster traversal while maintaining accuracy through intelligent cross-partition search.
+\end{frame}%% ITEM 18 TYPE Frame
+%% ITEM 18 TYPE Frame
+\begin{frame}
+{Experimental Results: Higher QPS \& Recall@10}
+\centering
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth,height=0.6\textheight,keepaspectratio]{picture/ann-benchmark.pdf}
+    \caption{QPS vs. Recall@10 on SIFT1M dataset from ANN-Benchmarks}
+\end{figure}
+
+\vspace{0.2cm}
+\begin{itemize}
+    \item \textbf{Consistent Improvement}: Higher QPS and Recall@10 across all datasets
+    \item \textbf{Significant Speedup}: 1.5x+ speedup for Vamana and HCNNG indices
+    \item \textbf{Better Pareto Frontiers}: Optimal trade-off between speed and accuracy
+    \item \textbf{Validated Framework}: CSPG enhances existing graph-based ANNS algorithms
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Conclusion}: CSPG achieves both improved efficiency \textbf{and} accuracy in nearest neighbor search.
+\end{frame}

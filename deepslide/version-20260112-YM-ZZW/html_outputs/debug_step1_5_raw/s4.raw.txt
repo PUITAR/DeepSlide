@@ -1,0 +1,19 @@
+{
+  "slide_id": "s4",
+  "section_label": "Method",
+  "theme_tag": "Graph ANNS",
+  "template_id": "spec_poster",
+  "primary_elements": [
+    {"type": "hero_title", "text": "Graph-Based ANNS: Core Concepts"},
+    {"type": "hero_subtitle", "text": "Leveraging graph structures for efficient high-dimensional search"},
+    {"type": "spec_blocks", "items": [
+      {"k": "Graph Definition", "v": "G = (V, E) where V are nodes (vectors) and E are edges (connections)"},
+      {"k": "Six Degrees of Separation", "v": "Any two nodes can be connected through at most 6 intermediate nodes"},
+      {"k": "Proximity Graphs", "v": "Connect similar vectors to enable efficient search"},
+      {"k": "Key Insight", "v": "Graph structure enables finding nearest neighbors by traversing connections"},
+      {"k": "Challenge", "v": "Balancing search speed vs. accuracy in high-dimensional spaces"}
+    ]},
+    {"type": "takeaway", "text": "Graph-based indexing transforms similarity search into a navigation problem on proximity graphs."}
+  ],
+  "reserve_elements": []
+}

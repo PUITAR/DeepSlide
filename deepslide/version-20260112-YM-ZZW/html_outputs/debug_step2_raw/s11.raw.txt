@@ -1,0 +1,29 @@
+<section class="slide" data-slide-id="s11" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Method</div>
+    <div class="theme-chip">Framework Innovation</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>CSPG: Key Contributions</div>
+    <div class="spec-hero-line2" data-fit>A Novel ANNS Framework for Speed & Accuracy</div>
+    <div class="spec-takeaway" data-fit>Random partitioning creates smaller, sparser graphs for faster traversal, while intelligent cross-partition search maintains high accuracy.</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Novel Schema</div>
+      <div class="spec-v" data-fit>Crossing Sparse Proximity Graph (CSPG)</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Random Partitioning</div>
+      <div class="spec-v" data-fit>Splits dataset into groups with separate, sparser graphs</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Routing Vectors</div>
+      <div class="spec-v" data-fit>Shared vectors enable cross-partition traversal</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Two-Stage Search</div>
+      <div class="spec-v" data-fit>Fast greedy beam search + Cross-partition expansion</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+{
+  "slide_id": "s12",
+  "section_label": "Results",
+  "theme_tag": "Performance Results",
+  "template_id": "results_gallery",
+  "primary_elements": [
+    {"type": "hero_title", "text": "Experimental Results: Higher QPS & Recall@10"},
+    {"type": "hero_subtitle", "text": "CSPG consistently improves speed and accuracy across benchmarks"},
+    {"type": "snapshots", "snapshot_ids": ["SNAPSHOT_12"], "caption": "QPS vs. Recall@10 on SIFT1M dataset from ANN-Benchmarks"},
+    {"type": "bullets", "items": ["Consistent Improvement: Higher QPS and Recall@10 across all datasets", "Significant Speedup: 1.5x+ speedup for Vamana and HCNNG indices", "Better Pareto Frontiers: Optimal trade-off between speed and accuracy", "Validated Framework: CSPG enhances existing graph-based ANNS algorithms"]}
+  ],
+  "reserve_elements": []
+}

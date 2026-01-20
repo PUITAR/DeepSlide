@@ -1,0 +1,29 @@
+<section class="slide" data-slide-id="s10" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Method</div>
+    <div class="theme-chip">Method Summary</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>CSPG Method Summary</div>
+    <div class="spec-hero-line2" data-fit>A Two-Stage Search with Cross-Partition Expansion</div>
+    <div class="spec-takeaway" data-fit>Next: Experimental evaluation demonstrates significant performance improvements.</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Partitioning</div>
+      <div class="spec-v" data-fit>Random dataset division with shared routing vectors</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Search</div>
+      <div class="spec-v" data-fit>Two-stage approach: fast approaching + precise search</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Advantage</div>
+      <div class="spec-v" data-fit>Reduces distance computations while maintaining accuracy</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Innovation</div>
+      <div class="spec-v" data-fit>Cross-partition expansion via routing vectors</div>
+    </div>
+  </div>
+</section>

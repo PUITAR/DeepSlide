@@ -193,7 +193,18 @@ class LogicChainUI:
                 with st.form(f"form_node_{nid}", clear_on_submit=False):
                     name = st.text_input("Name", node.name, key=f"name_{nid}")
                     desc = st.text_area("Description", node.description, key=f"desc_{nid}")
-                    dur = st.text_input("Duration", node.duration, key=f"dur_{nid}")
+                    # dur = st.text_input("Duration", node.duration, key=f"dur_{nid}")
+                    # Parse duration to int for number_input
+                    import re
+                    d_val = 5
+                    try:
+                        d_str = str(node.duration or "")
+                        m = re.search(r"(\d+)", d_str)
+                        if m: d_val = int(m.group(1))
+                    except: pass
+                    
+                    new_d_val = st.number_input("Duration (min)", min_value=1, max_value=10, value=d_val, key=f"dur_{nid}")
+                    dur = f"{new_d_val}min"
                     submitted = st.form_submit_button("Save Changes")
                 if submitted:
                     self.editor.update_node(i, name=name, description=desc, duration=dur)
@@ -217,7 +228,9 @@ class LogicChainUI:
             with st.form("form_add_node", clear_on_submit=True):
                 name = st.text_input("New Name", "")
                 desc = st.text_area("New Description", "")
-                dur = st.text_input("New Duration", "1min")
+                # dur = st.text_input("New Duration", "1min")
+                new_d_val = st.number_input("New Duration (min)", min_value=1, max_value=120, value=1, key="new_node_dur")
+                dur = f"{new_d_val}min"
                 add_ok = st.form_submit_button("Add Node")
             if add_ok and name.strip():
                 self.editor.add_node(name=name.strip(), description=desc.strip(), duration=dur.strip())

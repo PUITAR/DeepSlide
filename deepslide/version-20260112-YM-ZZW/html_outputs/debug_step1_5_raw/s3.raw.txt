@@ -1,0 +1,54 @@
+```json
+{
+    "slide_id": "s3",
+    "section_label": "Method",
+    "theme_tag": "Vector Search",
+    "template_id": "spec_poster",
+    "primary_elements": [
+        {
+            "type": "hero_title",
+            "text": "Vector Embeddings & Approximate Nearest Neighbor Search"
+        },
+        {
+            "type": "hero_subtitle",
+            "text": "Efficient Semantic Similarity for AI Applications"
+        },
+        {
+            "type": "spec_blocks",
+            "items": [
+                {
+                    "k": "Vector Embeddings",
+                    "v": "Numerical representations capturing semantic meaning"
+                },
+                {
+                    "k": "Similarity Metric",
+                    "v": "Measured by distance; smaller distance = higher similarity"
+                },
+                {
+                    "k": "Nearest Neighbor Search (NNS)",
+                    "v": "Finds vectors closest to a query vector"
+                },
+                {
+                    "k": "Core Challenge",
+                    "v": "Exact NNS is computationally expensive at scale"
+                },
+                {
+                    "k": "Key Solution",
+                    "v": "Approximate Nearest Neighbor Search (ANNS)"
+                }
+            ]
+        },
+        {
+            "type": "takeaway",
+            "text": "ANNS trades mild accuracy for dramatic speed gains, enabling real-time AI applications like retrieval, pattern recognition, and RAG systems."
+        }
+    ],
+    "reserve_elements": [
+        {
+            "type": "snapshots",
+            "snapshot_ids": ["SNAPSHOT_3"],
+            "caption": "Visualization of vector space and nearest neighbor search"
+        }
+    ]
+}
+```

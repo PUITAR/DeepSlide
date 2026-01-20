@@ -1,0 +1,12 @@
+{
+  "slide_id": "s2",
+  "section_label": "Intro",
+  "theme_tag": "ANNS Overview",
+  "template_id": "stage_hero",
+  "primary_elements": [
+    {"type": "hero_title", "text": "Introduction to ANNS"},
+    {"type": "hero_subtitle", "text": "Efficient Approximate Nearest Neighbor Search"},
+    {"type": "bullets", "items": ["Exact NNS is computationally expensive for large datasets", "ANNS finds close matches efficiently by relaxing accuracy for speed", "Essential for AI applications: Information Retrieval, Pattern Recognition, RAG", "Four main approaches: tree-based, hashing-based, quantization-based, graph-based", "Graph-based approaches offer high quality and low latency"]}
+  ],
+  "reserve_elements": []
+}

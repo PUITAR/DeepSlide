@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Step1 Raw Deck (Template v7)</title>
+
+  <!-- MathJax: just for formulas -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]'], ['$$','$$']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    :root{
+      --bg0:#050814;
+      --bg1:#020617;
+      --stage-bg:#020617;
+      --card-bg:rgba(11,17,32,.92);
+      --card-bg-2:rgba(15,23,42,.86);
+      --border:rgba(148,163,184,.42);
+      --border-soft:rgba(148,163,184,.22);
+      --text:#e5e7eb;
+      --muted:rgba(226,232,240,.72);
+      --accent:#38bdf8;
+      --accent2:#818cf8;
+      --accent3:#22c55e;
+      --warn:#f59e0b;
+      --danger:#fb7185;
+      --radius:18px;
+      --pad:40px;
+      --gap:20px;
+      --stageW:min(1240px, calc(100vw - 64px));
+      --shadow: 0 26px 70px rgba(15,23,42,.85);
+    }
+
+    *{box-sizing:border-box;}
+    html,body{
+      margin:0;
+      height:100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, "Noto Sans", sans-serif;
+      color:var(--text);
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(56,189,248,.22) 0, transparent 55%),
+        radial-gradient(circle at 88% 12%, rgba(129,140,248,.20) 0, transparent 60%),
+        radial-gradient(circle at 52% 120%, rgba(34,197,94,.12) 0, transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .stage{
+      width:var(--stageW);
+      aspect-ratio:16/9;
+      background:var(--stage-bg);
+      border-radius:28px;
+      border:1px solid rgba(148,163,184,.34);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .stage::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(56,189,248,.10), transparent 40%),
+        radial-gradient(circle at 70% 40%, rgba(129,140,248,.08), transparent 45%),
+        radial-gradient(circle at 50% 70%, rgba(34,197,94,.06), transparent 45%);
+      transform:rotate(12deg);
+      opacity:.9;
+      pointer-events:none;
+      animation: stageFloat 14s ease-in-out infinite;
+    }
+    @keyframes stageFloat{
+      0%,100%{ transform:rotate(12deg) translate3d(0,0,0); }
+      50%{ transform:rotate(12deg) translate3d(2.5%,1.5%,0); }
+    }
+
+    .deck{
+      position:absolute;
+      inset:0;
+      padding:var(--pad);
+    }
+
+    .slide{
+      position:absolute;
+      inset:var(--pad);
+      display:grid;
+      grid-template-rows:auto 1fr;
+      row-gap:var(--gap);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease, transform .25s ease;
+      transform: translateY(8px);
+    }
+    .slide.active{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+
+    .canvas{
+      position:absolute;
+      inset:-10%;
+      z-index:0;
+      opacity:.25;
+      filter: blur(.2px);
+      pointer-events:none;
+    }
+    .canvas svg{ width:100%; height:100%; display:block; }
+
+    header{
+      position:relative;
+      z-index:1;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      column-gap:24px;
+    }
+    .title-wrap{ max-width:78%; }
+    h1{
+      margin:0;
+      font-size:36px;
+      line-height:1.06;
+      letter-spacing:-.03em;
+    }
+    .subtitle{
+      margin-top:10px;
+      font-size:16px;
+      color:var(--muted);
+      line-height:1.35;
+      max-width:72ch;
+    }
+    .tags{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      font-size:12px;
+      max-width:34%;
+    }
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border-soft);
+      background:rgba(2,6,23,.35);
+      color:rgba(226,232,240,.78);
+      white-space:nowrap;
+    }
+    .tag--accent{
+      border-color:rgba(56,189,248,.35);
+      background:rgba(56,189,248,.08);
+      color:rgba(147,197,253,.95);
+    }
+
+    main{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns: 2.05fr 1fr;
+      column-gap:var(--gap);
+      min-height:0;
+    }
+
+    .pane{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      border:1px solid var(--border-soft);
+      min-height:0;
+      overflow:hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .text-pane{
+      padding:16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      overflow:auto;
+    }
+
+    .fig-pane{
+      padding:14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      overflow:auto;
+      background:rgba(11,17,32,.70);
+    }
+
+    .block{
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.18);
+      background:rgba(2,6,23,.22);
+      padding:12px 12px;
+    }
+    .block-title{
+      margin:0 0 8px;
+      font-size:14px;
+      color:rgba(226,232,240,.86);
+      letter-spacing:.01em;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .dot{
+      width:7px;height:7px;border-radius:99px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 0 14px rgba(56,189,248,.35);
+      flex:0 0 auto;
+    }
+    .bullets{
+      margin:0;
+      padding-left:1.1em;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-size:15px;
+      line-height:1.45;
+    }
+    .bullets li{ color:rgba(229,231,235,.95); }
+    .note{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .quote{
+      font-size:18px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      color:rgba(229,231,235,.96);
+    }
+    .quote strong{
+      background:linear-gradient(120deg,#e5e7eb,#38bdf8,#818cf8);
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+
+    .eq-block{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px dashed var(--border);
+      background:rgba(15,23,42,.7);
+      overflow:auto;
+      font-size:15px;
+    }
+
+    .fig-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    .figure-box{
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(2,6,23,.24);
+      padding:12px 12px;
+      overflow:hidden;
+    }
+    .figure-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .figure-title{
+      font-size:12px;
+      color:rgba(226,232,240,.74);
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    .figure-badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(56,189,248,.25);
+      background:rgba(56,189,248,.08);
+      color:rgba(147,197,253,.95);
+      white-space:nowrap;
+    }
+    .figure-body{
+      aspect-ratio: 16/10;
+      border-radius:12px;
+      border:1px dashed rgba(148,163,184,.22);
+      background:rgba(15,23,42,.55);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .figure-body svg{ width:100%; height:100%; display:block; }
+    .figure-caption{
+      margin-top:10px;
+      font-size:14px;
+      color:rgba(229,231,235,.92);
+      line-height:1.45;
+    }
+    .figure-filename{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(226,232,240,.60);
+    }
+
+    .mini-row{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .mini .figure-body{ aspect-ratio: 1.35/1; }
+    .mini .figure-caption{ font-size:12.5px; color:rgba(226,232,240,.82); }
+
+    .slide.slide--hero{
+      grid-template-rows:1fr;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.35), transparent 56%),
+        radial-gradient(circle at 100% 0%, rgba(129,140,248,.28), transparent 60%),
+        radial-gradient(circle at 50% 130%, rgba(34,197,94,.20), transparent 70%);
+      border-radius: 22px;
+      padding: 28px;
+    }
+    .slide.slide--hero header{
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      flex-direction:column;
+      gap:8px;
+    }
+    .slide.slide--hero .title-wrap{ max-width: 100%; }
+    .slide.slide--hero h1{
+      font-size:58px;
+      letter-spacing:-.04em;
+      background:linear-gradient(120deg,#e5e7eb,#38bdf8,#818cf8);
+      -webkit-background-clip:text;
+      color:transparent;
+      text-wrap:balance;
+    }
+    .slide.slide--hero .subtitle{
+      font-size:20px;
+      color:rgba(226,232,240,.86);
+      max-width: 70ch;
+    }
+    .slide.slide--hero .tags{ justify-content:center; max-width:100%; }
+    .slide.slide--hero main{ display:none; }
+
+    .slide.slide--visual-primary main{
+      grid-template-columns: 1.65fr 1.05fr;
+    }
+    .hero-diagram{
+      border-radius:var(--radius);
+      border:1px solid rgba(148,163,184,.24);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.18), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(129,140,248,.14), transparent 60%),
+        linear-gradient(135deg, rgba(2,6,23,.25), rgba(2,6,23,.15));
+      padding:12px 12px;
+      overflow:hidden;
+    }
+    .hero-diagram .figure-body{ aspect-ratio: 16/7; }
+    .hero-diagram-caption{ margin-top:8px; font-size:13px; color:rgba(226,232,240,.70); }
+
+    .slide.slide--visual-overlay main{ grid-template-columns: 2fr 1.1fr; }
+    .slide.slide--visual-overlay .fig-pane{
+      background:transparent;
+      border:none;
+      padding:0;
+      position:relative;
+      overflow:hidden;
+    }
+    .overlay-diagram{
+      position:absolute;
+      inset:-8%;
+      opacity:.55;
+      filter: blur(.25px);
+      pointer-events:none;
+    }
+    .overlay-diagram svg{ width:100%; height:100%; display:block; }
+    .overlay-card{
+      position:absolute;
+      right:16px;
+      bottom:16px;
+      left:16px;
+      border-radius:20px;
+      border:1px solid rgba(148,163,184,.24);
+      background:rgba(15,23,42,.88);
+      box-shadow: 0 24px 60px rgba(15,23,42,.85);
+      padding:14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .overlay-card h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.01em;
+    }
+    .overlay-card ul{
+      margin:0;
+      padding-left:1.1em;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
+    .overlay-card li{ font-size:14px; line-height:1.45; color:rgba(229,231,235,.95); }
+    .overlay-card .note{ margin:0; }
+
+    .slide.slide--visual-grid main{
+      grid-template-columns: 1.2fr 1.9fr;
+    }
+    .slide.slide--visual-grid .fig-pane{
+      background:rgba(11,17,32,.52);
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+    }
+    .gallery .figure-body{ aspect-ratio: 16/11; }
+
+    .slide.slide--poster main{
+      grid-template-columns: 1fr;
+    }
+    .slide.slide--poster .text-pane{
+      position:absolute;
+      left:18px;
+      bottom:18px;
+      width:min(520px, 48%);
+      max-height:46%;
+      z-index:2;
+      box-shadow:0 26px 70px rgba(15,23,42,.85);
+    }
+    .slide.slide--poster .fig-pane{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      border-radius:var(--radius);
+      padding:0;
+      background:rgba(2,6,23,.22);
+      border:1px solid rgba(148,163,184,.18);
+      overflow:hidden;
+    }
+    .slide.slide--poster .fig-pane .overlay-diagram{
+      position:absolute;
+      inset:-10%;
+      opacity:.9;
+      filter:none;
+    }
+    .slide.slide--poster .overlay-card{ display:none; }
+
+    [data-step]{
+      opacity:0;
+      transform: translateY(10px);
+      filter: blur(.2px);
+      transition: opacity .35s ease, transform .35s ease, filter .35s ease;
+      will-change: opacity, transform;
+    }
+    .is-on{
+      opacity:1 !important;
+      transform:none !important;
+      filter:none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .stage::before{ animation:none; }
+      .slide{ transition:none; transform:none; }
+      [data-step]{ transition:none; transform:none; }
+    }
+
+    .hud{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      padding:9px 14px;
+      font-size:12px;
+      color:rgba(226,232,240,.70);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:linear-gradient(0deg, rgba(2,6,23,.92), transparent);
+      pointer-events:none;
+      z-index:5;
+    }
+    .hud-left{ display:flex; gap:10px; align-items:center; }
+    kbd{
+      border-radius:6px;
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(15,23,42,.92);
+      padding:2px 6px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas;
+      font-size:11px;
+      color:rgba(226,232,240,.72);
+    }
+    .hud-right{ display:flex; align-items:center; gap:10px; }
+    .progress{
+      width:170px; height:6px; border-radius:999px;
+      background:rgba(15,23,42,1);
+      border:1px solid rgba(148,163,184,.22);
+      overflow:hidden;
+    }
+    .progress-bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#38bdf8,#818cf8);
+      transition:width .25s ease;
+    }
+
+
+    /* Layout tweaks for different visual archetypes */
+    .slide[class*="layout--"] header{
+      z-index:3;
+    }
+
+    /* flow & detail: keep standard header but slightly tighter spacing */
+    .slide.layout--flow-pipeline header,
+    .slide.layout--detail-list header{
+      margin-bottom:4px;
+    }
+
+    /* device-spec / chip-stat / grid-comparison:
+       header floats as a light label in the upper area, so the stage
+       visually feels more like a full-bleed poster instead of
+       "one big banner + two boxes". */
+    .slide.layout--device-spec header,
+    .slide.layout--chip-stat header,
+    .slide.layout--grid-comparison header{
+      position:absolute;
+      top:16px;
+      left:22px;
+      right:22px;
+      align-items:flex-start;
+      pointer-events:none;
+    }
+    .slide.layout--device-spec .title-wrap,
+    .slide.layout--chip-stat .title-wrap,
+    .slide.layout--grid-comparison .title-wrap{
+      max-width:60%;
+    }
+    .slide.layout--device-spec h1,
+    .slide.layout--chip-stat h1,
+    .slide.layout--grid-comparison h1{
+      font-size:30px;
+    }
+    .slide.layout--device-spec .subtitle,
+    .slide.layout--chip-stat .subtitle,
+    .slide.layout--grid-comparison .subtitle{
+      font-size:14px;
+      max-width:40ch;
+    }
+    .slide.layout--device-spec main,
+    .slide.layout--chip-stat main,
+    .slide.layout--grid-comparison main{
+      margin-top:0;
+    }
+    /* device-spec pages rely on the big visual; tags can be dropped
+       to avoid header overcrowding. */
+    .slide.layout--device-spec .tags{
+      display:none;
+    }
+
+    /* fine-tune main column ratios per archetype */
+    .slide.layout--chip-stat main{
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+    .slide.layout--flow-pipeline main{
+      grid-template-columns: 1.7fr 1.0fr;
+    }
+    .slide.layout--detail-list main{
+      grid-template-columns: 2.0fr 1.2fr;
+    }
+    
+    /* Template-specific layouts (tpl--) */
+
+    /* 1. Hero metric center: fullscreen opening / closing slide with a single big punchline */
+    .slide.tpl--hero-metric-center{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:56px 72px;
+      text-align:center;
+      gap:18px;
+    }
+    .slide.tpl--hero-metric-center header{
+      position:static;
+      max-width:760px;
+      margin:0;
+      align-items:center;
+    }
+    .slide.tpl--hero-metric-center .title-wrap{
+      align-items:center;
+    }
+    .slide.tpl--hero-metric-center h1{
+      font-size:56px;
+      line-height:1.06;
+      letter-spacing:-0.04em;
+    }
+    .slide.tpl--hero-metric-center .subtitle{
+      font-size:20px;
+      margin-top:16px;
+      max-width:46ch;
+    }
+    .slide.tpl--hero-metric-center .tags{
+      justify-content:center;
+      margin-top:10px;
+    }
+    .slide.tpl--hero-metric-center main{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+    }
+    .slide.tpl--hero-metric-center .hero-note{
+      font-size:15px;
+      max-width:520px;
+      color:rgba(226,232,240,.78);
+    }
+
+    /* 2. Chip dual column: left chip card, right stats list */
+    .slide.tpl--chip-dual-column main{
+      grid-template-columns: minmax(0,1.15fr) minmax(0,1.0fr);
+      align-items:stretch;
+    }
+    .chip-hero{
+      border-radius:22px;
+      border:1px solid rgba(148,163,184,.36);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.28), transparent 60%),
+        radial-gradient(circle at 100% 0%, rgba(129,140,248,.20), transparent 65%),
+        linear-gradient(135deg, rgba(15,23,42,.96), rgba(15,23,42,.90));
+      padding:18px 20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      box-shadow:0 22px 60px rgba(15,23,42,.95);
+    }
+    .chip-hero-label{
+      font-size:12px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:rgba(148,163,184,.9);
+      margin-bottom:8px;
+    }
+    .chip-hero-name{
+      font-size:26px;
+      font-weight:600;
+      letter-spacing:-.04em;
+      margin-bottom:4px;
+    }
+    .chip-hero-tagline{
+      font-size:14px;
+      color:rgba(203,213,225,.92);
+      margin-bottom:10px;
+    }
+    .chip-hero-footnote{
+      font-size:12px;
+      color:rgba(148,163,184,.86);
+      margin-top:10px;
+    }
+
+    .stats-block{
+      border-radius:var(--radius);
+      border:1px solid rgba(148,163,184,.26);
+      background:rgba(15,23,42,.86);
+      padding:16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .stats-block-title{
+      font-size:13px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(148,163,184,.96);
+      margin-bottom:4px;
+    }
+    .stat-row{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+    }
+    .stat-value{
+      font-size:30px;
+      font-weight:650;
+      letter-spacing:-.04em;
+      color:var(--accent);
+      min-width:88px;
+    }
+    .stat-label{
+      font-size:14px;
+      color:rgba(226,232,240,.92);
+    }
+    .stats-note{
+      margin-top:4px;
+      font-size:13px;
+      color:rgba(148,163,184,.9);
+    }
+
+    /* 3. Spec poster overlay: one big object with surrounding specs */
+    .slide.tpl--spec-poster-overlay main{
+      grid-template-columns: 1fr;
+    }
+    .spec-poster{
+      position:relative;
+      border-radius:24px;
+      padding:22px 24px 18px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56,189,248,.30), transparent 60%),
+        radial-gradient(circle at 100% 0%, rgba(59,130,246,.30), transparent 65%),
+        radial-gradient(circle at 50% 130%, rgba(34,197,94,.24), transparent 70%),
+        linear-gradient(135deg, rgba(15,23,42,.96), rgba(15,23,42,.90));
+      box-shadow:0 26px 70px rgba(15,23,42,.96);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .spec-object{
+      border-radius:20px;
+      border:1px solid rgba(148,163,184,.50);
+      background:rgba(15,23,42,.92);
+      min-height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      font-weight:600;
+      letter-spacing:-.03em;
+    }
+    .spec-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .spec-tag{
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.42);
+      font-size:13px;
+      color:rgba(226,232,240,.92);
+      background:rgba(15,23,42,.88);
+    }
+    .spec-caption{
+      font-size:13px;
+      color:rgba(203,213,225,.90);
+      max-width:60ch;
+    }
+
+    /* 4. Flow lane: left recap, right horizontal lane of steps */
+    .slide.tpl--flow-lane main{
+      grid-template-columns: minmax(0,1.2fr) minmax(0,1.5fr);
+    }
+    .flow-lane{
+      position:relative;
+      border-radius:var(--radius);
+      border:1px solid rgba(148,163,184,.30);
+      background:rgba(15,23,42,.90);
+      padding:16px 20px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .flow-lane-track{
+      position:absolute;
+      top:32px;
+      left:20px;
+      right:20px;
+      height:2px;
+      background:linear-gradient(90deg, rgba(56,189,248,.65), rgba(129,140,248,.75));
+      opacity:.65;
+    }
+    .flow-steps{
+      position:relative;
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+    }
+    .flow-step{
+      position:relative;
+      flex:1 1 0;
+      padding:10px 10px 8px;
+      border-radius:14px;
+      background:rgba(15,23,42,.96);
+      border:1px solid rgba(148,163,184,.36);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .flow-step-title{
+      font-size:14px;
+      font-weight:600;
+    }
+    .flow-step-desc{
+      font-size:12.5px;
+      color:rgba(203,213,225,.92);
+    }
+
+    /* 5. Grid four cards: comparison of methods / variants */
+    .slide.tpl--grid-four-cards main{
+      grid-template-columns: minmax(0,1.0fr) minmax(0,1.7fr);
+    }
+    .fig-grid.grid-four{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .grid-card{
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,.32);
+      background:rgba(15,23,42,.92);
+      padding:12px 12px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .grid-card-title{
+      font-size:14px;
+      font-weight:600;
+    }
+    .grid-card-body{
+      font-size:12.5px;
+      color:rgba(203,213,225,.92);
+    }
+/* === STEP1_RAW_EXTRACTOR_STYLES === */
+.raw-title{
+  margin:0 0 10px 0;
+  font-size:34px;
+  line-height:1.12;
+  letter-spacing:-.03em;
+}
+.raw-body{
+  font-size:15px;
+  line-height:1.5;
+}
+.raw-body p{ margin: 0 0 10px 0; color: rgba(229,231,235,.95); }
+.raw-body ul, .raw-body ol{ margin: 0 0 10px 0; padding-left: 1.2em; }
+.raw-body code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: .92em;
+  padding: 1px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(148,163,184,.22);
+  background: rgba(15,23,42,.82);
+  color: rgba(226,232,240,.92);
+}
+.raw-body .u{ text-decoration: underline; }
+.raw-block{
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,.22);
+  background: rgba(2,6,23,.18);
+  padding: 12px 12px;
+  margin: 0 0 12px 0;
+}
+.raw-block-title{
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(148,163,184,.90);
+  margin: 0 0 8px 0;
+}
+.raw-figure{
+  display:block;
+  margin: 12px 0 0 0;
+  border-radius: 14px;
+  border: 1px dashed rgba(148,163,184,.28);
+  background: rgba(15,23,42,.55);
+  padding: 10px 12px;
+}
+.raw-figure::before{
+  content: attr(data-src);
+  display:block;
+  font-size: 12px;
+  color: rgba(226,232,240,.70);
+  margin-bottom: 6px;
+}
+.raw-figure figcaption{
+  font-size: 13px;
+  color: rgba(229,231,235,.92);
+}
+.raw-notes{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(2,6,23,.18);
+  color: rgba(226,232,240,.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* === STEP2_INJECT_CSS === */
+
+
+    /* =====================
+       TABLES (from Beamer tabular)
+       ===================== */
+    .table-wrap{padding:1.25rem 1.4rem;}
+    .table-title{font-weight:750;font-size:clamp(18px,2.2vw,28px);margin:0 0 .75rem 0;letter-spacing:-0.01em;}
+    .table-caption{margin-top:.65rem;color:var(--muted);font-size:clamp(12px,1.1vw,14px);}
+    table.data-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:1rem;}
+    table.data-table thead th{font-weight:700;color:rgba(230,255,250,.95);background:rgba(0,0,0,.16);border-bottom:1px solid rgba(255,255,255,.10);}
+    table.data-table th, table.data-table td{padding:.55rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.08);}
+    table.data-table tbody tr:nth-child(even){background:rgba(255,255,255,.03);}
+    table.data-table tbody tr:hover{background:rgba(45,212,191,.06);}
+    table.data-table td:first-child, table.data-table th:first-child{padding-left:.9rem;}
+    table.data-table td:last-child, table.data-table th:last-child{padding-right:.9rem;}
+
+    /* highlight helpers (Step1.5/Step2 may attach these) */
+    table.data-table td.cell-hi, table.data-table th.cell-hi{background:rgba(45,212,191,.12);box-shadow:inset 0 0 0 1px rgba(45,212,191,.45);}
+    span.cell-hi{display:inline-block;padding:.1rem .35rem;border-radius:.6rem;background:rgba(45,212,191,.12);box-shadow:inset 0 0 0 1px rgba(45,212,191,.45);}
+
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <div class="deck" id="deck">
+
+      
+
+      <section class="slide raw" data-slide-id="s1">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Introduction: RL for LLM Reasoning</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li><strong>Reinforcement Learning with Verifiable Rewards (RLVR)</strong> is key for enhancing LLM reasoning</li>
+      <li>Models like <strong>OpenAI-o1</strong> and <strong>DeepSeek-R1</strong> use RLVR for advanced reasoning capabilities</li>
+      <li>Standard training: LLM generates responses, learns from reward signals (e.g., correctness)</li>
+      <li>Goal: Optimize policy to maximize expected reward</li>
+    </ul>
+    <p><strong>The Challenge:</strong></p>
+    <ul class="bullets">
+      <li>Traditional "easy-to-hard" curriculum learning often fails in RLVR</li>
+      <li>Models get stuck in local optima, unable to solve harder problems</li>
+      <li>Need better curriculum strategies for effective exploration</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s2">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">The Problem: Local Optimization in Curriculum Learning</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <figure class="raw-figure" data-src="picture/qwen3-1.7b-dapo-E2H.png" data-kind="figure">
+      <figcaption>Traditional "easy-to-hard" curriculum leads to local optimization</figcaption>
+    </figure>
+    <ul class="bullets">
+      <li>Naive difficulty-based training fails to improve performance on harder problems</li>
+      <li>Models converge to suboptimal policies that can't generalize</li>
+      <li>Need for active curriculum principles beyond simple difficulty ordering</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s3">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Introduction: RL for LLM Reasoning</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li><strong>Reinforcement Learning with Verifiable Rewards (RLVR)</strong> enhances LLM reasoning</li>
+      <li>Used by models like <strong>OpenAI-o1</strong> and <strong>DeepSeek-R1</strong></li>
+      <li>Standard training: LLM generates responses, learns from reward signals</li>
+      <li><strong>Problem</strong>: Traditional "easy-to-hard" curriculum learning fails</li>
+      <li>Models get stuck in local optima, can't solve harder problems</li>
+    </ul>
+    <p><strong>Key Insight:</strong></p>
+    <ul class="bullets">
+      <li>Need better curriculum strategies for effective exploration</li>
+      <li>Simple difficulty ordering isn't sufficient for RLVR</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s4">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">HAMMER: Hamiltonian Curiosity Augmented LLM Reinforcement</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <figure class="raw-figure" data-src="picture/overview.pdf" data-kind="figure">
+      <figcaption>HAMMER training schema overview</figcaption>
+    </figure>
+    <ul class="bullets">
+      <li><strong>HAMMER</strong>: Two-component training schema for LLMs</li>
+      <li><strong>Component 1</strong>: Semantic embedding via LLM forward propagation</li>
+      <li><strong>Component 2</strong>: Hamiltonian curiosity order for training sequence</li>
+      <li>Goal: Transfer diversity metrics into dynamic reinforcement learning</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s5">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Semantic Embedding Generation</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li>Sentence embeddings derived from LLM's forward propagation</li>
+      <li>Captures the model's intrinsic semantic understanding</li>
+      <li>Each training sample <span class="math">xᵢ</span> produces embedding <span class="math">eᵢ</span></li>
+      <li>Pairwise similarities form complete graph <span class="math">G = (V, E)</span></li>
+      <li>Similarity matrix <span class="math">S</span> where <span class="math">Sᵢⱼ = sim(eᵢ, eⱼ)</span></li>
+    </ul>
+    <p><strong>Key Insight</strong>: Embeddings reflect how the LLM itself perceives semantic relationships, not external metrics.</p>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s6">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Hamiltonian Curiosity Order</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li>Complete graph <span class="math">G</span> with <span class="math">n</span> vertices (samples)</li>
+      <li>Hamiltonian path visits each vertex exactly once</li>
+      <li>We find path with <strong>minimum cumulative similarity</strong></li>
+      <li>Minimizes: <span class="math">∑_{k=1}^{n-1} S_{π(k),π(k+1)}</span></li>
+      <li>Result: Curiosity-driven training sequence</li>
+    </ul>
+    <p><strong>Why this works</strong>: By minimizing similarity between consecutive samples, we maximize semantic diversity during training, retaining exploration in early phases.</p>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s7">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Summary: HAMMER Methodology</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li><strong>Core Idea</strong>: Transfer diversity metrics into dynamic RL</li>
+      <li><strong>Step 1</strong>: Generate semantic embeddings via LLM forward propagation</li>
+      <li><strong>Step 2</strong>: Compute pairwise similarity matrix</li>
+      <li><strong>Step 3</strong>: Find Hamiltonian path with minimum cumulative similarity</li>
+      <li><strong>Result</strong>: Curiosity-driven training order retains exploration</li>
+    </ul>
+    <p><strong>Key Benefit</strong>: Prevents premature convergence, promotes better generalization in LLMs.</p>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s8">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Key Results: HAMMER's Consistent Performance Gains</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <ul class="bullets">
+      <li><strong>HAMMER achieves 3–4% average accuracy improvement</strong> across diverse mathematical reasoning benchmarks</li>
+      <li>Tested on 4 model families: Qwen3-1.7B, 4B, 8B, and Deepseek-R1-Distill-Llama3-8B</li>
+      <li>Two training methods: DAPO and GRPO reinforcement learning</li>
+      <li>Benchmarks: AIME 2024/2025, AMC 2023, OlympiadBench</li>
+      <li>Metrics: pass@1, pass@10, pass@k, cons@k, and average accuracy</li>
+    </ul>
+    <p><strong>Core Finding:</strong> Diversity-driven ordering (HAMMER) consistently outperforms random shuffle baseline by 3–4% average accuracy.</p>
+    <p><strong>Why this matters:</strong> Demonstrates stable convergence and stimulates model curiosity, avoiding local optimization pitfalls of difficulty-based curricula.</p>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s9">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Main Results Table: HAMMER vs. Baseline</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <figure class="raw-figure table-wrap" data-kind="table" data-table-id="s9_t1">
+      <figcaption>Main Results Table: HAMMER vs. Baseline</figcaption>
+      <table class="data-table" data-table-id="s9_t1">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Dataset</th>
+            <th>Baseline Avg.</th>
+            <th>HAMMER Avg.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Qwen3-1.7B DAPO</td>
+            <td>AIME 2024</td>
+            <td>52.4</td>
+            <td>55.4 (+3.0)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>37.8</td>
+            <td>42.3 (+4.5)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>78.1</td>
+            <td>80.6 (+2.5)</td>
+          </tr>
+          <tr>
+            <td>Qwen3-4B DAPO</td>
+            <td>AIME 2024</td>
+            <td>66.0</td>
+            <td>69.3 (+3.3)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>50.3</td>
+            <td>55.3 (+5.0)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>84.5</td>
+            <td>85.4 (+0.9)</td>
+          </tr>
+          <tr>
+            <td>Qwen3-8B GRPO</td>
+            <td>AIME 2024</td>
+            <td>70.5</td>
+            <td>73.4 (+2.9)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AIME 2025</td>
+            <td>56.9</td>
+            <td>57.0 (+0.1)</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>AMC 2023</td>
+            <td>88.3</td>
+            <td>88.1 (-0.2)</td>
+          </tr>
+        </tbody>
+      </table>
+    </figure>
+    <p><strong>Key Observations:</strong></p>
+    <ul class="bullets">
+      <li>Gains are consistent across model sizes and training methods</li>
+      <li>Largest improvements on challenging datasets (AIME 2025: +4.5% to +5.0%)</li>
+      <li>Performance remains stable as model size increases</li>
+      <li>HAMMER effectively leverages semantic similarity for training efficiency</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide raw" data-slide-id="s10">
+  <header class="raw-header">
+    <div class="kicker"></div>
+    <h1 class="raw-title">Training Dynamics: Stable Convergence</h1>
+    <div class="subtitle"></div>
+  </header>
+
+  <div class="raw-body">
+    <figure class="raw-figure" data-src="picture/qwen3-1.7b-dapo-training-dynamic.png" data-kind="figure">
+      <figcaption></figcaption>
+    </figure>
+    <p><strong>Key Contributions:</strong></p>
+    <ul class="bullets">
+      <li><strong>Consistent 3–4% accuracy gains</strong> across diverse inference benchmarks</li>
+      <li><strong>Diversity-driven ordering</strong> facilitates stable convergence and stimulates model curiosity</li>
+      <li><strong>Outperforms traditional difficulty-based curricula</strong> that suffer from local optimization</li>
+      <li><strong>Validated across 4 model families</strong> and multiple training methods</li>
+    </ul>
+    <p><strong>Conclusion:</strong> HAMMER provides an efficient, stable data preprocessing method that consistently improves mathematical reasoning performance.</p>
+  </div>
+</section>
+
+
+</div>
+
+    <div class="hud">
+      <div class="hud-left">
+        <span><kbd>←</kbd><kbd>→</kbd> Slide</span>
+        <span><kbd>Space</kbd> Step</span>
+      </div>
+      <div class="hud-right">
+        <span id="counter">0 / 0</span>
+        <span id="stepCounter" style="min-width:72px; text-align:right;">Step 0</span>
+        <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function initSlides(){
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const counter = document.getElementById("counter");
+      const stepCounter = document.getElementById("stepCounter");
+      const bar = document.getElementById("progress-bar");
+      if(!slides.length) return;
+
+      let idx = 0;
+      let step = 0;
+
+      function getStepEls(slide){
+        const els = Array.from(slide.querySelectorAll("[data-step]"));
+        els.sort((a,b)=>{
+          const sa = parseInt(a.getAttribute("data-step") || "0", 10);
+          const sb = parseInt(b.getAttribute("data-step") || "0", 10);
+          return sa - sb;
+        });
+        return els;
+      }
+
+      function maxStep(slide){
+        const els = getStepEls(slide);
+        let m = 0;
+        for(const el of els){
+          const s = parseInt(el.getAttribute("data-step") || "0", 10);
+          if(s > m) m = s;
+        }
+        return m;
+      }
+
+      function applySteps(){
+        const slide = slides[idx];
+        const els = getStepEls(slide);
+        for(const el of els){
+          const s = parseInt(el.getAttribute("data-step") || "0", 10);
+          el.classList.toggle("is-on", s <= step);
+        }
+        const ms = maxStep(slide);
+        stepCounter.textContent = `Step ${Math.min(step, ms)} / ${ms}`;
+      }
+
+      function update(){
+        slides.forEach((s,i)=> s.classList.toggle("active", i === idx));
+        counter.textContent = (idx+1) + " / " + slides.length;
+        bar.style.width = ((idx+1)/slides.length*100).toFixed(1) + "%";
+
+        step = 0;
+        applySteps();
+
+        if(window.MathJax && MathJax.typesetPromise){
+          MathJax.typesetPromise([slides[idx]]);
+        }
+      }
+
+      function go(delta){
+        idx = Math.max(0, Math.min(slides.length-1, idx + delta));
+        update();
+      }
+
+      function stepForward(){
+        const ms = maxStep(slides[idx]);
+        if(step < ms){
+          step += 1;
+          applySteps();
+          if(window.MathJax && MathJax.typesetPromise){
+            MathJax.typesetPromise([slides[idx]]);
+          }
+          return true;
+        }
+        return false;
+      }
+
+      function stepBack(){
+        if(step > 0){
+          step -= 1;
+          applySteps();
+          return true;
+        }
+        return false;
+      }
+
+      window.addEventListener("keydown", (e)=>{
+        if(e.key === "ArrowRight"){ go(1); }
+        else if(e.key === "ArrowLeft"){ go(-1); }
+        else if(e.key === " " || e.key === "Enter"){
+          e.preventDefault();
+          if(e.shiftKey){ stepBack(); }
+          else { stepForward(); }
+        }
+      });
+
+      idx = 0;
+      update();
+    }
+
+    window.addEventListener("DOMContentLoaded", initSlides);
+  </script>
+</body>
+</html>

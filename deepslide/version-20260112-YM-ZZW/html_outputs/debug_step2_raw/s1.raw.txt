@@ -1,0 +1,33 @@
+<section class="slide" data-slide-id="s1" data-template="spec_poster">
+  <div class="header-chip">
+    <div class="section-chip">Intro</div>
+    <div class="theme-chip">Vector Embeddings</div>
+  </div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>Introduction: Vector Embeddings and Similarity Search</div>
+    <div class="spec-hero-line2" data-fit>From Concepts to Computable Distances</div>
+    <div class="spec-takeaway" data-fit>Key Insight: Smaller distance between vectors = Higher semantic similarity</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Core Function</div>
+      <div class="spec-v" data-fit>Convert words & sentences into numerical vectors</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Key Property</div>
+      <div class="spec-v" data-fit>Capture semantic meaning and relationships</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Example</div>
+      <div class="spec-v" data-fit>♥ → [0.124, 1.564, ...]</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Critical Task</div>
+      <div class="spec-v" data-fit>Find vectors most similar to a query</div>
+    </div>
+    <div class="spec-block">
+      <div class="spec-k" data-fit>Technical Name</div>
+      <div class="spec-v" data-fit>Nearest Neighbor Search (NNS)</div>
+    </div>
+  </div>
+</section>

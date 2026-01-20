@@ -1,0 +1,15 @@
+{
+  "total_slides": 9,
+  "total_speech_paragraphs": 9,
+  "section_count": 3,
+  "frame_count": 6,
+  "total_images": 3,
+  "total_bullet_points": 39,
+  "total_speech_words": 630,
+  "avg_bullets_per_frame": 6.5,
+  "avg_images_per_frame": 0.5,
+  "avg_words_per_paragraph": 70.0,
+  "aligned_frames_count": 6,
+  "unaligned_frames_count": 3,
+  "avg_content_match_score": 0.13327786184150456
+}

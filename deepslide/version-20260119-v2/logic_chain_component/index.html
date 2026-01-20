@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Chain Editor</title>
+    <style>
+      :root {
+        --c-text: #1e293b;
+        --c-text-light: #64748b;
+        --c-border: #e2e8f0;
+        --c-bg: #f8fafc;
+        --c-card-bg: #ffffff;
+        --c-primary: #3b82f6;
+        --c-primary-light: #eff6ff;
+        --c-danger: #ef4444;
+        --c-success: #22c55e;
+        --c-success-light: #f0fdf4;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: transparent;
+        overflow: hidden; /* Main scroll is in ds-board-wrap */
+      }
+      .ds-board {
+        position: relative;
+        border-radius: 12px;
+        background: var(--c-bg);
+        background-image: 
+            linear-gradient(var(--c-border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: -1px -1px;
+        border: 1px solid var(--c-border);
+        height: 100vh; /* Full height of iframe */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .ds-board-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--c-border);
+        z-index: 50;
+        gap: 20px;
+        pointer-events: auto !important;
+      }
+      .ds-board-title-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .ds-board-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--c-text);
+        line-height: 1.2;
+      }
+      .ds-board-sub {
+        font-size: 12px;
+        color: var(--c-text-light);
+        margin-top: 2px;
+      }
+      .ds-board-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .ds-head-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 12px;
+        background: white;
+        border: 1px solid var(--c-border);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .ds-head-btn:hover {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      .ds-head-btn.is-magic {
+        background: var(--c-success-light);
+        border-color: #86efac;
+        color: #15803d;
+      }
+      .ds-head-btn.is-magic:hover {
+        background: #dcfce7;
+      }
+      .ds-icon { font-size: 14px; line-height: 1; }
+      
+      .ds-board-legend {
+        display: flex;
+        gap: 8px;
+      }
+      .ds-stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        background: white;
+        border: 1px solid var(--c-border);
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--c-text-light);
+        font-weight: 500;
+      }
+      .ds-stat-val {
+        color: var(--c-text);
+        font-weight: 700;
+      }
+
+      .ds-board-wrap {
+        position: relative;
+        flex: 1;
+        overflow: auto;
+        overscroll-behavior: contain;
+        cursor: grab;
+      }
+      .ds-board-wrap:active { cursor: grabbing; }
+      
+      .ds-wrap-toolbar {
+        position: sticky;
+        top: 16px;
+        left: 16px;
+        z-index: 40;
+        display: flex;
+        width: fit-content;
+        gap: 4px;
+        background: white;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid var(--c-border);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      }
+      .ds-tb-btn {
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        border-radius: 4px;
+        cursor: pointer;
+        color: var(--c-text-light);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.1s;
+      }
+      .ds-tb-btn:hover {
+        background: var(--c-bg);
+        color: var(--c-text);
+      }
+
+      .ds-board-canvas {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+        padding: 40px;
+      }
+      .ds-board-svg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 10;
+      }
+      
+      .ds-board-row {
+        position: relative;
+        display: flex;
+        gap: 32px;
+        z-index: 20;
+        padding-top: 20px;
+      }
+      
+      .ds-board-card {
+        position: relative;
+        width: 260px;
+        flex-shrink: 0;
+        background: var(--c-card-bg);
+        border: 1px solid var(--c-border);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        pointer-events: auto;
+      }
+      .ds-board-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        border-color: #cbd5e1;
+      }
+      .ds-board-card.is-active {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 2px var(--c-primary-light);
+      }
+      
+      .ds-board-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .ds-board-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: var(--c-primary-light);
+        color: var(--c-primary);
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .ds-board-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--c-text);
+        line-height: 1.4;
+      }
+      
+      .ds-board-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--c-bg);
+        border-radius: 8px;
+        padding: 4px;
+      }
+      .ds-dur-val {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text);
+        font-variant-numeric: tabular-nums;
+      }
+      .ds-dur-unit {
+        font-size: 11px;
+        color: var(--c-text-light);
+        margin-left: 2px;
+      }
+      .ds-dur-btn {
+        width: 24px;
+        height: 24px;
+        border: 1px solid transparent;
+        background: white;
+        border-radius: 6px;
+        color: var(--c-text-light);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        transition: all 0.1s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        pointer-events: auto !important;
+      }
+      .ds-dur-btn:hover {
+        color: var(--c-primary);
+        border-color: var(--c-border);
+      }
+      
+      .ds-card-actions {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transform: scale(0.95);
+        transition: all 0.15s ease;
+      }
+      .ds-board-card:hover .ds-card-actions {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .ds-act-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--c-border);
+        background: white;
+        color: var(--c-text-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.1s;
+        pointer-events: auto !important;
+      }
+      .ds-act-btn:hover {
+        color: var(--c-primary);
+        border-color: var(--c-primary);
+      }
+      .ds-act-btn.is-accent:hover {
+        color: var(--c-primary);
+      }
+      
+      .ds-act-btn.ds-delete-btn {
+        color: #ef4444;
+        border-color: #ef4444;
+      }
+      .ds-act-btn.ds-delete-btn:hover {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #dc2626;
+      }
+      
+      /* Edge trash button */
+      .ds-edge-settings-btn {
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: auto !important;
+      }
+      .ds-edge-settings-btn text {
+        fill: #ef4444; /* Red color for trash icon */
+        font-weight: bold;
+      }
+      g:hover .ds-edge-settings-btn { opacity: 1; }
+      
+      .ds-edge-hit {
+        pointer-events: stroke;
+        cursor: pointer;
+      }
+
+      /* Flowing Edge */
+      .ds-edge-flow {
+        stroke-dasharray: 8;
+        animation: ds-flow-anim 1s linear infinite;
+      }
+      @keyframes ds-flow-anim {
+        from { stroke-dashoffset: 24; }
+        to { stroke-dashoffset: 0; }
+      }
+
+      /* Loader */
+      .ds-loader {
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 3px;
+        background: transparent;
+        z-index: 100;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: 0;
+        display: none;
+        transition: opacity 0.2s;
+      }
+      .ds-loader.is-loading { opacity: 1; display: block; }
+      .ds-spinner {
+        width: 30%;
+        height: 100%;
+        background: var(--c-primary);
+        position: absolute;
+        left: -30%;
+        animation: ds-load-anim 1s infinite linear;
+      }
+      @keyframes ds-load-anim {
+        0% { left: -30%; }
+        100% { left: 100%; }
+      }
+      
+      /* Fades */
+      .ds-fade {
+        position: absolute;
+        top: 0; bottom: 0;
+        width: 40px;
+        pointer-events: none;
+        z-index: 30;
+      }
+      .ds-fade-left {
+        left: 0;
+        background: linear-gradient(90deg, var(--c-bg), transparent);
+      }
+      .ds-fade-right {
+        right: 0;
+        background: linear-gradient(-90deg, var(--c-bg), transparent);
+      }
+    </style>
+</head>
+<body>
+    <div class="ds-board" id="ds-board-root">
+      <div class="ds-board-head">
+        <div class="ds-board-title-group">
+          <div class="ds-board-title">Logic Chain Map</div>
+          <div class="ds-board-sub">Drag cards to reorder</div>
+        </div>
+        <div class="ds-board-actions">
+           <button class="ds-head-btn" id="btn-add-node">
+             <span class="ds-icon">➕</span> Add Node
+           </button>
+           <button class="ds-head-btn" id="btn-add-edge">
+             <span class="ds-icon">🔗</span> Add Link
+           </button>
+           <button class="ds-head-btn is-magic" id="btn-auto-connect">
+             <span class="ds-icon">✨</span> Auto Connect
+           </button>
+        </div>
+        <div class="ds-board-legend">
+          <div class="ds-stat-pill">
+            <span class="ds-stat-val" id="stat-node-count">0</span> nodes
+          </div>
+          <div class="ds-stat-pill">
+             <span class="ds-stat-val">~<span id="stat-total-min">0</span></span> min
+          </div>
+        </div>
+      </div>
+      
+      <div class="ds-loader" id="ds-loader">
+        <div class="ds-spinner"></div>
+      </div>
+
+      <div class="ds-board-wrap" aria-label="Logic chain canvas">
+        <div class="ds-wrap-toolbar" aria-hidden="false">
+          <button class="ds-tb-btn" data-act="left" title="Scroll left">←</button>
+          <button class="ds-tb-btn" data-act="right" title="Scroll right">→</button>
+        </div>
+
+        <div class="ds-board-canvas">
+          <svg class="ds-board-svg" aria-hidden="true"></svg>
+          <div class="ds-board-row" id="ds-board-row"></div>
+        </div>
+
+        <div class="ds-fade ds-fade-left" aria-hidden="true"></div>
+        <div class="ds-fade ds-fade-right" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <script>
+        // --- Streamlit Shim ---
+        function sendMessageToStreamlitClient(type, data) {
+            const outData = Object.assign({
+                isStreamlitMessage: true,
+                type: type,
+            }, data);
+            window.parent.postMessage(outData, "*");
+        }
+
+        function setComponentValue(value) {
+            sendMessageToStreamlitClient("streamlit:setComponentValue", {value: value});
+        }
+        
+        // --- App Logic ---
+        const root = document.getElementById('ds-board-root');
+        const loader = document.getElementById('ds-loader');
+        const wrap = root.querySelector('.ds-board-wrap');
+        const canvas = root.querySelector('.ds-board-canvas');
+        const svg = root.querySelector('.ds-board-svg');
+        const list = document.getElementById('ds-board-row');
+        
+        let refs = [];
+        let dragging = null;
+        let isDraggingFlag = false;
+        let isPanning = false;
+        let pan0 = { x: 0, y: 0, sl: 0, st: 0 };
+
+        function setCmd(cmd, idx, val, order) {
+             if (loader) loader.classList.add('is-loading');
+             const payload = {
+                 cmd: cmd,
+                 idx: idx,
+                 val: val,
+                 order: order,
+                 nonce: Math.random()
+             };
+             // Send command to Python
+             setComponentValue(payload);
+        }
+
+        // Stats
+        function updateStats(nodeCount, totalMin) {
+            const elC = document.getElementById('stat-node-count');
+            const elM = document.getElementById('stat-total-min');
+            if(elC) elC.textContent = nodeCount;
+            if(elM) elM.textContent = totalMin;
+        }
+
+        // Clear/Setup SVG
+        function clearSvg() {
+          while (svg.firstChild) svg.removeChild(svg.firstChild);
+        }
+
+        function addDefs() {
+          const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+          const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+          marker.setAttribute('id', 'arrow');
+          marker.setAttribute('viewBox', '0 0 10 10');
+          marker.setAttribute('refX', '8');
+          marker.setAttribute('refY', '5');
+          marker.setAttribute('markerWidth', '6');
+          marker.setAttribute('markerHeight', '6');
+          marker.setAttribute('orient', 'auto-start-reverse');
+          const mp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          mp.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+          mp.setAttribute('fill', '#3b82f6'); // Match edge color
+          marker.appendChild(mp);
+          defs.appendChild(marker);
+
+          // Add gradient for edges (optional, but requested "colorful")
+          const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+          grad.setAttribute('id', 'grad1');
+          grad.setAttribute('x1', '0%');
+          grad.setAttribute('y1', '0%');
+          grad.setAttribute('x2', '100%');
+          grad.setAttribute('y2', '0%');
+          const s1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+          s1.setAttribute('offset', '0%');
+          s1.setAttribute('style', 'stop-color:#3b82f6;stop-opacity:1');
+          grad.appendChild(s1);
+          const s2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+          s2.setAttribute('offset', '100%');
+          s2.setAttribute('style', 'stop-color:#8b5cf6;stop-opacity:1');
+          grad.appendChild(s2);
+          defs.appendChild(grad);
+          
+          svg.appendChild(defs);
+        }
+
+        function ensureCanvasSize(extraHeight) {
+          const desiredW = Math.max(list.scrollWidth + 100, wrap.clientWidth);
+          const desiredH = Math.max(list.scrollHeight + (extraHeight || 0), wrap.clientHeight);
+          canvas.style.width = desiredW + 'px';
+          canvas.style.height = desiredH + 'px';
+          svg.setAttribute('viewBox', '0 0 ' + desiredW + ' ' + desiredH);
+        }
+
+        // Draw Lines
+        function draw() {
+          const nodes = Array.from(list.querySelectorAll('.ds-board-card'));
+          if (!nodes.length) {
+              clearSvg();
+              return;
+          }
+
+          const pos = new Map();
+          let maxBottom = 20;
+          nodes.forEach(el => {
+            const idx = Number(el.getAttribute('data-idx'));
+            const left = el.offsetLeft;
+            const top = el.offsetTop;
+            const w = el.offsetWidth;
+            const h = el.offsetHeight;
+            const cx = left + w / 2;
+            const bottom = top + h;
+            maxBottom = Math.max(maxBottom, bottom);
+            pos.set(idx, { cx, bottom, w, h, left, top });
+          });
+
+          // Lane packing
+          const sorted = refs.slice().sort((a, b) => {
+            const sa = Math.abs(a.to - a.from);
+            const sb = Math.abs(b.to - b.from);
+            return sa - sb;
+          });
+          const lanes = [];
+          const placements = [];
+          const pad = 20;
+          sorted.forEach(e => {
+            const a = pos.get(Number(e.from));
+            const b = pos.get(Number(e.to));
+            if (!a || !b) return;
+            const startX = Math.min(a.cx, b.cx);
+            const endX = Math.max(a.cx, b.cx);
+
+            let laneIdx = -1;
+            for (let i = 0; i < lanes.length; i++) {
+              let collision = false;
+              for (const itv of lanes[i]) {
+                if (startX < itv[1] + pad && endX > itv[0] - pad) { collision = true; break; }
+              }
+              if (!collision) {
+                laneIdx = i;
+                lanes[i].push([startX, endX]);
+                break;
+              }
+            }
+            if (laneIdx === -1) {
+              laneIdx = lanes.length;
+              lanes.push([[startX, endX]]);
+            }
+            placements.push({ e, laneIdx });
+          });
+
+          const laneGap = 32;
+          const laneStart = maxBottom + 120;
+          const extraHeight = (lanes.length ? (laneStart + lanes.length * laneGap + 50) : (maxBottom + 150)) - list.scrollHeight;
+          ensureCanvasSize(Math.max(0, extraHeight));
+
+          clearSvg();
+          addDefs();
+
+          placements.forEach(({ e, laneIdx }) => {
+            const a = pos.get(Number(e.from));
+            const b = pos.get(Number(e.to));
+            if (!a || !b) return;
+
+            const x1 = a.cx;
+            const y1 = a.bottom;
+            const x2 = b.cx;
+            const y2 = b.bottom;
+            const laneY = laneStart + laneIdx * laneGap;
+            const r1 = 12;
+            const dir = (x2 > x1) ? 1 : -1;
+
+            let d = `M ${x1} ${y1} L ${x1} ${laneY - r1}`;
+            d += ` Q ${x1} ${laneY} ${x1 + dir * r1} ${laneY}`;
+            d += ` L ${x2 - dir * r1} ${laneY}`;
+            d += ` Q ${x2} ${laneY} ${x2} ${laneY - r1}`;
+            d += ` L ${x2} ${y2}`;
+
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.style.cursor = 'pointer';
+
+            const hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            hit.setAttribute('d', d);
+            hit.setAttribute('stroke', 'transparent');
+            hit.setAttribute('stroke-width', '20');
+            hit.setAttribute('fill', 'none');
+            hit.setAttribute('class', 'ds-edge-hit');
+            hit.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              ev.stopPropagation();
+              setCmd('edit_edge', e.idx);
+            });
+            g.appendChild(hit);
+
+            const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            p.setAttribute('d', d);
+            p.setAttribute('fill', 'none');
+            // Gradient/Color flow for reference edges
+            p.setAttribute('stroke', 'url(#grad1)'); // Fallback or use a colorful gradient def
+            // p.setAttribute('stroke', '#3b82f6'); // Use primary color directly for now, or add gradient def
+            p.setAttribute('class', 'ds-edge-flow');
+            p.setAttribute('stroke-width', '2');
+            p.setAttribute('stroke-linecap', 'round');
+            p.setAttribute('marker-end', 'url(#arrow)');
+            p.style.pointerEvents = 'none';
+            g.appendChild(p);
+
+            // Trash button
+            const settingsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            settingsGroup.setAttribute('class', 'ds-edge-settings-btn');
+            
+            // Place at the corner near the start point
+            // The corner is at (x1, laneY)
+            // We offset it slightly to sit nicely on the "outside" or "inside"
+            const sx = x1 + dir * 20;
+            const sy = laneY - 20;
+            
+            const sc = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            sc.setAttribute('cx', sx);
+            sc.setAttribute('cy', sy);
+            sc.setAttribute('r', '10');
+            sc.setAttribute('fill', '#ffffff');
+            sc.setAttribute('stroke', '#e2e8f0');
+            sc.setAttribute('stroke-width', '1');
+            settingsGroup.appendChild(sc);
+            
+            const stxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            stxt.setAttribute('x', sx);
+            stxt.setAttribute('y', sy + 4);
+            stxt.setAttribute('text-anchor', 'middle');
+            stxt.setAttribute('font-size', '12px');
+            stxt.textContent = '🗑'; 
+            settingsGroup.appendChild(stxt);
+
+            settingsGroup.addEventListener('click', (ev) => {
+              ev.preventDefault();
+              ev.stopPropagation();
+              setCmd('delete_edge', e.idx);
+            });
+            g.appendChild(settingsGroup);
+
+            if (e.reason) {
+              const t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+              t.textContent = e.reason;
+              g.appendChild(t);
+            }
+            svg.appendChild(g);
+          });
+        }
+        
+        // --- Bindings ---
+
+        // Reorder Logic
+        function applyReorderFromDom() {
+          const ids = Array.from(list.querySelectorAll('.ds-board-card')).map(el => Number(el.getAttribute('data-idx')));
+          setCmd('reorder', null, null, ids.join(','));
+        }
+
+        list.addEventListener('drop', (ev) => {
+          ev.preventDefault();
+          if (!dragging) return;
+          applyReorderFromDom();
+        });
+        
+        // Panning Logic
+        wrap.addEventListener('mousedown', (ev) => {
+          if (ev.button !== 0) return;
+          if (isDraggingFlag) return;
+          const t = ev.target;
+          if (t && (t.closest && (t.closest('.ds-board-card') || t.closest('.ds-wrap-toolbar')))) return;
+          if (t && (t.classList && (t.classList.contains('ds-edge-hit') || t.classList.contains('ds-edge-settings-btn')))) return;
+          
+          isPanning = true;
+          wrap.style.cursor = 'grabbing';
+          pan0 = { x: ev.clientX, y: ev.clientY, sl: wrap.scrollLeft, st: wrap.scrollTop };
+          ev.preventDefault();
+        });
+        window.addEventListener('mousemove', (ev) => {
+          if (!isPanning) return;
+          const dx = ev.clientX - pan0.x;
+          const dy = ev.clientY - pan0.y;
+          wrap.scrollLeft = pan0.sl - dx;
+          wrap.scrollTop = pan0.st - dy;
+        }, { passive: true });
+        window.addEventListener('mouseup', () => {
+          if (!isPanning) return;
+          isPanning = false;
+          wrap.style.cursor = '';
+        });
+
+        // Toolbar
+        root.querySelectorAll('.ds-tb-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+             e.stopPropagation();
+             const act = btn.getAttribute('data-act');
+             const step = 400;
+             if (act === 'left') wrap.scrollBy({ left: -step, behavior: 'smooth' });
+             if (act === 'right') wrap.scrollBy({ left: step, behavior: 'smooth' });
+             if (act === 'fit') {
+               const active = list.querySelector('.ds-board-card.is-active') || list.querySelector('.ds-board-card');
+               if (active) {
+                 const x = active.offsetLeft + active.offsetWidth / 2 - wrap.clientWidth / 2;
+                 wrap.scrollTo({ left: Math.max(0, x), behavior: 'smooth' });
+               }
+             }
+          });
+        });
+
+        // Header Buttons
+        function bindHeader() {
+            const b1 = document.getElementById('btn-add-node');
+            const b2 = document.getElementById('btn-add-edge');
+            const b3 = document.getElementById('btn-auto-connect');
+            // Use addEventListener instead of onclick
+            if(b1) b1.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                console.log("Add Node Clicked");
+                setCmd('add_node'); 
+            });
+            if(b2) b2.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                console.log("Add Edge Clicked");
+                setCmd('add_edge'); 
+            });
+            if(b3) b3.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                console.log("Auto Connect Clicked");
+                setCmd('auto_connect'); 
+            });
+        }
+        bindHeader();
+
+        // Card Events (called after render)
+        function bindCardEvents() {
+             list.querySelectorAll('.ds-board-card').forEach(card => {
+              card.setAttribute('draggable', 'true');
+
+              const editBtn = card.querySelector('.ds-settings-btn');
+              if (editBtn) editBtn.addEventListener('click', (ev) => {
+                 ev.stopPropagation(); 
+                 setCmd('edit_node', card.getAttribute('data-idx')); 
+              });
+
+              const delBtn = card.querySelector('.ds-delete-btn');
+              if (delBtn) delBtn.addEventListener('click', (ev) => {
+                 ev.stopPropagation(); 
+                 // Simple confirm check? For now just send command
+                 setCmd('delete_node', card.getAttribute('data-idx')); 
+              });
+
+              const linkBtn = card.querySelector('.ds-add-link-btn');
+              if (linkBtn) linkBtn.addEventListener('click', (ev) => {
+                 ev.stopPropagation(); 
+                 setCmd('add_edge_prefill', card.getAttribute('data-idx')); 
+              });
+
+              card.querySelectorAll('.ds-dur-btn').forEach(btn => {
+                 btn.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    const delta = Number(btn.getAttribute('data-delta') || 0);
+                    if(delta) setCmd('dur', card.getAttribute('data-idx'), delta);
+                 });
+              });
+
+              card.addEventListener('click', (ev) => {
+                if(!ev.target.closest('.ds-act-btn') && !ev.target.closest('.ds-dur-btn')) {
+                    list.querySelectorAll('.ds-board-card').forEach(x => x.classList.remove('is-active'));
+                    card.classList.add('is-active');
+                }
+              });
+
+              card.addEventListener('dragstart', (ev) => {
+                dragging = card;
+                isDraggingFlag = true;
+                try { ev.dataTransfer.setData('text/plain', card.getAttribute('data-idx') || ''); } catch (e) {}
+                card.style.opacity = '0.5';
+              });
+
+              card.addEventListener('dragend', () => {
+                dragging = null;
+                card.style.opacity = '';
+                setTimeout(() => { isDraggingFlag = false; }, 120);
+                draw();
+              });
+
+              card.addEventListener('dragover', (ev) => {
+                ev.preventDefault();
+                if (!dragging || dragging === card) return;
+                const rect = card.getBoundingClientRect();
+                const before = (ev.clientX - rect.left) < rect.width / 2;
+                if (before) {
+                  if (card.previousSibling !== dragging) list.insertBefore(dragging, card);
+                } else {
+                  if (card.nextSibling !== dragging) list.insertBefore(dragging, card.nextSibling);
+                }
+                draw();
+              });
+              
+               card.addEventListener('drop', (ev) => {
+                ev.preventDefault();
+                if (!dragging) return;
+                applyReorderFromDom();
+              });
+            });
+        }
+        
+        // Main Entry
+        function onRender(event) {
+            const args = event.detail.args;
+            console.log("onRender triggered", args);
+            
+            if (args.node_html !== undefined) {
+                list.innerHTML = args.node_html;
+                bindCardEvents();
+            }
+            if (args.refs_json) {
+                refs = JSON.parse(args.refs_json);
+            }
+            updateStats(args.node_count, args.total_min);
+
+            // Trigger draw
+            requestAnimationFrame(() => draw());
+
+            // Set Height
+            sendMessageToStreamlitClient("streamlit:setFrameHeight", {height: 720});
+            
+            if (loader) loader.classList.remove('is-loading');
+        }
+
+        // Handle inbound messages from Streamlit
+        window.addEventListener("message", (event) => {
+            if (event.data.type === "streamlit:render") {
+                const evt = new CustomEvent("streamlit:render", { detail: event.data });
+                document.body.dispatchEvent(evt);
+            }
+        });
+
+        document.body.addEventListener("streamlit:render", onRender);
+        sendMessageToStreamlitClient("streamlit:componentReady", {apiVersion: 1});
+    </script>
+</body>
+</html>

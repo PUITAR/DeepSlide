@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSPG: Cross-Partition Search on Proximity Graphs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #0a0e17;
+            --color-stage: #0f1524;
+            --color-surface: rgba(255, 255, 255, 0.05);
+            --color-surface-border: rgba(255, 255, 255, 0.1);
+            --color-surface-glow: rgba(76, 130, 255, 0.15);
+            --color-primary: #ffffff;
+            --color-secondary: #b0b8d0;
+            --color-accent: #4c82ff;
+            --color-accent-glow: #6a9cff;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-chip: rgba(76, 130, 255, 0.2);
+            --color-chip-border: rgba(76, 130, 255, 0.4);
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-card: 20px;
+            --radius-pill: 100px;
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .deck-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage {
+            flex: 1;
+            background-color: var(--color-stage);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(76, 130, 255, 0.05) 0%, transparent 55%),
+                radial-gradient(circle at 85% 30%, rgba(10, 14, 23, 0.8) 0%, transparent 55%);
+            display: flex;
+            flex-direction: column;
+            padding: min(5vw, 60px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            position: relative;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.7; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HEADER & CHIP */
+        .header-chip {
+            align-self: flex-start;
+            background-color: var(--color-chip);
+            border: 1px solid var(--color-chip-border);
+            color: var(--color-accent-glow);
+            font-size: clamp(12px, 0.9vw, 14px);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            border-radius: var(--radius-pill);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* HERO */
+        .hero {
+            margin-bottom: 3rem;
+            max-width: 90%;
+        }
+
+        .hero-line1 {
+            font-size: clamp(2.8rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #b0b8d0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-line2 {
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 400;
+            line-height: 1.3;
+            color: var(--color-secondary);
+        }
+
+        /* SUBTITLE */
+        .subtitle {
+            font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+            font-weight: 600;
+            color: var(--color-accent-glow);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--color-accent);
+            padding-left: 1rem;
+        }
+
+        /* CHIPS */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .chip {
+            background-color: var(--color-chip);
+            border: 1px solid var(--color-chip-border);
+            color: var(--color-accent-glow);
+            font-size: clamp(14px, 1vw, 16px);
+            font-weight: 500;
+            padding: 10px 22px;
+            border-radius: var(--radius-pill);
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+        }
+
+        .chip:hover {
+            background-color: rgba(76, 130, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* CALLOUT ROW & PILLS */
+        .callout-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            gap: 2rem;
+        }
+
+        .callout-pill {
+            background: linear-gradient(135deg, rgba(76, 130, 255, 0.25), rgba(76, 130, 255, 0.1));
+            border: 1px solid var(--color-chip-border);
+            color: var(--color-primary);
+            font-size: clamp(14px, 1.1vw, 18px);
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: var(--radius-pill);
+            width: fit-content;
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: var(--transition-smooth);
+        }
+
+        .callout-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-surface-border);
+            border-radius: var(--radius-card);
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent-glow), transparent);
+        }
+
+        .card:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 12px 40px rgba(76, 130, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .card-title {
+            font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* BULLETS - FIXED: ONE ARROW ONLY */
+        .bullets {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bullets li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--color-secondary);
+            font-size: clamp(1rem, 1.2vw, 1.2rem);
+            line-height: 1.5;
+        }
+
+        .bullets li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-weight: 800;
+        }
+
+        /* MEDIA CARD */
+        .media-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-surface-border);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .media-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background-color: #1a1f2e;
+        }
+
+        .media-meta {
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            border-top: 1px solid var(--color-surface-border);
+        }
+
+        /* STAT & KPI */
+        .stat {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi {
+            background: linear-gradient(135deg, #4c82ff, #6a9cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        .kpi::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--color-accent-glow), transparent);
+            border-radius: 2px;
+        }
+
+        /* MATH - FIXED: Inline readability */
+        .math {
+            font-family: var(--font-mono);
+            color: #d1daff;
+            background-color: rgba(76, 130, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: normal;
+            border: 1px solid rgba(76, 130, 255, 0.3);
+        }
+
+        /* DIVIDER - FIXED: Single line */
+        .divider {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, var(--color-surface-border), transparent);
+            margin: 2.5rem 0;
+        }
+
+        /* GRIDS */
+        .grid-2col,
+        .grid-3col {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-2col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* RUNWAY & STEPS */
+        .runway {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .runway::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent), transparent);
+            z-index: 0;
+        }
+
+        .step {
+            background-color: var(--color-bg);
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+            transition: var(--transition-smooth);
+        }
+
+        .step.active {
+            background-color: var(--color-accent);
+            color: var(--color-bg);
+            transform: scale(1.1);
+        }
+
+        /* METERS */
+        .meters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .meter {
+            flex: 1;
+            background-color: var(--color-surface);
+            border-radius: var(--radius-pill);
+            overflow: hidden;
+            height: 12px;
+            position: relative;
+        }
+
+        .meter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-glow));
+            border-radius: var(--radius-pill);
+            width: var(--meter-width, 70%);
+            transition: width 1s ease-out;
+        }
+
+        /* WATERMARK */
+        .watermark {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        /* CONTROLS */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .ctrl-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-secondary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+        }
+
+        .ctrl-btn:hover {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            transform: scale(1.05);
+        }
+
+        /* SLIDE COUNTER */
+        .slide-counter {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 500;
+        }
+
+        /* PROGRESS BAR */
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-glow));
+            width: var(--progress-width, 10%);
+            transition: width 0.3s ease;
+            z-index: 101;
+        }
+
+        /* FIT TEXT HELPER */
+        [data-fit] {
+            transition: font-size 0.2s ease;
+        }
+
+        /* DESIGN SPEC */
+        /* DESIGN_SPEC_BEGIN
+        design_language: keynote_launch_event
+        component_classes:
+          slide, stage, hero, subtitle, chip, chips, callout-row, callout-pill, callout-line,
+          card, card-title, bullets, media-card, media-img, media-meta, stat, kpi, math,
+          divider, grid-2col, grid-3col, runway, step, watermark, meters, meter
+        notes:
+          - bullets marker is ONLY ONE: arrow (no extra dots)
+          - callout pills must be FIT-CONTENT (no giant empty boxes)
+          - divider must be SINGLE (no duplicated HR lines)
+          - math is styled as inline math (no external library)
+          - kpi highlights ONLY for text wrapped in <span class="kpi">
+        DESIGN_SPEC_END */
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="deck-container">
+        <div class="stage" id="stage">
+            <!-- SLIDES_INJECT_HERE -->
+        </div>
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+        </div>
+        <div class="controls">
+            <div class="ctrl-btn" id="prevBtn">←</div>
+            <div class="ctrl-btn" id="nextBtn">→</div>
+        </div>
+        <div class="watermark">CSPG: Cross-Partition Search on Proximity Graphs</div>
+    </div>
+
+    <script>
+        // Slide State
+        let currentSlideIndex = 0;
+        const slides = [];
+
+        // DOM Elements
+        const stageEl = document.getElementById('stage');
+        const currentSlideEl = document.getElementById('currentSlide');
+        const totalSlidesEl = document.getElementById('totalSlides');
+        const progressBarEl = document.getElementById('progressBar');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Initialize: Slides will be injected later, but we set up navigation

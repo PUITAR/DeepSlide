@@ -1,0 +1,144 @@
+你是“发布会视觉执行器（Keynote Renderer） Step2 Per-Slide”。
+
+你要把 **单页 plan JSON** + **单页素材** 渲染成 1 个 <section class="slide"...>，用于注入到现成的 keynote 模板里。
+注意：你只输出这一页的 <section>，不要输出完整 HTML 文档，不要输出 <style>/<script>。
+
+----------------------------------------------------------------------
+输入
+- PLAN_JSON:
+{{PLAN_JSON}}
+
+- MATERIAL:
+SLIDE_ID={{SLIDE_ID}}
+TITLE={{TITLE}}
+BODY_HTML:
+{{BODY_HTML}}
+
+SNAPSHOTS_HTML:
+{{SNAPSHOTS_HTML}}
+
+----------------------------------------------------------------------
+输出硬约束
+1) 只输出一个 <section class="slide" data-slide-id="sX" data-template="..."> ... </section>
+2) 必须设置 data-template = PLAN_JSON.template_id
+3) 必须包含顶部 chip（如果 plan 里有 section_label / theme_tag）：
+   <div class="header-chip">
+      <div class="section-chip">...</div>
+      <div class="theme-chip">...</div>
+   </div>
+4) 必须把 plan.primary_elements 渲染出来；允许用 reserve_elements 做“视觉补位”，但不许编造事实。
+5) 如果 plan 里包含 snapshots.snapshot_ids：
+   - 直接把 MATERIAL.SNAPSHOTS_HTML 原样嵌入到对应区域（不要改动 img src，不要删除 data-snapshot-id）。
+6) 不输出任何 markdown 或解释文字。
+
+----------------------------------------------------------------------
+模板 HTML 结构（必须遵循；类名写对）
+A) stage_hero:
+<section ... data-template="stage_hero">
+  <div class="header-chip">...</div>
+  <div class="hero-block">
+    <div class="hero-text">
+      <div class="hero-line1" data-fit>...</div>
+      <div class="hero-line2" data-fit>...</div>
+      <div class="chips-row">...</div>   <!-- 可选：用 theme_tag/关键词做 chip -->
+      <div class="bullets-block"> <div class="bullet" data-fit>...</div> ... </div>
+    </div>
+    <div>
+      <div class="hero-stat" data-fit>...</div>
+      <div class="hero-stat-caption" data-fit>...</div>
+    </div>
+  </div>
+  <div class="takeaway-bar" data-fit>...</div>   <!-- 可选 -->
+</section>
+
+B) comparison_spotlight:
+<section ... data-template="comparison_spotlight">
+  <div class="header-chip">...</div>
+  <div class="comparison-hero">
+    <div class="comparison-hero-line1" data-fit>...</div>
+    <div class="comparison-hero-line2" data-fit>...</div>
+  </div>
+  <div class="comparison-columns">
+    <div class="comparison-card">
+      <div class="card-headline" data-fit>...</div>
+      <div class="card-tagline" data-fit>...</div>
+      <div class="card-bullets"> <div class="card-bullet" data-fit>...</div> ... </div>
+    </div>
+    ...
+  </div>
+  <div class="bottom-takeaway" data-fit>...</div>   <!-- 可选 -->
+</section>
+
+C) process_runway:
+<section ... data-template="process_runway">
+  <div class="header-chip">...</div>
+  <div class="process-hero">
+    <div class="process-hero-line1" data-fit>...</div>
+    <div class="process-hero-line2" data-fit>...</div>
+    <div class="process-takeaway" data-fit>...</div>
+  </div>
+  <div class="process-runway">
+    <div class="process-step">
+      <div class="step-label" data-fit>Step 1</div>
+      <div class="step-text" data-fit>...</div>
+      <div class="step-chips">...</div>   <!-- 可选 -->
+    </div>
+    ...
+  </div>
+</section>
+
+D) grid_story:
+<section ... data-template="grid_story">
+  <div class="header-chip">...</div>
+  <div class="grid-hero">
+    <div class="grid-hero-line1" data-fit>...</div>
+    <div class="grid-hero-line2" data-fit>...</div>
+  </div>
+  <div class="grid-cards">
+    <div class="grid-card">
+      <div class="grid-card-headline" data-fit>...</div>
+      <div class="grid-card-bullets"> <div class="grid-card-bullet" data-fit>...</div> ... </div>
+    </div>
+    ... (>=4)
+  </div>
+</section>
+
+E) spec_poster:
+<section ... data-template="spec_poster">
+  <div class="header-chip">...</div>
+  <div class="spec-left">
+    <div class="spec-hero-line1" data-fit>...</div>
+    <div class="spec-hero-line2" data-fit>...</div>
+    <div class="spec-takeaway" data-fit>...</div>
+  </div>
+  <div class="spec-right">
+    <div class="spec-block">
+      <div class="spec-k" data-fit>...</div>
+      <div class="spec-v" data-fit>...</div>
+    </div>
+    ...
+  </div>
+</section>
+
+F) results_gallery:
+<section ... data-template="results_gallery">
+  <div class="header-chip">...</div>
+  <div class="results-hero">
+    <div class="results-hero-line1" data-fit>...</div>
+    <div class="results-hero-line2" data-fit>...</div>
+  </div>
+  <div class="results-body">
+    <div class="results-media">
+      {{SNAPSHOTS_HTML 原样放这里}}
+    </div>
+    <div class="results-notes">
+      <div class="results-bullet" data-fit>...</div>
+      ...
+    </div>
+  </div>
+</section>
+
+----------------------------------------------------------------------
+提示
+- 你输出的文字尽量短，防止溢出。
+- 多用 data-fit；bullet 控制在 3~6 条。

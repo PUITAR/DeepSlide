@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>HAMMER: Hamiltonian Curiosity Augmented LLM Reinforcement</title>
+  <style>
+:root {
+  --base-bg: #0a0e2a;
+  --text-color: #e6e9ff;
+  --text-muted: #a0a7d0;
+  --radius-2xl: 1.5rem;
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --accent-teal: #00f0ff;
+  --accent-purple: #b56eff;
+  --accent-gold: #ffcc00;
+  --accent-bg-teal: rgba(0, 240, 255, 0.1);
+  --accent-bg-purple: rgba(181, 110, 255, 0.1);
+  --accent-bg-gold: rgba(255, 204, 0, 0.1);
+}
+body {
+  background: radial-gradient(ellipse at center, #0f1540 0%, var(--base-bg) 70%);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.6;
+  margin: 0;
+  padding: 2rem;
+  min-height: 100vh;
+}
+.slide {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-soft);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.slide::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.4) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+section[data-theme="navy_teal"] { border-top: 4px solid var(--accent-teal); }
+section[data-theme="navy_purple"] { border-top: 4px solid var(--accent-purple); }
+section[data-theme="navy_gold"] { border-top: 4px solid var(--accent-gold); }
+.stage {
+  text-align: center;
+  padding: 3rem;
+}
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-2xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--glass-border);
+}
+.grid2, .grid4 {
+  display: grid;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.grid2 { grid-template-columns: repeat(2, 1fr); }
+.grid4 { grid-template-columns: repeat(4, 1fr); }
+.bullets ul {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+.bullets li {
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.bullets li::before {
+  content: '▸';
+  color: var(--accent-teal);
+  position: absolute;
+  left: -1.5rem;
+  font-weight: bold;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  margin: 2rem 0;
+}
+.divider + .divider { display: none; }
+.callout-pill {
+  display: inline-block;
+  background: var(--accent-bg-teal);
+  color: var(--accent-teal);
+  border: 1px solid var(--accent-teal);
+  border-radius: 100px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+.callout-pill[data-fit] {
+  width: fit-content;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  padding: 0.4rem 1rem;
+}
+.quote {
+  font-style: italic;
+  border-left: 4px solid var(--accent-purple);
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+}
+.math {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+  font-family: 'Cambria Math', serif;
+  font-size: 0.95em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.kpi {
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  font-size: 1.2em;
+}
+.media, .caption {
+  margin: 1rem 0;
+}
+.caption {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  text-align: center;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-2xl);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.data-table th {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--glass-border);
+}
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.data-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+.data-table .cell-hi,
+.data-table [data-hi="1"] {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--accent-teal);
+  box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.2);
+  font-weight: 600;
+}
+.table-title, .table-caption {
+  text-align: center;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+.table-caption {
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+
+/* =================== SYSTEM PAGING OVERRIDE ===================
+   Force slide-by-slide (no long scroll). Only the .is-active slide is visible.
+   This block is appended by the pipeline to prevent LLM CSS from breaking paging.
+*/
+html, body { height: 100%; margin: 0; overflow: hidden !important; }
+.deck-root { height: 100%; overflow: hidden !important; }
+.stage { position: relative !important; width: 100%; height: 100%; overflow: hidden !important; }
+section.slide {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateX(16px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+section.slide.is-active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(0);
+}
+/* ============================================================= */
+    
+
+  </style>
+  <!-- DESIGN_SPEC_BEGIN
+design_language=keynote_launch_event
+base_bg=#0a0e2a (dark navy with subtle radial gradient + vignette)
+text_color=#e6e9ff (light blue-white)
+accent_rules=teal (#00f0ff) for default, purple (#b56eff) for quotes, gold (#ffcc00) for KPIs; per-slide theme via border-top on section[data-theme]
+component_classes=slide, stage, card, grid2, grid4, bullets, divider, callout-pill, quote, math, kpi, media, caption, table-wrap, data-table, table-title, table-caption, cell-hi
+bullet_marker=chevron (▸) colored with accent-teal
+callout-pill rule for [data-fit]=width:fit-content, smaller padding, clamped font-size
+divider collapse rule=.divider + .divider {display:none}
+math rule=inline "math chip": subtle background, rounded border, Cambria Math font
+kpi rule=bold gold text with soft glow shadow
+table rules=data-table: glass background, subtle zebra striping, soft shadow. Highlight: .cell-hi or [data-hi="1"] gets teal background tint, border, inner glow.
+DESIGN_SPEC_END -->
+</head>
+<body>
+  <div class="deck-root">
+    <div class="stage">
+<!-- SLIDES_INJECT_HERE -->
+    </div>
+    <div class="controls">
+      <button id="btnPrev" class="btn">←</button>
+      <div class="counter"><span id="curSlide">1</span>/<span id="totalSlides">1</span></div>
+      <button id="btnNext" class="btn">→</button>
+    </div>
+    <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+  </div>
+  <script>
+
+(function(){
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function slides(){ return Array.from(document.querySelectorAll('section.slide')); }
+
+  function fitOne(el){
+    const min = parseFloat(el.getAttribute('data-fit-min') || '14');
+    let size = parseFloat(el.getAttribute('data-fit-max') || getComputedStyle(el).fontSize || '24');
+    el.style.fontSize = size + 'px';
+    const tooBig = () => (el.scrollWidth > el.clientWidth + 1) || (el.scrollHeight > el.clientHeight + 1);
+    let guard = 250;
+    while(tooBig() && size > min && guard-- > 0){
+      size -= 1;
+      el.style.fontSize = size + 'px';
+    }
+  }
+  function fitAll(){
+    const els = Array.from(document.querySelectorAll('[data-fit]'));
+    for(const el of els) fitOne(el);
+  }
+
+  let idx = 0;
+  function show(i){
+    const ss = slides();
+    if(!ss.length) return;
+    idx = clamp(i, 0, ss.length - 1);
+    ss.forEach((s,k)=> s.classList.toggle('is-active', k===idx));
+    const cur = document.getElementById('curSlide');
+    const tot = document.getElementById('totalSlides');
+    const bar = document.getElementById('progressBar');
+    if(cur) cur.textContent = String(idx+1);
+    if(tot) tot.textContent = String(ss.length);
+    if(bar) bar.style.width = ((idx+1)/ss.length*100).toFixed(1)+'%';
+    requestAnimationFrame(()=>fitAll());
+  }
+  function next(){ show(idx+1); }
+  function prev(){ show(idx-1); }
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); next(); }
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+  });
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  if(btnPrev) btnPrev.addEventListener('click', prev);
+  if(btnNext) btnNext.addEventListener('click', next);
+
+  window.addEventListener('load', ()=>{ show(0); fitAll(); });
+  window.addEventListener('resize', ()=>{ fitAll(); });
+})();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+```json
+{
+    "slide_id": "s9",
+    "section_label": "Method",
+    "theme_tag": "Two-Stage Search",
+    "template_id": "spec_poster",
+    "primary_elements": [
+        {
+            "type": "hero_title",
+            "text": "Two-Stage Search Algorithm"
+        },
+        {
+            "type": "hero_subtitle",
+            "text": "Balancing Speed and Accuracy"
+        },
+        {
+            "type": "spec_blocks",
+            "items": [
+                {
+                    "k": "Stage 1: Fast Approaching",
+                    "v": "Greedy beam search within a single partition using a small candidate set (ef₁) to quickly locate the query's approximate region."
+                },
+                {
+                    "k": "Stage 2: Precise Search",
+                    "v": "Cross-partition expansion with a larger candidate set (ef₂). Upon encountering routing vectors, all instances from all partitions are added to maximize the final search space."
+                },
+                {
+                    "k": "Key Parameters",
+                    "v": "ef₁ < ef₂ to achieve an optimal balance between search speed and result accuracy."
+                }
+            ]
+        },
+        {
+            "type": "takeaway",
+            "text": "The two-stage design efficiently combines rapid coarse localization with thorough fine-grained exploration."
+        }
+    ],
+    "reserve_elements": []
+}
+```
