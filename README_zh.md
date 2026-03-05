@@ -6,7 +6,17 @@
 
 ---
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116176634059553&bvid=BV1sSPkz9E6P&cid=36476817158&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+<div align="center">
+
+[![在 B 站观看演示视频](./assets/paper/ui-preview.jpg)](https://www.bilibili.com/video/BV1sSPkz9E6P)
+
+**🎥 B 站链接：** https://www.bilibili.com/video/BV1sSPkz9E6P
+
+**▶️ YouTube 链接：** https://youtu.be/NGqFLT81uHA
+
+[![在 YouTube 观看演示视频](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA)
+
+</div>
 
 ## 核心观点
 

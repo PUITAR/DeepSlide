@@ -6,7 +6,17 @@
 
 ---
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116176634059553&bvid=BV1sSPkz9E6P&cid=36476817158&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+<div align="center">
+
+[![Watch the demo on Bilibili](./assets/paper/ui-preview.jpg)](https://www.bilibili.com/video/BV1sSPkz9E6P)
+
+**🎥 Watch on Bilibili:** https://www.bilibili.com/video/BV1sSPkz9E6P
+
+**▶️ Watch on YouTube:** https://youtu.be/NGqFLT81uHA
+
+[![Watch the demo on YouTube](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA)
+
+</div>
 
 ## Key Claim
 
