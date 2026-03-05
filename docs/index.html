@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeepSlide: From Artifacts to Presentation Delivery</title>
+    <meta
+      name="description"
+      content="DeepSlide is a delivery-first, human-in-the-loop system for end-to-end presentation delivery: narrative, slides, interactive preview, and rehearsal insights."
+    />
+    <meta property="og:title" content="DeepSlide: From Artifacts to Presentation Delivery" />
+    <meta
+      property="og:description"
+      content="A delivery-first, human-in-the-loop system for end-to-end presentation delivery: narrative, slides, interactive preview, and rehearsal insights."
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/PUITAR/DeepSlide/main/assets/paper/ui-preview.jpg"
+    />
+    <link rel="icon" href="https://raw.githubusercontent.com/PUITAR/DeepSlide/main/assets/paper/ui-preview.jpg" />
+    <link rel="stylesheet" href="./site.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container">
+        <div class="topbar-inner">
+          <div class="brand">DeepSlide</div>
+          <nav class="nav">
+            <a href="#overview">Overview</a>
+            <a href="#demo">Demo</a>
+            <a href="#pipeline">Pipeline</a>
+            <a href="#figures">Figures</a>
+            <a href="#links">Links</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="pill">
+            <span class="k">delivery-first</span>
+            <span class="k">human-in-the-loop</span>
+            <span class="k">open-source</span>
+          </div>
+          <h1 class="title">From Artifacts to Presentation Delivery</h1>
+          <p class="subtitle">
+            DeepSlide is not a tool that “quickly makes a PPT for you”, but a delivery-first, human-in-the-loop system
+            that produces a full presentation package: narrative, slides, interactive preview, and rehearsal insights.
+          </p>
+          <div class="btn-row">
+            <a class="btn primary" href="https://github.com/PUITAR/DeepSlide" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            <a class="btn" href="https://youtu.be/NGqFLT81uHA" target="_blank" rel="noreferrer">YouTube Demo</a>
+            <a class="btn" href="https://www.bilibili.com/video/BV1sSPkz9E6P" target="_blank" rel="noreferrer">
+              Bilibili Demo
+            </a>
+            <a class="btn" href="https://github.com/PUITAR/DeepSlide#readme" target="_blank" rel="noreferrer">README</a>
+          </div>
+
+          <div class="grid two" id="overview">
+            <div class="card">
+              <h2>Key claim</h2>
+              <p>
+                A high-quality talk is not mainly determined by whether static slides “look nice”. What matters more is
+                whether information is organized and delivered under audience cognition and attention constraints:
+                narrative coherence, timing and pacing control, attention guidance, and rehearsal readiness.
+              </p>
+            </div>
+            <div class="media" aria-label="Preview image">
+              <img
+                src="https://raw.githubusercontent.com/PUITAR/DeepSlide/main/assets/paper/ui-preview.jpg"
+                alt="DeepSlide demo preview"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section" id="demo">
+        <div class="container">
+          <h3>Demo</h3>
+          <div class="grid two">
+            <div class="card">
+              <h2>Watch</h2>
+              <p>
+                GitHub Pages supports YouTube embedding reliably. For Bilibili, use the external link (embedding is often
+                blocked by browsers or policies).
+              </p>
+              <div class="btn-row" style="margin-top: 12px">
+                <a class="btn primary" href="https://youtu.be/NGqFLT81uHA" target="_blank" rel="noreferrer">
+                  Open on YouTube
+                </a>
+                <a class="btn" href="https://www.bilibili.com/video/BV1sSPkz9E6P" target="_blank" rel="noreferrer">
+                  Open on Bilibili
+                </a>
+              </div>
+            </div>
+            <div class="media">
+              <div class="embed">
+                <iframe
+                  src="https://www.youtube.com/embed/NGqFLT81uHA"
+                  title="DeepSlide demo video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section" id="pipeline">
+        <div class="container">
+          <h3>Four-stage pipeline</h3>
+          <div class="grid two">
+            <div class="card">
+              <h2>Stages</h2>
+              <ul class="list">
+                <li>Requirement clarification &amp; narrative proposals</li>
+                <li>Logical-chain editing &amp; evidence-grounded generation</li>
+                <li>Interactive enhancement &amp; attention control</li>
+                <li>Rehearsal &amp; evaluation</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h2>What you get</h2>
+              <ul class="list">
+                <li>Time-budgeted logical-chain candidates with node-level editing</li>
+                <li>Co-delivered slides and script</li>
+                <li>In-talk attention strategies (image focus, diagrams, tables)</li>
+                <li>Rehearsal guidance and simulated audience Q&amp;A</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section" id="figures">
+        <div class="container">
+          <h3>Figures</h3>
+          <div class="grid two">
+            <div class="media">
+              <img
+                src="https://raw.githubusercontent.com/PUITAR/DeepSlide/main/assets/paper/overview-v4.jpg"
+                alt="Overview of the four-stage framework"
+                loading="lazy"
+              />
+            </div>
+            <div class="media">
+              <img
+                src="https://raw.githubusercontent.com/PUITAR/DeepSlide/main/assets/paper/comp.png"
+                alt="Comparison with existing methods"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section" id="links">
+        <div class="container">
+          <h3>Links</h3>
+          <div class="grid three">
+            <div class="card">
+              <h2>Repository</h2>
+              <p><a href="https://github.com/PUITAR/DeepSlide" target="_blank" rel="noreferrer">github.com/PUITAR/DeepSlide</a></p>
+            </div>
+            <div class="card">
+              <h2>YouTube</h2>
+              <p><a href="https://youtu.be/NGqFLT81uHA" target="_blank" rel="noreferrer">youtu.be/NGqFLT81uHA</a></p>
+            </div>
+            <div class="card">
+              <h2>Bilibili</h2>
+              <p><a href="https://www.bilibili.com/video/BV1sSPkz9E6P" target="_blank" rel="noreferrer">BV1sSPkz9E6P</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="container">
+          <div>
+            Built with the Academic Project Page Template style, simplified for DeepSlide.
+          </div>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
+
