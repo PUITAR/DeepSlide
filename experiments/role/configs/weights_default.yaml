@@ -1,0 +1,17 @@
+artifact:
+  alpha_stab: 0.25
+  alpha_fid: 0.45
+  alpha_read: 0.30
+  beta_text_vs_vis: 0.70
+  gamma_legibility_vs_human: 0.60
+
+delivery:
+  omega_RSat: 0.15
+  omega_NDC: 0.12
+  omega_SSC: 0.15
+  omega_TDQ: 0.12
+  omega_ACQ: 0.16
+  omega_RR: 0.15
+  omega_stab: 0.08
+  omega_fid: 0.07
+

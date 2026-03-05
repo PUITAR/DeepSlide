@@ -1,0 +1,9 @@
+default:
+  audience: expert
+  duration_seconds: 600
+  wpm: 150
+  focus_priorities:
+    method: 0.35
+    experiments: 0.35
+    impacts: 0.15
+    intro: 0.15

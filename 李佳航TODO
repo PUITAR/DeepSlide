@@ -1,5 +1,0 @@
-1. 生成（content， speech）-》（content，speech）的reference
-2. 保存图
-3. frame逻辑节点name
-4. speech先排除
-5. 考虑某个元组的增强，而不是只考虑引用边

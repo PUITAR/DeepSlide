@@ -1,0 +1,9 @@
+{
+  "name": "deepslide-drawio-viewer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@next-ai-drawio/mcp-server": "^0.1.15"
+  }
+}
+

@@ -7,9 +7,10 @@ if [ -z "$cmd" ]; then
   exit 1
 fi
 
-sudo docker exec -it deepslide-container bash -lc \
-    "python3 -m venv /opt/venv &&\
-     source /opt/venv/bin/activate &&\
-     $cmd"
+# DEBUG: Log the command
+echo "=== ROOT RUN_IN_DOCKER.SH DEBUG (NO FIX) ===" >&2
+echo "Original command: $cmd" >&2
+echo "Using command as-is (files are at /app/projects/... in container)" >&2
+echo "=== END DEBUG ===" >&2
 
-
+sudo docker exec -i deepslide-container bash -lc     "python3 -m venv /opt/venv &&     source /opt/venv/bin/activate &&     $cmd"

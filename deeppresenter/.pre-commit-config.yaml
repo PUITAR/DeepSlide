@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: trailing-whitespace
+      - id: destroyed-symlinks
+      - id: debug-statements
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.14
+    hooks:
+      - id: ruff-check
+        args: ["--select", "I", "--fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.21.2
+    hooks:
+      - id: pyupgrade
+        args: [--py311-plus]
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.24.1
+    hooks:
+      - id: validate-pyproject

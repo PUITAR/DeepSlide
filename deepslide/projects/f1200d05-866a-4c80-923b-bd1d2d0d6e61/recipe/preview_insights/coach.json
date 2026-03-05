@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "updated_at": 1772706936.56215,
+  "lang": "en",
+  "by_page": {
+    "1": [
+      "Increase minimum font size to at least 12pt.",
+      "Add a visual chart comparing model performance.",
+      "Highlight key results with bold text or colors.",
+      "Practice timing to match slide content pacing.",
+      "Use gestures to emphasize efficiency gains."
+    ],
+    "2": [
+      "Increase font size for all table text.",
+      "Add a brief transition sentence before this slide.",
+      "Explicitly mention specific metrics from the table.",
+      "Point to the table while discussing the results.",
+      "Slow down your speaking pace slightly."
+    ],
+    "3": [
+      "Increase minimum font size to at least 12pt.",
+      "Add a visual chart comparing the seven categories.",
+      "Highlight key results with color or icons.",
+      "Practice timing to match slide content pace.",
+      "Use gestures to emphasize each category as you list them."
+    ],
+    "4": [
+      "Increase font size for all text to at least 18pt.",
+      "Add a visual chart comparing the seven category results.",
+      "Pause briefly after announcing 'seven categories' for emphasis.",
+      "Gesture toward the 'efficient variants' point when discussing advantages.",
+      "Practice delivering this slide in under 20 seconds.",
+      "Use a pointer to highlight key phrases as you speak them."
+    ],
+    "5": [
+      "Increase minimum font size to at least 12pt for legibility.",
+      "Add a visual comparison chart to highlight efficiency gains.",
+      "Practice delivering this slide within 25 seconds.",
+      "Vary your vocal emphasis on 'competitive performance' and 'reduced latency'.",
+      "Use a brief pause before stating 'The key takeaway is efficiency gains'.",
+      "Consider adding a simple graphic showing compute savings."
+    ],
+    "6": [
+      "Increase minimum font size to at least 12pt.",
+      "Add a visual comparison chart or table.",
+      "Highlight key results with color or icons.",
+      "Practice timing to match slide content pace.",
+      "Use gestures to emphasize 'balanced approach' concept."
+    ],
+    "7": [
+      "Increase minimum font size to at least 12pt.",
+      "Reduce speech content to fit within time budget.",
+      "Add a transition sentence connecting to previous slide.",
+      "Add a visual anchor like a diagram or key results highlight.",
+      "Practice delivering complex technical terms clearly.",
+      "Consider splitting content if time remains tight."
+    ],
+    "8": [
+      "Increase minimum font size to at least 12pt.",
+      "Reduce speech length by 10 seconds.",
+      "Add a transition sentence connecting to previous slide.",
+      "Add a visual anchor like a comparison chart.",
+      "Highlight key numbers like '201 languages' on slide.",
+      "Practice timing to stay within 25 seconds for this slide."
+    ],
+    "9": [
+      "Add a brief transition sentence before discussing this slide.",
+      "Explicitly mention the figure's title 'Decode Throughput' in your speech.",
+      "Keep your explanation of this slide under 25 seconds.",
+      "Point to the figure on the slide as you describe it.",
+      "Simplify your explanation; avoid overly complex phrasing."
+    ],
+    "10": [
+      "Increase minimum font size to at least 12pt.",
+      "Reduce speech content by about 15 seconds.",
+      "Add a visual anchor like a comparison chart.",
+      "Highlight key terms like 'Gated Delta Networks'.",
+      "Practice smoother transitions between innovation points.",
+      "Consider splitting content if timing remains tight."
+    ],
+    "11": [
+      "Increase minimum font size to at least 12pt.",
+      "Reduce speech content by about 7 seconds.",
+      "Add a visual anchor like a comparison chart.",
+      "Highlight key results with bold text.",
+      "Practice smooth transitions from previous content.",
+      "Use bullet points to emphasize each advancement."
+    ]
+  },
+  "errors_by_page": {}
+}

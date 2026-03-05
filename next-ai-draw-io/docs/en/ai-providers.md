@@ -1,0 +1,321 @@
+# AI Provider Configuration
+
+This guide explains how to configure different AI model providers for next-ai-draw-io.
+
+## Quick Start
+
+1. Copy `.env.example` to `.env.local`
+2. Set your API key for your chosen provider
+3. Set `AI_MODEL` to your desired model
+4. Run `npm run dev`
+
+## Supported Providers
+
+### Doubao (ByteDance Volcengine)
+
+> **Free tokens**: Register on the [Volcengine ARK platform](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project) to get 500K free tokens for all models!
+
+```bash
+DOUBAO_API_KEY=your_api_key
+AI_MODEL=doubao-seed-1-8-251215  # or other Doubao model
+```
+
+### Google Gemini
+
+```bash
+GOOGLE_GENERATIVE_AI_API_KEY=your_api_key
+AI_MODEL=gemini-2.0-flash
+```
+
+Optional custom endpoint:
+
+```bash
+GOOGLE_BASE_URL=https://your-custom-endpoint
+```
+
+### Google Vertex AI (Enterprise GCP)
+
+Google Vertex AI offers enterprise-grade features and data residency. **Express Mode** allows for simple API key authentication, making it compatible with edge runtimes like Vercel and Cloudflare.
+
+```bash
+GOOGLE_VERTEX_API_KEY=your_api_key
+AI_MODEL=gemini-2.0-flash
+```
+
+Optional custom endpoint:
+
+```bash
+GOOGLE_VERTEX_BASE_URL=https://your-custom-endpoint
+```
+
+### OpenAI
+
+```bash
+OPENAI_API_KEY=your_api_key
+AI_MODEL=gpt-4o
+```
+
+Optional custom endpoint (for OpenAI-compatible services):
+
+```bash
+OPENAI_BASE_URL=https://your-custom-endpoint/v1
+```
+
+### Anthropic
+
+```bash
+ANTHROPIC_API_KEY=your_api_key
+AI_MODEL=claude-sonnet-4-5-20250514
+```
+
+Optional custom endpoint:
+
+```bash
+ANTHROPIC_BASE_URL=https://your-custom-endpoint
+```
+
+### DeepSeek
+
+```bash
+DEEPSEEK_API_KEY=your_api_key
+AI_MODEL=deepseek-chat
+```
+
+Optional custom endpoint:
+
+```bash
+DEEPSEEK_BASE_URL=https://your-custom-endpoint
+```
+
+### SiliconFlow (OpenAI-compatible)
+
+```bash
+SILICONFLOW_API_KEY=your_api_key
+AI_MODEL=deepseek-ai/DeepSeek-V3  # example; use any SiliconFlow model id
+```
+
+Optional custom endpoint (defaults to the recommended domain):
+
+```bash
+SILICONFLOW_BASE_URL=https://api.siliconflow.com/v1  # or https://api.siliconflow.cn/v1
+```
+
+### SGLang
+
+```bash
+SGLANG_API_KEY=your_api_key
+AI_MODEL=your_model_id
+```
+
+Optional custom endpoint:
+
+```bash
+SGLANG_BASE_URL=https://your-custom-endpoint/v1
+```
+
+### Azure OpenAI
+
+```bash
+AZURE_API_KEY=your_api_key
+AZURE_RESOURCE_NAME=your-resource-name  # Required: your Azure resource name
+AI_MODEL=your-deployment-name
+```
+
+Or use a custom endpoint instead of resource name:
+
+```bash
+AZURE_API_KEY=your_api_key
+AZURE_BASE_URL=https://your-resource.openai.azure.com  # Alternative to AZURE_RESOURCE_NAME
+AI_MODEL=your-deployment-name
+```
+
+Optional reasoning configuration:
+
+```bash
+AZURE_REASONING_EFFORT=low      # Optional: low, medium, high
+AZURE_REASONING_SUMMARY=detailed  # Optional: none, brief, detailed
+```
+
+### AWS Bedrock
+
+```bash
+AWS_REGION=us-west-2
+AWS_ACCESS_KEY_ID=your_access_key_id
+AWS_SECRET_ACCESS_KEY=your_secret_access_key
+AI_MODEL=anthropic.claude-sonnet-4-5-20250514-v1:0
+```
+
+Note: On AWS (Lambda, EC2 with IAM role), credentials are automatically obtained from the IAM role.
+
+### OpenRouter
+
+```bash
+OPENROUTER_API_KEY=your_api_key
+AI_MODEL=anthropic/claude-sonnet-4
+```
+
+Optional custom endpoint:
+
+```bash
+OPENROUTER_BASE_URL=https://your-custom-endpoint
+```
+
+### Ollama (Local)
+
+```bash
+AI_PROVIDER=ollama
+AI_MODEL=llama3.2
+```
+
+Optional custom URL:
+
+```bash
+OLLAMA_BASE_URL=http://localhost:11434
+```
+
+### ModelScope
+
+```bash
+MODELSCOPE_API_KEY=your_api_key
+AI_MODEL=Qwen/Qwen3-235B-A22B-Instruct-2507
+```
+
+Optional custom endpoint:
+
+```bash
+MODELSCOPE_BASE_URL=https://your-custom-endpoint
+```
+
+### Vercel AI Gateway
+
+Vercel AI Gateway provides unified access to multiple AI providers through a single API key. This simplifies authentication and allows you to switch between providers without managing multiple API keys.
+
+**Basic Usage (Vercel-hosted Gateway):**
+
+```bash
+AI_GATEWAY_API_KEY=your_gateway_api_key
+AI_MODEL=openai/gpt-4o
+```
+
+**Custom Gateway URL (for local development or self-hosted Gateway):**
+
+```bash
+AI_GATEWAY_API_KEY=your_custom_api_key
+AI_GATEWAY_BASE_URL=https://your-custom-gateway.com/v1/ai
+AI_MODEL=openai/gpt-4o
+```
+
+Model format uses `provider/model` syntax:
+
+-   `openai/gpt-4o` - OpenAI GPT-4o
+-   `anthropic/claude-sonnet-4-5` - Anthropic Claude Sonnet 4.5
+-   `google/gemini-2.0-flash` - Google Gemini 2.0 Flash
+
+**Configuration notes:**
+
+-   If `AI_GATEWAY_BASE_URL` is not set, the default Vercel Gateway URL (`https://ai-gateway.vercel.sh/v1/ai`) is used
+-   Custom base URL is useful for:
+    -   Local development with a custom Gateway instance
+    -   Self-hosted AI Gateway deployments
+    -   Enterprise proxy configurations
+-   When using a custom base URL, you must also provide `AI_GATEWAY_API_KEY`
+
+Get your API key from the [Vercel AI Gateway dashboard](https://vercel.com/ai-gateway).
+
+## Auto-Detection
+
+If you only configure **one** provider's API key, the system will automatically detect and use that provider. No need to set `AI_PROVIDER`.
+
+If you configure **multiple** API keys, you must explicitly set `AI_PROVIDER`:
+
+```bash
+AI_PROVIDER=google  # or: openai, anthropic, deepseek, siliconflow, doubao, azure, bedrock, openrouter, ollama, gateway, sglang, modelscope
+```
+
+## Server-Side Multi-Model Configuration
+
+Administrators can configure multiple server-side models that are available to all users without requiring personal API keys.
+
+### Configuration Methods
+
+**Option 1: Environment Variable** (recommended for cloud deployments)
+
+Set `AI_MODELS_CONFIG` as a JSON string:
+
+```bash
+AI_MODELS_CONFIG='{"providers":[{"name":"OpenAI","provider":"openai","models":["gpt-4o"],"default":true}]}'
+```
+
+**Option 2: Config File**
+
+Create an `ai-models.json` file in the project root (or set `AI_MODELS_CONFIG_PATH` to a custom location).
+
+### Example Configuration
+
+```json
+{
+  "providers": [
+    {
+      "name": "OpenAI Production",
+      "provider": "openai",
+      "models": ["gpt-4o", "gpt-4o-mini"],
+      "default": true
+    },
+    {
+      "name": "Custom DeepSeek",
+      "provider": "deepseek",
+      "models": ["deepseek-chat"],
+      "apiKeyEnv": "MY_DEEPSEEK_KEY",
+      "baseUrlEnv": "MY_DEEPSEEK_URL"
+    }
+  ]
+}
+```
+
+### Field Reference
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Display name (supports multiple configs for same provider) |
+| `provider` | Yes | Provider type (`openai`, `anthropic`, `google`, `bedrock`, etc.) |
+| `models` | Yes | List of model IDs |
+| `default` | No | Set to `true` to auto-select this provider's first model as default |
+| `apiKeyEnv` | No | Custom API key env var name (defaults to provider's standard var like `OPENAI_API_KEY`) |
+| `baseUrlEnv` | No | Custom base URL env var name |
+
+### Notes
+
+- API keys and credentials are provided via environment variables. By default, standard var names are used (e.g., `OPENAI_API_KEY`), but you can specify custom var names with `apiKeyEnv`.
+- The `name` field allows multiple configurations for the same provider (e.g., "OpenAI Production" and "OpenAI Staging" both using `provider: "openai"` but with different `apiKeyEnv` values).
+- If config is not present, the app falls back to `AI_PROVIDER`/`AI_MODEL` environment variable configuration.
+
+## Model Capability Requirements
+
+This task requires exceptionally strong model capabilities, as it involves generating long-form text with strict formatting constraints (draw.io XML).
+
+**Recommended models**:
+
+-   Claude Sonnet 4.5 / Opus 4.5
+
+**Note on Ollama**: While Ollama is supported as a provider, it's generally not practical for this use case unless you're running high-capability models like DeepSeek R1 or Qwen3-235B locally.
+
+## Temperature Setting
+
+You can optionally configure the temperature via environment variable:
+
+```bash
+TEMPERATURE=0  # More deterministic output (recommended for diagrams)
+```
+
+**Important**: Leave `TEMPERATURE` unset for models that don't support temperature settings, such as:
+- GPT-5.1 and other reasoning models
+- Some specialized models
+
+When unset, the model uses its default behavior.
+
+## Recommendations
+
+-   **Best experience**: Use models with vision support (GPT-4o, Claude, Gemini) for image-to-diagram features
+-   **Budget-friendly**: DeepSeek offers competitive pricing
+-   **Privacy**: Use Ollama for fully local, offline operation (requires powerful hardware)
+-   **Flexibility**: OpenRouter provides access to many models through a single API

@@ -1,0 +1,509 @@
+{
+  "_meta": {
+    "version": 1,
+    "lang": "en",
+    "input_mtimes": {
+      "base.pdf": 1772704299.022986,
+      "content.tex": 1772706820.067683,
+      "speech.txt": 1772706820.067683,
+      "html_meta.json": 1772704682.1706336,
+      "alignment_dsid.json": 1772704535.6787229
+    }
+  },
+  "data": {
+    "ok": true,
+    "deck_summary": {
+      "duration_target_sec": 300,
+      "duration_estimated_sec": 302.1428571428571,
+      "metrics": {
+        "goal_fit": 0.9880952380952381
+      },
+      "signals": {
+        "goal_fit": []
+      }
+    },
+    "per_slide": [
+      {
+        "page_index": 0,
+        "page_type": "title",
+        "title": "Language Benchmarks Overview",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.0,
+          "transition": 0.5714285714285714,
+          "script_complement": 0.03519442545765128,
+          "focus_readiness": 0.23000000000000004
+        },
+        "explain": {
+          "min_font_pt": 10.909099578857422,
+          "word_count": 30,
+          "block_count": 3,
+          "speech_seconds_est": 5.142857142857143,
+          "time_budget_sec": 17.42738589211618,
+          "sim_prev": null,
+          "sim_next": 1.0,
+          "slide_script_sim": 0.01759721272882566,
+          "slide_script_overlap": 0.027777777777777776,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（11pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "口播偏短，可能缺少解释或例子"
+          ],
+          "transition": [],
+          "script_complement": [
+            "讲稿与幻灯联系较弱，听众可能抓不住锚点"
+          ],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 1,
+        "page_type": "content",
+        "title": "Language Benchmarks Overview",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.9452380952380951,
+          "transition": 0.5093656094554928,
+          "script_complement": 0.9185293563207295,
+          "focus_readiness": 0.28
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 30,
+          "block_count": 3,
+          "speech_seconds_est": 25.71428571428571,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 1.0,
+          "sim_next": 0.043444073381154996,
+          "slide_script_sim": 0.45926467816036476,
+          "slide_script_overlap": 0.40816326530612246,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 2,
+        "page_type": "content",
+        "title": "Language Benchmark",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.480952380952381,
+          "transition": 0.06813819348866146,
+          "script_complement": 0.15523562973458604,
+          "focus_readiness": 1.0
+        },
+        "explain": {
+          "min_font_pt": 6.586968898773193,
+          "word_count": 46,
+          "block_count": 8,
+          "speech_seconds_est": 17.142857142857142,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.043444073381154996,
+          "sim_next": 0.004252662060908032,
+          "slide_script_sim": 0.07761781486729302,
+          "slide_script_overlap": 0.07407407407407407,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（7pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [
+            "与相邻页语义跳跃大，建议加一句过渡或插入桥接页"
+          ],
+          "script_complement": [
+            "讲稿与幻灯联系较弱，听众可能抓不住锚点"
+          ],
+          "focus_readiness": []
+        }
+      },
+      {
+        "page_index": 3,
+        "page_type": "content",
+        "title": "Vision-Language Benchmarks",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.6817857142857144,
+          "transition": 0.4861935823560182,
+          "script_complement": 0.6538134872977737,
+          "focus_readiness": 0.28
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 23,
+          "block_count": 3,
+          "speech_seconds_est": 20.142857142857142,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.004252662060908032,
+          "sim_next": 0.33608284558830465,
+          "slide_script_sim": 0.6730932563511132,
+          "slide_script_overlap": 0.5675675675675675,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 4,
+        "page_type": "content",
+        "title": "Vision-Language Benchmark Results",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.39488095238095244,
+          "transition": 0.8689728555430564,
+          "script_complement": 0.5292293677661521,
+          "focus_readiness": 0.23000000000000004
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 21,
+          "block_count": 3,
+          "speech_seconds_est": 15.857142857142858,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.33608284558830465,
+          "sim_next": 0.27219815329183483,
+          "slide_script_sim": 0.7353853161169239,
+          "slide_script_overlap": 0.6333333333333333,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 5,
+        "page_type": "content",
+        "title": "Efficiency Gains",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.5670238095238098,
+          "transition": 0.9009827131182944,
+          "script_complement": 0.5733152950044993,
+          "focus_readiness": 0.19
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 25,
+          "block_count": 3,
+          "speech_seconds_est": 18.42857142857143,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.27219815329183483,
+          "sim_next": 0.35848974589097116,
+          "slide_script_sim": 0.7133423524977504,
+          "slide_script_overlap": 0.65625,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 6,
+        "page_type": "content",
+        "title": "Key Takeaways",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.5670238095238098,
+          "transition": 0.5905138599724462,
+          "script_complement": 0.49883487068486043,
+          "focus_readiness": 0.19
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 31,
+          "block_count": 3,
+          "speech_seconds_est": 18.42857142857143,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.35848974589097116,
+          "sim_next": 0.05486995608974118,
+          "slide_script_sim": 0.7505825646575698,
+          "slide_script_overlap": 0.6764705882352942,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 7,
+        "page_type": "content",
+        "title": "Multimodal Agentic Capabilities",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.02714285714285647,
+          "transition": 0.13199087722436242,
+          "script_complement": 0.7548147885604657,
+          "focus_readiness": 0.23000000000000004
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 56,
+          "block_count": 3,
+          "speech_seconds_est": 39.42857142857143,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.05486995608974118,
+          "sim_next": 0.037523657967312544,
+          "slide_script_sim": 0.6225926057197672,
+          "slide_script_overlap": 0.5,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "预计口播超时，建议精简讲稿或拆页"
+          ],
+          "transition": [
+            "与相邻页语义跳跃大，建议加一句过渡或插入桥接页"
+          ],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 8,
+        "page_type": "content",
+        "title": "Scaled RL Advancements",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.3714285714285712,
+          "transition": 0.053605225667589296,
+          "script_complement": 0.6742131983938564,
+          "focus_readiness": 0.28
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 41,
+          "block_count": 3,
+          "speech_seconds_est": 34.285714285714285,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.037523657967312544,
+          "sim_next": 0.0,
+          "slide_script_sim": 0.6628934008030718,
+          "slide_script_overlap": 0.55,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "预计口播超时，建议精简讲稿或拆页"
+          ],
+          "transition": [
+            "与相邻页语义跳跃大，建议加一句过渡或插入桥接页"
+          ],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 9,
+        "page_type": "content",
+        "title": "Decode Throughput",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.7730952380952377,
+          "transition": 0.0,
+          "script_complement": 0.0,
+          "focus_readiness": 1.0
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 3,
+          "block_count": 5,
+          "speech_seconds_est": 28.285714285714285,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.0,
+          "sim_next": 0.0,
+          "slide_script_sim": 0.0,
+          "slide_script_overlap": 0.0,
+          "image_count": 1
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "口播略偏长，注意控制节奏"
+          ],
+          "transition": [
+            "与相邻页语义跳跃大，建议加一句过渡或插入桥接页"
+          ],
+          "script_complement": [
+            "讲稿与幻灯联系较弱，听众可能抓不住锚点"
+          ],
+          "focus_readiness": []
+        }
+      },
+      {
+        "page_index": 10,
+        "page_type": "content",
+        "title": "Key Technical Innovations",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.0,
+          "transition": 0.46772484519890345,
+          "script_complement": 0.7862287929916978,
+          "focus_readiness": 0.28
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 43,
+          "block_count": 3,
+          "speech_seconds_est": 40.285714285714285,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.0,
+          "sim_next": 0.3274073916392324,
+          "slide_script_sim": 0.6068856035041511,
+          "slide_script_overlap": 0.4666666666666667,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "预计口播超时，建议精简讲稿或拆页"
+          ],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 11,
+        "page_type": "content",
+        "title": "Summary: Qwen3.5 Advancements",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.5148809523809522,
+          "transition": 0.46772484519890345,
+          "script_complement": 0.6835723967483738,
+          "focus_readiness": 0.23000000000000004
+        },
+        "explain": {
+          "min_font_pt": 7.970099925994873,
+          "word_count": 38,
+          "block_count": 3,
+          "speech_seconds_est": 32.14285714285714,
+          "time_budget_sec": 24.896265560165972,
+          "sim_prev": 0.3274073916392324,
+          "sim_next": 0.0,
+          "slide_script_sim": 0.6582138016258131,
+          "slide_script_overlap": 0.5081967213114754,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（8pt），现场可能看不清"
+          ],
+          "time_pace": [
+            "预计口播超时，建议精简讲稿或拆页"
+          ],
+          "transition": [],
+          "script_complement": [],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      },
+      {
+        "page_index": 12,
+        "page_type": "references",
+        "title": "",
+        "metrics": {
+          "legibility": 0.5,
+          "time_pace": 0.6448979591836734,
+          "transition": 0.0,
+          "script_complement": 0.0,
+          "focus_readiness": 0.19
+        },
+        "explain": {
+          "min_font_pt": 10.909099578857422,
+          "word_count": 0,
+          "block_count": 2,
+          "speech_seconds_est": 6.857142857142857,
+          "time_budget_sec": 8.71369294605809,
+          "sim_prev": 0.0,
+          "sim_next": null,
+          "slide_script_sim": 0.0,
+          "slide_script_overlap": 0.0,
+          "image_count": 0
+        },
+        "signals": {
+          "legibility": [
+            "最小字号偏小（11pt），现场可能看不清"
+          ],
+          "time_pace": [],
+          "transition": [
+            "与相邻页语义跳跃大，建议加一句过渡或插入桥接页"
+          ],
+          "script_complement": [
+            "讲稿与幻灯联系较弱，听众可能抓不住锚点"
+          ],
+          "focus_readiness": [
+            "缺少清晰视觉锚点，建议加一张对比图/表或高亮关键结果"
+          ]
+        }
+      }
+    ]
+  }
+}

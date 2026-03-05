@@ -1,1 +1,0 @@
-Just a test PPT, casual audience, 1-minute duration, only two sections displayed: Method and Summary. Minimalist style.

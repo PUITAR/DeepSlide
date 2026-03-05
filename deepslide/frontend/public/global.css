@@ -1,0 +1,28 @@
+:root {
+  /* Light modern gradient background */
+  --bg-gradient:
+    radial-gradient(1000px 600px at 50% 25%, rgba(120, 92, 255, 0.09), rgba(120, 92, 255, 0.02) 40%, rgba(255,255,255,1) 70%),
+    linear-gradient(180deg, #fbfcff 0%, #3bf6dd 100%);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100%;
+  background: transparent;
+}
+
+/* Common card style for transparency */
+.card-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}

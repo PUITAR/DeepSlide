@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "updated_at": 1772706936.56215,
+  "lang": "en",
+  "by_page": {
+    "1": [
+      "Could you elaborate on the specific efficiency gains in compute and latency you mentioned, perhaps with some comparative numbers?",
+      "You mentioned nine key categories, but only listed four. What are the other five categories you evaluated?",
+      "How do you ensure that your benchmark comparisons are fair, given the rapid evolution of models like GPT-4o and Claude 3.5?"
+    ],
+    "2": [
+      "Given that Qwen3.5-A17B shows strong performance in IFBench but lags in AA-LCR, how do you explain this trade-off between instruction following and long context capabilities?",
+      "The slide shows Qwen3-Max outperforming GPT 5.2 in C-Eval but trailing in MMLU-Pro. What architectural choices lead to this divergent performance across different knowledge benchmarks?",
+      "You mention 'efficient variants' reducing computational requirements. Could you quantify the efficiency gains relative to the performance drop compared to top models like Claude 4.5?"
+    ],
+    "3": [
+      "Could you elaborate on the specific metrics or datasets used within the 'spatial intelligence' category for evaluation?",
+      "You mentioned 'medical VQA capabilities' as a category. How does the model's performance there compare to specialized medical AI systems?",
+      "The slide lists seven categories, but the speech mentions them slightly differently. Could you clarify the exact breakdown and why these particular categories were chosen for a comprehensive evaluation?"
+    ],
+    "4": [
+      "Could you elaborate on the specific metrics or datasets used for the 'excellent visual agent capabilities' claim?",
+      "What are the trade-offs in performance between your efficient variants and the full models, particularly in the medical VQA category?",
+      "You mentioned seven categories, but only highlighted two. What are the other five categories, and how does performance compare across them?"
+    ],
+    "5": [
+      "Could you provide specific metrics or benchmarks comparing the compute efficiency improvements against GPT-4o and Claude 3.5?",
+      "What trade-offs, if any, were made to achieve these latency reductions while maintaining competitive performance?",
+      "How do the optimized model variants differ architecturally, and what specific applications benefit most from these real-time improvements?"
+    ],
+    "6": [
+      "Could you elaborate on the specific benchmarks where Qwen3.5 outperforms or matches GPT-4o and Claude 3.5, particularly in vision-language tasks?",
+      "What are the trade-offs in performance when using the efficient variants, and in what practical scenarios would you recommend them over the full model?",
+      "How does your 'balanced approach' specifically address the challenge of maintaining high performance while achieving efficiency, and are there any metrics to quantify this balance?"
+    ],
+    "7": [
+      "Could you elaborate on how the hybrid routing architecture specifically improves throughput compared to a standard MoE approach?",
+      "What are the practical limitations or trade-offs when using early-fusion training for aligning vision and language, especially in terms of computational cost or data requirements?",
+      "In the context of long-context support for tool interaction, how does the model manage the potential for irrelevant or noisy information over extended sequences?"
+    ],
+    "8": [
+      "Could you elaborate on the specific metrics or benchmarks used to demonstrate 'improved agent performance' compared to prior Qwen models?",
+      "You mention 'progressively more complex task distributions'. Could you provide a concrete example of a task type or environment that was added at a higher complexity level, and how the agent's performance on it was measured?",
+      "Regarding the broad multilingual coverage of 201 languages, how does the scaled RL training specifically contribute to or improve performance across this wide range of languages, especially for lower-resource ones?"
+    ],
+    "9": [
+      "Could you elaborate on the specific metrics or benchmarks used to measure 'robust agentic capabilities' as the environments scaled?",
+      "What were the key challenges in scaling the RL environments, and how did you address the risk of catastrophic forgetting when introducing more complex tasks?",
+      "How does the decode throughput, as indicated by the slide title, relate to or impact the training efficiency and performance in these progressively complex environments?"
+    ],
+    "10": [
+      "Could you elaborate on how the Gated Delta Networks specifically reduce inference overhead compared to other efficient architectures?",
+      "What are the practical advantages of early-fusion multimodal training over late-fusion approaches in agentic tasks?",
+      "How does the scaled RL across diverse environments translate to improved performance in specific, real-world applications you've tested?"
+    ],
+    "11": [
+      "Could you elaborate on the specific mechanisms of the 'effective hybrid routing' and provide some quantitative data on the efficiency and throughput improvements compared to previous architectures?",
+      "You mentioned 'scaled RL training enables robust agentic generalization'. Could you share more details about the scale of the RL training and the specific environments used to test this generalization?",
+      "The slide claims 'broad multilingual support (201 languages)'. What is the performance parity like across these languages, especially for the agentic workloads, and are there significant disparities between high-resource and low-resource languages?"
+    ]
+  },
+  "errors_by_page": {}
+}

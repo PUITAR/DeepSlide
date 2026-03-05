@@ -1,0 +1,21 @@
+{
+  "focus_pages": [
+    2,
+    9
+  ],
+  "effects": [
+    "Image Focus",
+    "Auto Diagram",
+    "Table Viz",
+    "Text Keynote",
+    "Motion",
+    "Auto Layout"
+  ],
+  "per_slide_max_regions": 3,
+  "effects_by_page": {},
+  "per_slide_max_regions_by_page": {},
+  "html_pages": [
+    "slide_3.html",
+    "slide_10.html"
+  ]
+}

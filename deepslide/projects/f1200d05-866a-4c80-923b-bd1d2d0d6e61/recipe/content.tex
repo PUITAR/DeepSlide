@@ -1,0 +1,161 @@
+%% ITEM 0 TYPE Section
+\section{Benchmarks vs strong baselines}%% ITEM 1 TYPE Section
+\section{Benchmarks vs Strong Baselines}%% ITEM 2 TYPE Frame
+\begin{frame}
+\deepslideid{S0001}
+
+\frametitle{Language Benchmarks Overview}
+
+\begin{itemize}
+\item Comprehensive evaluation across 9 categories
+\item Comparison against GPT-4o, Claude 3.5, and other top models
+\item Metrics include knowledge, reasoning, coding, and multilingual capabilities
+\item Focus on performance with efficiency gains
+\end{itemize}
+\end{frame}%% ITEM 3 TYPE Frame
+\begin{frame}
+\frametitle{Language Benchmark}
+
+\begin{table}[htbp]
+\centering
+\resizebox{\linewidth}{!}{%
+\scriptsize
+\begin{tabular}{p{0.12\linewidth} r r r r r r}
+% \caption{Language benchmark results.}
+\label{tab:bench-language-core}\\
+\toprule
+Metric & GPT 5.2 & Claude 4.5 & Gemini-3 Pro & Qwen3-Max & K2.5-A32B & Qwen3.5-A17B \\
+\midrule
+
+\multicolumn{7}{l}{\textbf{Knowledge}}\\
+MMLU-Pro & 87.4 & 89.5 & 89.8 & 85.7 & 87.1 & 87.8 \\
+MMLU-Redux & 95.0 & 95.6 & 95.9 & 92.8 & 94.5 & 94.9 \\
+S-GPQA & 67.9 & 70.6 & 74.0 & 67.3 & 69.2 & 70.4 \\
+C-Eval & 90.5 & 92.2 & 93.4 & 93.7 & 94.0 & 93.0 \\
+
+\addlinespace[0.3ex]
+\multicolumn{7}{l}{\textbf{Instruction Following}}\\
+IFEval & 94.8 & 90.9 & 93.5 & 93.4 & 93.9 & 92.6 \\
+IFBench & 75.4 & 58.0 & 70.4 & 70.9 & 70.2 & 76.5 \\
+MultiC & 57.9 & 54.2 & 64.2 & 63.3 & 62.7 & 67.6 \\
+
+\addlinespace[0.3ex]
+\multicolumn{7}{l}{\textbf{Long Context}}\\
+AA-LCR & 72.7 & 74.0 & 70.7 & 68.7 & 70.0 & 68.7 \\
+LB v2 & 54.5 & 64.4 & 68.2 & 60.6 & 61.0 & 63.2 \\
+
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+\end{frame}%% ITEM 4 TYPE Frame
+\begin{frame}
+\deepslideid{S0003}
+
+\frametitle{Vision-Language Benchmarks}
+
+\begin{itemize}
+\item Comprehensive evaluation across 7 categories
+\item STEM and puzzle, general VQA, text recognition
+\item Spatial intelligence, video understanding, visual agent
+\item Medical VQA capabilities
+\end{itemize}
+\end{frame}%% ITEM 5 TYPE Frame
+\begin{frame}
+\deepslideid{S0004}
+
+\frametitle{Vision-Language Benchmark Results}
+
+\begin{itemize}
+\item Strong performance across all 7 categories
+\item Excellent visual agent and medical VQA capabilities
+\item Efficient variants maintain competitive results
+\end{itemize}
+\end{frame}%% ITEM 6 TYPE Frame
+\begin{frame}
+\deepslideid{S0005}
+
+\frametitle{Efficiency Gains}
+
+\begin{itemize}
+\item Competitive performance with GPT-4o and Claude 3.5
+\item Significant compute efficiency improvements
+\item Reduced latency for real-time applications
+\item Optimized model variants maintain strong results
+\end{itemize}
+\end{frame}%% ITEM 7 TYPE Frame
+\begin{frame}
+\deepslideid{S0006}
+
+\frametitle{Key Takeaways}
+
+\begin{itemize}
+\item Qwen3.5 achieves competitive performance vs GPT-4o and Claude 3.5
+\item Strong results across both language and vision-language benchmarks
+\item Efficient variants offer compute and latency advantages
+\item Balanced approach: performance + efficiency
+\end{itemize}
+\end{frame}%% ITEM 8 TYPE Section
+\section{Takeaways and advancements}%% ITEM 9 TYPE Section
+\section{Takeaways and Advancements}%% ITEM 10 TYPE Frame
+\begin{frame}
+\deepslideid{S0007}
+
+\frametitle{Multimodal Agentic Capabilities}
+
+\begin{itemize}
+\item \textbf{Unified vision-language foundation}: Early-fusion training aligns visual understanding with language reasoning
+\item \textbf{Effective multimodal agentic workloads}: Handles complex tasks requiring multimodal inputs and multi-step planning
+\item \textbf{Hybrid routing architecture}: Combines Gated Delta Networks with sparse MoE routing for efficiency
+\item \textbf{Native support for long contexts}: Enables interaction with external tools under extended contexts
+\end{itemize}
+\end{frame}%% ITEM 11 TYPE Frame
+\begin{frame}
+\deepslideid{S0008}
+
+\frametitle{Scaled RL Advancements}
+
+\begin{itemize}
+\item \textbf{Reinforcement Learning scaled across large collections} of tool-using agent environments
+\item \textbf{Progressively more complex task distributions} for robust generalization
+\item \textbf{Improved agent performance} over prior Qwen models through scaled RL training
+\item \textbf{Broad multilingual coverage}: Support for 201 languages and dialects
+\end{itemize}
+\end{frame}%% ITEM 12 TYPE Frame
+\begin{frame}
+\deepslideid{S0009}
+
+\frametitle{Decode Throughput}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{../qwen35\_paper/figures/decode_throughput.png}
+  \caption{Decode throuput.\cite{gigazine_qwen35}}
+  \label{fig:env_scaling}
+\end{figure}
+\end{frame}%% ITEM 13 TYPE Frame
+\begin{frame}
+\deepslideid{S0010}
+
+\frametitle{Key Technical Innovations}
+
+\begin{itemize}
+\item \textbf{Efficient hybrid architecture}: Gated Delta Networks + sparse MoE routing
+\item \textbf{Early-fusion multimodal training}: Aligns visual and language representations
+\item \textbf{Scaled RL across diverse environments}: Enables robust agentic generalization
+\item \textbf{Optimized for agentic workloads}: Native support for multi-step planning and tool use
+\end{itemize}
+\end{frame}%% ITEM 14 TYPE Frame
+\begin{frame}
+\deepslideid{S0011}
+
+\frametitle{Summary: Qwen3.5 Advancements}
+
+\begin{itemize}
+\item \textbf{Unified multimodal foundation} for vision-language-agent tasks
+\item \textbf{Effective hybrid routing} improves efficiency and throughput
+\item \textbf{Scaled RL training} enables robust agentic generalization
+\item \textbf{Broad multilingual support} (201 languages)
+\item \textbf{Significant improvements} over prior Qwen models in agentic workloads
+\end{itemize}
+\end{frame}

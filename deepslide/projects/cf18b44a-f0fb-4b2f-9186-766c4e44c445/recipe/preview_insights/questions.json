@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "updated_at": 1772709980.6339436,
+  "lang": "en",
+  "by_page": {
+    "0": [
+      "Could you clarify what specific 'agentic tasks' were included in the language benchmark category?",
+      "You mention Qwen3.5 shows competitive performance. Could you quantify that with a specific metric or ranking compared to the listed baselines?",
+      "The slide lists many categories but the speech focuses on multimodal agents. How do the vision-language benchmarks specifically evaluate agentic capabilities?"
+    ],
+    "1": [
+      "Could you clarify what specific 'agentic tasks' were included in the language benchmarks?",
+      "You mention 'competitive performance'—could you quantify that with a specific metric or ranking relative to the listed baselines?",
+      "For the vision-language tasks, what datasets were used for evaluating spatial intelligence and video understanding?"
+    ],
+    "2": [
+      "Could you elaborate on the specific reasoning or knowledge tasks within MMLU where Qwen3.5-397B-A17B shows a slight gap compared to GPT5.2 and Claude 4.5?",
+      "The GPQA score of 62.1 seems notably lower than the other benchmarks. What are the primary challenges or failure modes for the model on this STEM reasoning dataset?",
+      "Given the strong coding performance, how does the model's architecture or training data specifically contribute to its success on HumanEval and MBPP compared to general language tasks?"
+    ],
+    "3": [
+      "Could you elaborate on the specific benchmarks or datasets used to evaluate 'excellent OCR and document understanding', and how Qwen3.5 compares quantitatively to other leading models in this area?",
+      "You mention 'competitive' performance for general VQA and video understanding. Could you be more specific about which models you are comparing against and the magnitude of the performance gap?",
+      "The slide lists 'Medical VQA' as a specialized capability. Given the critical nature of medical applications, what validation steps were taken to ensure the model's reliability and safety in this domain?"
+    ],
+    "4": [
+      "Could you elaborate on the specific techniques used in the 'optimized inference pipelines' to achieve high throughput?",
+      "How does the mixture of experts architecture specifically balance the trade-off between low latency and maintaining model capacity?",
+      "What were the key bottlenecks you encountered in achieving low latency for real-time applications, and how did you address them?"
+    ],
+    "5": [
+      "Could you elaborate on how the routing mechanism determines which 'relevant experts' are activated for a given token, and what are the potential failure modes or biases in this routing?",
+      "You mention 'manageable inference cost'—could you quantify the computational savings compared to a dense model of equivalent parameter count, and are there any latency trade-offs introduced by the expert selection process?",
+      "How does the specialization of experts for 'different types of inputs or domains' emerge during training, and what mechanisms prevent expert collapse or ensure balanced utilization across the model?"
+    ],
+    "6": [
+      "Could you elaborate on the specific benchmarks where Qwen3.5-397B-A17B demonstrated competitive performance, particularly in comparison to closed-source alternatives?",
+      "How does the mixture of experts architecture specifically contribute to the 'scalable parameter-activation efficiency' you mentioned, and what are the trade-offs compared to dense models?",
+      "You mentioned 'practical for real-world deployment'—could you share concrete examples of deployment scenarios or latency/throughput numbers from your production testing?"
+    ],
+    "7": [
+      "Could you elaborate on the specific benchmarks where Qwen3.5-397B-A17B is competitive with proprietary models, and where does it still fall short?",
+      "You mentioned 'practical deployment at scale' - what are the actual hardware requirements and inference costs compared to similar-sized dense models?",
+      "What specific optimization targets and specialized applications are prioritized in your future work roadmap?"
+    ],
+    "8": [
+      "Could you elaborate on how the early-fusion training architecture specifically improves the alignment between visual understanding and language reasoning compared to late-fusion approaches?",
+      "Given the sparse MoE routing with 512 experts, what are the practical trade-offs in terms of model training complexity and inference latency, and how does the gated delta network specifically reduce overhead?",
+      "You mentioned scalable RL generalization across tool-using environments. What metrics or benchmarks were used to evaluate this generalization, and how does the progressive complexity in task distributions prevent catastrophic forgetting?"
+    ],
+    "9": [
+      "Could you elaborate on the specific criteria used to define 'increasing complexity' in the task distributions during progressive scaling?",
+      "How do you measure the robustness of tool-using agent capabilities developed through this scaling approach, and what metrics were most indicative of success?",
+      "What were the main challenges encountered when designing the diverse and challenging scenarios, and how did you ensure they effectively supported incremental learning?"
+    ],
+    "10": [
+      "Could you elaborate on the specific real-world scenarios where you've observed the most significant performance boundaries, and what steps are being taken to better define these limits?",
+      "Regarding the insufficient scaling behavior details, are there any preliminary findings or ongoing experiments that could shed light on the efficiency trade-offs at different model scales?",
+      "Given the architectural transparency gaps, particularly with the hybrid components and multimodal fusion, what is the timeline or plan for releasing more detailed technical documentation to facilitate external research and replication?"
+    ],
+    "11": [
+      "Could you elaborate on the specific mechanisms used for expert routing and load balancing in your sparse MoE design, and how they impact inference latency?",
+      "You mention memory overhead for storing expert parameters. What are the practical memory requirements for deploying this model, and how does it compare to a dense model of equivalent active parameters?",
+      "The slide mentions the context window is extensible to 1M+ tokens. What modifications or techniques are required to achieve this extension, and what is the associated performance or accuracy trade-off?"
+    ],
+    "12": [
+      "Could you elaborate on the key references that most strongly support your methodology?",
+      "Given the brevity of the slide, could you provide a specific example of how a cited work directly influenced your analysis?",
+      "What are the main points of contention or debate among the references you've drawn upon?"
+    ]
+  },
+  "errors_by_page": {}
+}

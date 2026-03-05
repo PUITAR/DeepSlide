@@ -1,0 +1,14 @@
+pymupdf
+python-pptx
+pillow
+numpy
+tqdm
+pyyaml
+scikit-learn
+sentence-transformers
+pandas
+python-dotenv
+camel-ai
+requests
+bert-score
+dashscope

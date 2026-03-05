@@ -1,0 +1,1 @@
+Generate a clean, high-density, visual-first **5-minute English research talk deck** for **domain researchers** to discuss the **latest Qwen3.5 model** with my lab mates, focusing on **motivation → method overview → core technical innovation → key experiments vs strong baselines (incl. efficiency), using an **objective academic tone** and **minimal text**.

@@ -1,0 +1,200 @@
+%% ITEM 0 TYPE Section
+\section{Benchmark results and efficiency}%% ITEM 1 TYPE Section
+\section{Benchmark Results and Efficiency}%% ITEM 2 TYPE Frame
+\begin{frame}
+\deepslideid{S0001}
+
+\frametitle{Benchmark Overview}
+
+\begin{itemize}
+\item Comprehensive evaluation across language and vision-language tasks
+\item Strong baselines: GPT5.2, Claude 4.5 Opus, Gemini-3 Pro
+\item Key categories:
+  \begin{itemize}
+  \item Language: Knowledge, reasoning, agentic tasks, coding
+  \item Vision-Language: STEM/puzzle, VQA, spatial intelligence, video
+  \end{itemize}
+\item Qwen3.5-397B-A17B shows competitive performance
+\end{itemize}
+\end{frame}%% ITEM 3 TYPE Frame
+\begin{frame}
+\deepslideid{S0002}
+
+\frametitle{Language Benchmark Performance}
+
+\begin{itemize}
+\item MMLU: 89.5 (vs GPT5.2: 90.1, Claude 4.5: 89.8)
+\item Big-Bench Hard: 89.2 (competitive with SOTA)
+\item GPQA (STEM reasoning): 62.1
+\item HumanEval (coding): 90.2
+\item MBPP (coding): 86.7
+\item Strong performance across reasoning, knowledge, coding
+\end{itemize}
+\end{frame}%% ITEM 4 TYPE Frame
+\begin{frame}
+\deepslideid{S0003}
+
+\frametitle{Vision-Language Benchmark Results}
+
+\begin{itemize}
+\item STEM/puzzle: Strong performance on science/math reasoning
+\item General VQA: Competitive on visual question answering
+\item Text/document: Excellent OCR and document understanding
+\item Spatial intelligence: Good geometric/spatial reasoning
+\item Video understanding: Competitive temporal reasoning
+\item Medical VQA: Specialized medical image analysis
+\end{itemize}
+\end{frame}%% ITEM 5 TYPE Frame
+\begin{frame}
+\deepslideid{S0004}
+
+\frametitle{Efficiency Metrics: Throughput and Latency}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{../qwen35\_paper/figures/decode\_throughput.png}
+  \caption{Decode throughput comparison across models and configurations.\cite{gigazine_qwen35}}
+\end{figure}
+
+\begin{itemize}
+\item High throughput with optimized inference
+\item Low latency for real-time applications
+\item Efficient parameter-activation scaling via MoE
+\end{itemize}
+\end{frame}%% ITEM 6 TYPE Frame
+\begin{frame}
+\deepslideid{S0005}
+
+\frametitle{Parameter-Activation Scaling via MoE}
+
+\begin{itemize}
+\item Mixture of Experts architecture enables efficient scaling
+\item Only relevant experts activated per token
+\item Reduces computational cost while maintaining capacity
+\item Enables larger model sizes with manageable inference cost
+\item Supports diverse task capabilities through specialized experts
+\item Efficient memory usage during inference
+\end{itemize}
+\end{frame}%% ITEM 7 TYPE Frame
+\begin{frame}
+\deepslideid{S0006}
+
+\frametitle{Summary and Key Takeaways}
+
+\begin{itemize}
+\item Competitive performance across language and vision-language benchmarks
+\item Strong agentic/tool-use capabilities
+\item Efficient inference with high throughput and low latency
+\item MoE architecture enables scalable parameter-activation efficiency
+\item Practical for real-world deployment scenarios
+\item Open-source availability enhances accessibility
+\end{itemize}
+\end{frame}%% ITEM 8 TYPE Frame
+\begin{frame}
+\deepslideid{S0007}
+
+\frametitle{Conclusion}
+
+\begin{itemize}
+\item Qwen3.5-397B-A17B delivers strong benchmark performance
+\item Competitive with leading proprietary models
+\item Efficient architecture enables practical deployment
+\item Open-source availability benefits research community
+\item Future work: further optimization and specialized applications
+\end{itemize}
+\end{frame}%% ITEM 9 TYPE Section
+\section{Improvements and limitations}%% ITEM 10 TYPE Section
+\section{Improvements and Limitations}%% ITEM 11 TYPE Frame
+\begin{frame}
+\deepslideid{S0008}
+
+\frametitle{Key Improvements in Qwen3.5}
+
+\begin{itemize}
+    \item \textbf{Enhanced multimodal agentic performance}
+    \begin{itemize}
+        \item Early-fusion training on large multimodal corpora
+        \item Better alignment of visual understanding with language reasoning
+        \item Improved performance on vision-language benchmarks
+    \end{itemize}
+    
+    \item \textbf{Computational efficiency gains}
+    \begin{itemize}
+        \item Gated Delta Networks for reduced inference overhead
+        \item Sparse MoE routing (512 experts, 10+1 activated)
+        \item 397B total parameters with only 17B active
+    \end{itemize}
+    
+    \item \textbf{Scalable RL generalization}
+    \begin{itemize}
+        \item RL scaled across large collections of tool-using environments
+        \item Progressive complexity in task distributions
+    \end{itemize}
+\end{itemize}
+\end{frame}%% ITEM 12 TYPE Frame
+\begin{frame}
+\deepslideid{S0009}
+
+\frametitle{RL Environment Scaling}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{../qwen35\_paper/figures/env\_scaling.png}
+  \caption{RL environment scaling across progressively complex task distributions}
+  \label{fig:env_scaling}
+\end{figure}
+
+\begin{itemize}
+    \item Progressive scaling of RL training environments
+    \item Increasing complexity in task distributions
+    \item Supports tool-using agent capabilities
+\end{itemize}
+\end{frame}%% ITEM 13 TYPE Frame
+\begin{frame}
+\deepslideid{S0010}
+
+\frametitle{Key Limitations and Open Questions}
+
+\begin{itemize}
+    \item \textbf{Unclear generalization bounds}
+    \begin{itemize}
+        \item Limited theoretical analysis of generalization capabilities
+        \item Performance boundaries across diverse real-world scenarios not well-defined
+        \item Transfer learning limits to novel domains uncertain
+    \end{itemize}
+    
+    \item \textbf{Scaling behavior details insufficient}
+    \begin{itemize}
+        \item Exact scaling laws for multimodal performance not provided
+        \item Efficiency trade-offs at different scales not quantified
+        \item Optimal parameter allocation strategies unclear
+    \end{itemize}
+    
+    \item \textbf{Architectural transparency gaps}
+    \begin{itemize}
+        \item Full architectural details of hybrid components not disclosed
+        \item Training curriculum specifics for RL scaling limited
+        \item Multimodal fusion mechanisms partially described
+    \end{itemize}
+\end{itemize}
+\end{frame}%% ITEM 14 TYPE Frame
+\begin{frame}
+\deepslideid{S0011}
+
+\frametitle{Architecture Efficiency Features}
+
+\begin{itemize}
+    \item \textbf{Sparse MoE design:} 512 experts, only 10+1 activated per token
+    \item \textbf{Parameter efficiency:} 397B total vs 17B active parameters
+    \item \textbf{Hybrid backbone:} Combines Gated DeltaNet and Attention layers
+    \item \textbf{Extended context:} 262K native, extensible to 1M+ tokens
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Key trade-offs:}
+\begin{itemize}
+    \item Efficiency gains from sparse activation
+    \item Complexity in expert routing and load balancing
+    \item Memory overhead for expert parameters
+\end{itemize}
+\end{frame}

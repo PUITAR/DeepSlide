@@ -1,0 +1,32 @@
+# DeepPresenter configuration
+offline_mode: false
+context_folding: true
+
+research_agent:
+  base_url: "https://openrouter.ai/api/v1"
+  model: "anthropic/claude-sonnet-4.5"
+  api_key: "your_key"
+
+design_agent:
+  base_url: "https://openrouter.ai/api/v1"
+  model: "google/gemini-3-pro-preview"
+  api_key: "your_key"
+
+long_context_model:
+  base_url: "https://open.bigmodel.cn/api/paas/v4/"
+  model: "glm-4.5"
+  api_key: "your_key"
+
+vision_model:
+  base_url: "https://open.bigmodel.cn/api/paas/v4/"
+  model: "glm-4.6v-flash"
+  api_key: "your_key"
+
+# # this is not neccessarily required,
+# t2i_model:
+#   base_url: "https://ark.cn-beijing.volces.com/api/v3"
+#   model: "doubao-seedream-4.5-251128"
+#   api_key: "your_key"
+#   # sampling_parameters:
+#   #   response_format: "b64_json"
+#   #   extra_body: { "watermark": False }

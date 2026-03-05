@@ -1,108 +1,49 @@
-# VCS
+### OS
 .DS_Store
-.env
-.env.*
-*.pem
+Thumbs.db
 
-# Generic caches
-.cache/
-
-# Python
+### Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.pyd
-.python-version
-.ruff_cache/
-.pytest_cache/
-coverage.xml
-htmlcov/
-.mypy_cache/
- .ipynb_checkpoints/
- .coverage
- coverage/
- *.egg-info/
- .eggs/
-
-# Virtualenv
+.Python
 .venv/
 venv/
+ENV/
 env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Node
+### Node / Frontend
 node_modules/
+.next/
+dist/
+build/
+.turbo/
+.vite/
 
-# Trae / IDE
-.trae/
-.idea/
-.vscode/
-.vercel/
-
-# Logs
+### Logs
 *.log
 logs/
 
-# Build outputs
-dist/
-build/
-out/
+### Secrets
+.env
+**/.env
 
-# LaTeX artifacts
-*.aux
-*.log
-*.toc
-*.out
-*.nav
-*.snm
-*.synctex.gz
-*.fdb_latexmk
-*.fls
-*.vrb
-*.lof
-*.lot
-*.bbl
-*.blg
-*.bcf
-*.run.xml
-*.pdf
-*.dvi
-*.ps
+### Project caches / outputs
+dataset/.cache/
+experiments/.cache/
+experiments/**/outputs/
 
-# 压缩包
-*.zip
-*.tar.gz
+### App temp dirs
+deeppresenter/gradio_temp/
+deeppresenter/**/gradio_temp/
 
-# Images generated
-deepslide/template/base/picture/*.pdf
-deepslide/template/base/picture/*.png
+### Paper artifacts (do not upload)
+DeepSlide-Arxiv/
 
-all-MiniLM-L6-v2/
-
-# Uploads
-tmp_uploads/
-# workspace
-workspace/
-context_files/
-
-# Vercel cache
-.vercel/cache/
-
-# Test artifacts
-test/**/base.aux
-test/**/base.log
-test/**/base.nav
-test/**/base.out
-test/**/base.pdf
-test/**/base.snm
-test/**/base.toc
-
-# Generated results
-deepslide/agents/divider/result/*.json
-
-# index-tts
+### Optional third-party repos / large artifacts
 index-tts/
-audio/
-Example_Audio.wav
-
-# local models
-models/
+template/rag/

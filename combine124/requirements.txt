@@ -1,3 +1,0 @@
-streamlit
-python-dotenv
-camel-ai
