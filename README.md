@@ -8,13 +8,12 @@
 
 <div align="center">
 
-[![Watch the demo on Bilibili](./assets/paper/ui-preview.jpg)](https://www.bilibili.com/video/BV1sSPkz9E6P)
+**🎥 Bibili: ** https://www.bilibili.com/video/BV1sSPkz9E6P
+<!-- [![在 B 站观看演示视频](https://i0.hdslb.com/bfs/archive/bcfd3b7943d3c6bb5c58f6c5e205161978de359e.jpg@308w_174h)](https://www.bilibili.com/video/BV1sSPkz9E6P) -->
 
-**🎥 Watch on Bilibili:** https://www.bilibili.com/video/BV1sSPkz9E6P
+**▶️ YouTube: ** https://youtu.be/NGqFLT81uHA
 
-**▶️ Watch on YouTube:** https://youtu.be/NGqFLT81uHA
-
-[![Watch the demo on YouTube](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA)
+[![Watch usage on YouTube](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA)
 
 </div>
 
