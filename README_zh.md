@@ -8,10 +8,10 @@
 
 <div align="center">
 
-**🎥 B 站链接：** https://www.bilibili.com/video/BV1sSPkz9E6P
+🎥 Bilibili: https://www.bilibili.com/video/BV1sSPkz9E6P
 [![在 B 站观看演示视频](https://i0.hdslb.com/bfs/archive/bcfd3b7943d3c6bb5c58f6c5e205161978de359e.jpg@308w_174h)](https://www.bilibili.com/video/BV1sSPkz9E6P)
 
-**▶️ YouTube 链接：** https://youtu.be/NGqFLT81uHA
+▶️ YouTube: https://youtu.be/NGqFLT81uHA
 
 <!-- [![在 YouTube 观看演示视频](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA) -->
 
