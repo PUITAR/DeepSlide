@@ -28,6 +28,15 @@ build/
 *.log
 logs/
 
+### IDE / tooling
+.vscode/
+.idea/
+.trae/
+
+### Hosting / frameworks
+.vercel/
+.streamlit/
+
 ### Secrets
 .env
 **/.env
