@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeepSlide: From Artifacts to Presentation Delivery</title>
+    <meta
+      name="description"
+      content="DeepSlide is a delivery-first, human-in-the-loop system for end-to-end presentation delivery."
+    />
+    <style>
+      :root {
+        --text: #0b1220;
+        --muted: rgba(11, 18, 32, 0.7);
+        --border: rgba(11, 18, 32, 0.12);
+        --card: rgba(11, 18, 32, 0.03);
+        --accent: #1f5cff;
+        --radius: 14px;
+        --maxw: 920px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background: #fff;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 34px 18px 48px;
+      }
+      .title {
+        margin: 0;
+        font-size: 40px;
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+      }
+      .meta {
+        margin-top: 10px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .link {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--text);
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .link:hover {
+        text-decoration: none;
+        border-color: rgba(31, 92, 255, 0.25);
+      }
+      .divider {
+        margin: 26px 0;
+        border-top: 1px solid var(--border);
+      }
+      h2 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card);
+        padding: 14px;
+      }
+      .figure {
+        margin-top: 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: #fff;
+      }
+      .figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .caption {
+        padding: 10px 12px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .embed {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        background: #000;
+      }
+      .embed iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      .footer {
+        margin-top: 34px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1 class="title">DeepSlide: From Artifacts to Presentation Delivery</h1>
+      <div class="meta">Delivery-first · Human-in-the-loop · Open-source</div>
+      <div class="links">
+        <a class="link" href="https://github.com/PUITAR/DeepSlide" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="link" href="https://youtu.be/NGqFLT81uHA" target="_blank" rel="noreferrer">YouTube</a>
+        <a class="link" href="https://www.bilibili.com/video/BV1sSPkz9E6P" target="_blank" rel="noreferrer">Bilibili</a>
+      </div>
+
+      <div class="divider"></div>
+
+      <section>
+        <h2>Abstract</h2>
+        <div class="card">
+          <p>
+            A high-quality talk is not mainly determined by whether the static slides “look nice”. What matters more is
+            whether information is organized and delivered under audience cognition and attention constraints—including
+            narrative coherence, timing and pacing control, attention guidance, and rehearsal readiness. In other words,
+            artifact quality ≠ delivery quality.
+          </p>
+        </div>
+      </section>
+
+      <section style="margin-top: 26px">
+        <h2>Video</h2>
+        <div class="figure">
+          <div class="embed">
+            <iframe
+              src="https://www.youtube.com/embed/NGqFLT81uHA"
+              title="DeepSlide demo video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top: 26px">
+        <h2>Figure 1</h2>
+        <div class="figure">
+          <img src="./assets/paper/comp.png" alt="Comparison with existing methods" loading="lazy" />
+          <div class="caption">
+            Comparison with existing methods: DeepSlide targets end-to-end presentation delivery rather than deck
+            authoring only.
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top: 26px">
+        <h2>Figure 2</h2>
+        <div class="figure">
+          <img src="./assets/paper/overview-v4.jpg" alt="Overview of the four-stage framework" loading="lazy" />
+          <div class="caption">
+            Overview of the four-stage framework: a closed-loop delivery workflow from requirement clarification to
+            generation/enhancement, and finally rehearsal/evaluation.
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">Minimal project page for DeepSlide.</div>
+    </main>
+  </body>
+</html>
+
