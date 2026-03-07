@@ -1,5 +1,11 @@
 # DeepSlide: From Artifacts to Presentation Delivery
 
+<div align="center">
+
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)]()    [![Github](https://img.shields.io/badge/HAMMER-000000?style=for-the-badge&logo=github&logoColor=white)]()
+
+</div>
+
 > DeepSlide 不是“帮你快速做一份 PPT”的工具，而是一个**面向完整演讲交付（delivery-first）**的人机协同系统。
 
 **🌐 English Version:** [README.md](./README.md)
