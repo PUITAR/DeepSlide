@@ -2,7 +2,9 @@
 
 <div align="center">
 
-[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)]()    [![Github](https://img.shields.io/badge/HAMMER-000000?style=for-the-badge&logo=github&logoColor=white)]()
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)]()    [![Github](https://img.shields.io/badge/DeepSlide-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PUITAR/DeepSlide)
+
+Our detailed technical report will be published soon.
 
 </div>
 
