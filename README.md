@@ -1,5 +1,13 @@
 # DeepSlide: From Artifacts to Presentation Delivery
 
+<div align="center">
+
+[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)]()    [![Github](https://img.shields.io/badge/DeepSlide-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PUITAR/DeepSlide)
+
+Our detailed technical report will be published soon.
+
+</div>
+
 > DeepSlide is not a tool that “quickly makes a PPT for you”, but a **human-in-the-loop system for full presentation delivery (delivery-first)**.
 
 **🌐 Chinese Version:** [README_zh.md](./README_zh.md)
