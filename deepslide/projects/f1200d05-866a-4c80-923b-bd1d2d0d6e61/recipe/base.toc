@@ -1,4 +1,0 @@
-\beamer@sectionintoc {1}{Benchmarks vs strong baselines}{2}{0}{1}
-\beamer@sectionintoc {2}{Benchmarks vs Strong Baselines}{2}{0}{2}
-\beamer@sectionintoc {3}{Takeaways and advancements}{8}{0}{3}
-\beamer@sectionintoc {4}{Takeaways and Advancements}{8}{0}{4}

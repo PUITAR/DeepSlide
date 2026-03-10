@@ -39,7 +39,16 @@ echo "Starting next-ai-draw-io on :${NEXT_AI_DRAWIO_PORT}..."
   echo $! > "${ROOT_DIR}/.pids/next_ai_drawio.pid")
 
 echo "Starting backend on :${BACKEND_PORT}..."
-(cd backend && uvicorn app.main:app --host 0.0.0.0 --port "${BACKEND_PORT}" & echo $! > "${ROOT_DIR}/.pids/backend.pid")
+BACKEND_RUN=()
+if [ -x "${ROOT_DIR}/backend/.venv/bin/python" ]; then
+  BACKEND_RUN=("${ROOT_DIR}/backend/.venv/bin/python" "-m" "uvicorn" "app.main:app")
+elif [ -x "${ROOT_DIR}/backend/.venv/bin/uvicorn" ]; then
+  BACKEND_RUN=("${ROOT_DIR}/backend/.venv/bin/uvicorn" "app.main:app")
+else
+  BACKEND_RUN=("uvicorn" "app.main:app")
+fi
+
+(cd backend && "${BACKEND_RUN[@]}" --host 0.0.0.0 --port "${BACKEND_PORT}" & echo $! > "${ROOT_DIR}/.pids/backend.pid")
 
 echo "Starting frontend on :${FRONTEND_PORT}..."
 (cd frontend && npm run dev -- --host 0.0.0.0 --port "${FRONTEND_PORT}" & echo $! > "${ROOT_DIR}/.pids/frontend.pid")

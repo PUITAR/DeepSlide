@@ -8,7 +8,8 @@ Our detailed technical report will be published soon.
 
 </div>
 
-> DeepSlide is not a tool that “quickly makes a PPT for you”, but a **human-in-the-loop system for full presentation delivery (delivery-first)**.
+> DeepSlide is not a tool that simply “makes a PPT for you”, but a **delivery-first, human-in-the-loop system for complete presentation preparation and delivery**.  
+> It helps users go beyond slide generation to support the full workflow of presentation delivery, including **narrative planning, logical chain editing, slide generation, script drafting, interactive enhancement, and rehearsal feedback**.
 
 **🌐 Chinese Version:** [README_zh.md](./README_zh.md)
 
@@ -16,7 +17,7 @@ Our detailed technical report will be published soon.
 
 <div align="center">
 
-🎥 Bilibili: https://www.bilibili.com/video/BV1sSPkz9E6P
+🎥 Bilibili: https://www.bilibili.com/video/BV1sSPkz9E6P  
 <!-- [![在 B 站观看演示视频](https://i0.hdslb.com/bfs/archive/bcfd3b7943d3c6bb5c58f6c5e205161978de359e.jpg@308w_174h)](https://www.bilibili.com/video/BV1sSPkz9E6P) -->
 
 ▶️ YouTube: https://youtu.be/NGqFLT81uHA
@@ -24,6 +25,24 @@ Our detailed technical report will be published soon.
 [![Watch usage on YouTube](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA)
 
 </div>
+
+## News
+- **[2026.03.10] We now provide a simple 4-step guide to use DeepSlide directly inside OpenClaw.**  
+  If you are already using OpenClaw and want to add a dedicated agent for **presentation generation, narrative organization, and delivery preparation**, you can follow the tutorial below:  
+  [DeepSlide + OpenClaw](https://www.yuque.com/puitar/pug2ub/didlfrgy5ogxzl6p?singleDoc# 《DeepSlide+龙虾直接接入飞书！》)
+- **[2026.03.06] DeepSlide is officially released.**  
+  We open-sourced DeepSlide as a **human-in-the-loop, delivery-first presentation system** designed not only for slide creation, but for the broader goal of **full presentation delivery**.  
+  Instead of stopping at static deck generation, DeepSlide supports a more complete workflow covering **requirement clarification, narrative proposal, logical chain control, evidence-grounded slide generation, script writing, interactive enhancement, and rehearsal-oriented preparation**.
+
+## OpenClaw Skill
+
+We ship an AgentSkills-compatible OpenClaw skill at `skills/deepslide-openclaw/`:
+- Install & initialize DeepSlide (runs services on the host)
+- Build and use a Docker-based TeX toolchain for LaTeX compilation (no local TeX required)
+- Deploy & operate (start/stop + basic health checks)
+
+If your OpenClaw workspace is not the repo root, add `skills` via `skills.load.extraDirs` (in `~/.openclaw/openclaw.json`).
+
 
 ## Key Claim
 

@@ -45,6 +45,10 @@ logs/
 dataset/.cache/
 experiments/.cache/
 experiments/**/outputs/
+deepslide/.pids/
+deepslide/backend/context_files/
+deepslide/projects/
+deepslide/uploads/
 
 ### App temp dirs
 deeppresenter/gradio_temp/
@@ -56,3 +60,7 @@ DeepSlide-Arxiv/
 ### Optional third-party repos / large artifacts
 index-tts/
 template/rag/
+
+
+projects/
+uploads/

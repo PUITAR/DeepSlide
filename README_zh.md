@@ -8,7 +8,8 @@ Our detailed technical report will be published soon.
 
 </div>
 
-> DeepSlide 不是“帮你快速做一份 PPT”的工具，而是一个**面向完整演讲交付（delivery-first）**的人机协同系统。
+> DeepSlide 不是“帮你快速做一份 PPT”的工具，而是一个**面向完整演讲交付（delivery-first）**的人机协同系统。  
+> 它帮助用户超越“出页”本身，覆盖完整演讲交付流程：**叙事规划、逻辑链编辑、页面生成、讲稿生成、交互增强与演练反馈**。
 
 **🌐 English Version:** [README.md](./README.md)
 
@@ -25,6 +26,23 @@ Our detailed technical report will be published soon.
 <!-- [![在 YouTube 观看演示视频](https://img.youtube.com/vi/NGqFLT81uHA/hqdefault.jpg)](https://youtu.be/NGqFLT81uHA) -->
 
 </div>
+
+## News
+- **[2026.03.10] 我们提供了一个 4 步指南，支持在 OpenClaw 内直接使用 DeepSlide。**  
+  如果你已经在使用 OpenClaw，并希望添加一个专用 Agent 来做 **演示文稿生成、叙事组织与演讲交付准备**，可以参考这个教程：  
+  [DeepSlide + OpenClaw](https://www.yuque.com/puitar/pug2ub/didlfrgy5ogxzl6p?singleDoc# 《DeepSlide+龙虾直接接入飞书！》)
+- **[2026.03.06] DeepSlide 正式开源发布。**  
+  我们开源 DeepSlide 作为一个 **human-in-the-loop、delivery-first 的演讲交付系统**。  
+  DeepSlide 不止做静态 deck 生成，还覆盖 **需求澄清、叙事提案、逻辑链控制、证据驱动生成、讲稿撰写、交互增强与演练准备**。
+
+## OpenClaw Skill
+
+我们提供一个 AgentSkills 兼容的 OpenClaw skill：`skills/deepslide-openclaw/`：
+- 安装与初始化 DeepSlide（服务在宿主机运行）
+- 使用 Docker 版 TeX 工具链编译 LaTeX（无需本机安装 TeX）
+- 部署与运维（start/stop + 基本健康检查）
+
+如果你的 OpenClaw workspace 不是仓库根目录，可以在 `~/.openclaw/openclaw.json` 里通过 `skills.load.extraDirs` 加入 `skills`。
 
 ## 核心观点
 

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
+NEXT_AI_DRAWIO_DIR="$(cd ../next-ai-draw-io && pwd)"
 
 if [ -d .pids ]; then
   for f in .pids/*.pid; do
@@ -23,7 +24,7 @@ if pgrep -f "next dev" >/dev/null; then
   while read -r pid; do
     [ -n "${pid:-}" ] || continue
     cwd="$(readlink "/proc/${pid}/cwd" 2>/dev/null || true)"
-    if echo "$cwd" | grep -q "/home/ym/DeepSlide/next-ai-draw-io"; then
+    if echo "$cwd" | grep -q "${NEXT_AI_DRAWIO_DIR}"; then
       kill "$pid" || true
     fi
   done < <(pgrep -f "next dev" || true)
