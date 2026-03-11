@@ -41,7 +41,8 @@ We ship an AgentSkills-compatible OpenClaw skill at `skills/deepslide-openclaw/`
 - Build and use a Docker-based TeX toolchain for LaTeX compilation (no local TeX required)
 - Deploy & operate (start/stop + basic health checks)
 
-If your OpenClaw workspace is not the repo root, add `skills` via `skills.load.extraDirs` (in `~/.openclaw/openclaw.json`).
+If your OpenClaw workspace is not the repo root, add `skills` via `skills.load.extraDirs` (in `~/.openclaw/openclaw.json`)
+([ClawHub Link](https://clawhub.ai/PUITAR/deepslide)).
 
 
 ## Key Claim

@@ -42,7 +42,8 @@ Our detailed technical report will be published soon.
 - 使用 Docker 版 TeX 工具链编译 LaTeX（无需本机安装 TeX）
 - 部署与运维（start/stop + 基本健康检查）
 
-如果你的 OpenClaw workspace 不是仓库根目录，可以在 `~/.openclaw/openclaw.json` 里通过 `skills.load.extraDirs` 加入 `skills`。
+如果你的 OpenClaw workspace 不是仓库根目录，可以在 `~/.openclaw/openclaw.json` 里通过 `skills.load.extraDirs` 加入 `skills`
+([ClawHub Link](https://clawhub.ai/PUITAR/deepslide))。
 
 ## 核心观点
 
