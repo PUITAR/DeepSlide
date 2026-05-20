@@ -382,6 +382,17 @@ The backend TTS logic calls `index-tts/index-tts-main` (and relies on the `uv` c
 ---
 
 ## Paper and Citation
+```
+@misc{yang2026deepslideartifactspresentationdelivery,
+      title={DeepSlide: From Artifacts to Presentation Delivery}, 
+      author={Ming Yang and Zhiwei Zhang and Jiahang Li and Haoseng Liu and Yuzheng Cai and Weiguo Zheng},
+      year={2026},
+      eprint={2605.15202},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2605.15202}, 
+}
+```
 
 ```
 
