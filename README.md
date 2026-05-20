@@ -4,8 +4,6 @@
 
 [![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)]()    [![Github](https://img.shields.io/badge/DeepSlide-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PUITAR/DeepSlide)
 
-Our detailed technical report will be published soon.
-
 </div>
 
 > DeepSlide is not a tool that simply “makes a PPT for you”, but a **delivery-first, human-in-the-loop system for complete presentation preparation and delivery**.  
