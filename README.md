@@ -391,8 +391,3 @@ The backend TTS logic calls `index-tts/index-tts-main` (and relies on the `uv` c
       url={https://arxiv.org/abs/2605.15202}, 
 }
 ```
-
-```
-
-
-```
